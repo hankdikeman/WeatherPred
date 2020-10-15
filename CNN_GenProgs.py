@@ -1,5 +1,6 @@
 import tensorflow as tf
 from tensorflow.keras import datasets, layers, models
+import numpy as np
 
 # generates and returns convolutional model based on following parameters:
 # x_len = stations west to east, y_len = stations north to south
@@ -35,22 +36,3 @@ def Gen_CNN_Model(x_len, y_len, day_num, num_fil):
     CNN_model.add(layers.Dense(1))
     # return generated model
     return CNN_model
-
-
-def ModelRun_CNN(train_x, train_y, test_x, test_y, day_num, num_fil, epoch_num = 10):
-    # these values for the x and y length are WRONG, placeholders
-    # these should really be the dimensions of our station grid
-    x_len = np.shape(train_x)[0]
-    y_len = np.shape(train_x)[1]
-    # generate model using above function
-    CNN_model = Gen_CNN_Model(x_len, y_len, day_num, num_fil)
-    # compile model
-    CNN_model.compile(optimizer = 'adam',
-                      loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits = True),
-                      metrixs = ['accuracy']
-                      )
-    # run model on training data
-    history = CNN_model.fit(train_x, train_y, epochs = epoch_num, 
-                    validation_data=(test_x, test_y))
-    # return model result
-    return (CNN_model, history)
