@@ -1,57 +1,44 @@
 # IMPORTED PACKAGES
 #needed to make web requests
-import requests
-import pandas as pd
-import numpy as np
-import os
-import datetime
-import sys
-# ------------------------------------------------------------------------------
-# DATA FETCHING FUNCTION
-def get_weather(stationid, datasetid, datatype, begin_date, end_date, mytoken, base_url):
-    token = {'token': mytoken}
-    params = 'datasetid='+str(datasetid)+'&'+'stationid='+str(stationid)+'&'+'datatypeid='+str(datatype)+'&'+'startdate='+str(begin_date)+'&'+'enddate='+str(end_date)+'&'+'limit=1000'+'&'+'units=standard'
-    r = requests.get(base_url, params = params, headers=token)
-    print("Request status code: "+str(r.status_code))
+def weather_import(Token, BeginDate, EndDate, StationID):
+    import pandas as pd
+    import numpy as np
+    from WeatherReq import get_weather
+    # ------------------------------------------------------------------------------
+    # EXTRA PARAMETERS
+    mytoken = Token
 
-    #results comes in json form. Convert to dataframe
-    df = pd.DataFrame.from_dict(r.json()['results'])
-    return df
-    # 'datatypeid='+str(datatype)
-# ------------------------------------------------------------------------------
-# PARAMETERS
+    # Date range
+    begin_date = BeginDate
+    end_date = EndDate
 
-# API interaction set up
-mytoken = 'ExHqFtwmXTLwOevojJsTbCcgZdlVYuRh'
+    # Location & data category
+    datasetid = 'GHCND' #datset id for "Daily Summaries"
+    datatype = 'TOBS'
+    stationid = StationID
 
-# Date range
-lastyear = datetime.datetime.now()-datetime.timedelta(days=730)
-now = datetime.datetime.now()-datetime.timedelta(days=365)
+    # Base NOAA retrivial URLs
+    base_url_data = 'https://www.ncdc.noaa.gov/cdo-web/api/v2/data/'
+    # ------------------------------------------------------------------------------
+    # CALL, FORMATTING & SAVE
 
-# Format for the API request
-begin_date = lastyear.strftime("%Y-%m-%d")
-end_date = now.strftime("%Y-%m-%d")
-print(begin_date)
+    # Weather data call
+    df_weather = get_weather(stationid, datasetid, datatype, begin_date, end_date, mytoken, base_url_data)
 
-# Location & data category
-stationid = 'GHCND:USC00214373'
-datasetid = 'GHCND' #datset id for "Daily Summaries"
-datatype = 'TOBS'
+    print(df_weather)
 
-# Base NOAA retrivial URLs
-base_url_data = 'https://www.ncdc.noaa.gov/cdo-web/api/v2/data/'
-# ------------------------------------------------------------------------------
-# CALL, FORMATTING & SAVE
+    # Drop unneeded columns
+    df_weather.drop('attributes', inplace=True, axis=1)
+    df_weather.drop('station', inplace=True, axis=1)
+    df_weather.drop('datatype', inplace=True, axis=1)
 
-# Weather data call
-df_weather = get_weather(stationid, datasetid, datatype, begin_date, end_date, mytoken, base_url_data)
+    # Save as csv
+    df_weather.to_csv('/Users/patrickgibbons/Desktop/WeatherData/weather_'\
+    +str(stationid)+'_noaa.csv', encoding='utf-8', index=False)
 
-print(df_weather)
-
-# Drop unneeded columns 
-df_weather.drop('attributes', inplace=True, axis=1)
-df_weather.drop('station', inplace=True, axis=1)
-df_weather.drop('datatype', inplace=True, axis=1)
-
-# Save as csv
-df_weather.to_csv('/Users/patrickgibbons/Desktop/WeatherData/weather_'+str(stationid)+'_noaa.csv', encoding='utf-8', index=False)
+    # Notes from meeting 10/11/2020
+    # Clean up syntax with Lintr
+    # Compartmentalize with function to be bale to run of header function
+    # Start getting working feed forward loop going eith tensorflow
+    # Make it all packaged and modular
+    # Look into ReactJS
