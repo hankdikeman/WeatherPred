@@ -1,10 +1,10 @@
-# DATA FETCHING FUNCTION
-def get_weather(stationid, datasetid, datatype, begin_date, end_date, mytoken, base_url):
+# WEATHER DATA FETCHING FUNCTION
+def get_weather(locationid, datasetid, datatype, begin_date, end_date, mytoken, base_url):
     import requests
     import pandas as pd
 
     token = {'token': mytoken}
-    params = 'datasetid='+str(datasetid)+'&'+'stationid='+str(stationid)+'&'+'datatypeid='\
+    params = 'datasetid='+str(datasetid)+'&'+'locationid='+str(locationid)+'&'+'datatypeid='\
     +str(datatype)+'&'+'startdate='+str(begin_date)+'&'+'enddate='+str(end_date)+'&'+'limit=1000'\
     +'&'+'units=standard'
 
