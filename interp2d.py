@@ -1,21 +1,30 @@
-def interp2d(stations, temp_grid):
-    from StationObject import Station
-    
+from StationObject import Station
+
+def interp2d(stations, temp_grid, xcords, ycords):
+    # assign start and end variables
+    xstart,xend = xcords
+    ystart,yend = ycords
+    # retreive temp grid dimensions
+    xrange = shape(temp_grid)[0]
+    yrange = shape(temp_grid)[1]
     # loop through all nodes on the temp_grid
-    for i in range(shape(temp_grid)[0]):
-        for j in range(shape(temp_grid)[1]):
+    for i in range(xrange):
+        for j in range(yrange):
+            # calculate position of temperature nodes
+            xpos = xstart + (i/xrange) * (xend - xstart)
+            ypos = ystart + (i/yrange) * (yend - ystart)
             # Set denominator of IDW to 0
             sum_weights = 0
             for s in stations:
                 # Calculate distance between station and point
-                dx = temp_grid[i,j].xcor - s.xcor
-                dy = temp_grid[i,j].ycor - s.ycor
+                dx = xpos - s.xcor
+                dy = ypos - s.ycor
                 d = (dx**2 + dy**2)**0.5
                 # Add station contribution to IDW
-                temp_grid[i,j] += s.temp/(d**2)
+                temp_grid[i,j] += s.temp * (1/(d**2))
                 # Add dstance to distance weighting
                 sum_weights += 1/(d**2)
             # Divude by sum of sum_weights
-            temp_grid[i,j].temp = temp_grid[i,j].temp/sum_weights
+            temp_grid[i,j] = temp_grid[i,j]/sum_weights
         # Return IDW interpolated matrix
         return temp_grid
