@@ -5,10 +5,12 @@ def weather_import(Token, BeginDate, EndDate, LocationID):
     import numpy as np
     from WeatherReq import get_weather
     from StationReq import get_station_info
+    from StationObject import Station
+    from interp2d import interp2d
     import geopandas
     import matplotlib.pyplot as plt
-    from scipy.interpolate import griddata
     import datetime
+    from interp2d import interp2d
     # ------------------------------------------------------------------------------
     # Location & data category
     datasetid = 'GHCND' #datset id for "Daily Summaries"
@@ -25,41 +27,39 @@ def weather_import(Token, BeginDate, EndDate, LocationID):
     delta = datetime.timedelta(days=1)
     df_weather = get_weather(LocationID, datasetid, datatype, start_date, start_date, Token, base_url_data)
     start_date += delta
-    print('df_weather')
-    print(df_weather)
 
     while start_date <= end_date:
         df = get_weather(LocationID, datasetid, datatype, start_date, start_date, Token, base_url_data)
-        print('df')
-        print(df)
         df_weather = df_weather.append(df, ignore_index = True)
-        print('df_weather')
-        print(df_weather)
         start_date += delta
 
-
     # Weather data call
-
     df_stations = get_station_info(LocationID, datasetid, Token, base_url_stations)
     df = df_weather.merge(df_stations, left_on = 'station', right_on = 'id', how='inner')
 
-    df.drop('attributes', inplace=True, axis=1)
-    df.drop('station', inplace=True, axis=1)
-    df.drop('datatype', inplace=True, axis=1)
-    df.drop('datacoverage', inplace=True, axis=1)
-    df.drop('elevation', inplace=True, axis=1)
-    df.drop('elevationUnit', inplace=True, axis=1)
-    df.drop('id', inplace=True, axis=1)
-    df.drop('maxdate', inplace=True, axis=1)
-    df.drop('mindate', inplace=True, axis=1)
-    df.drop('name', inplace=True, axis=1)
-    df.drop('date', inplace=True, axis=1)
-    #
-    # grid_x = np.array()
-    # grid = griddata((df['longitude'], df['latitude']), df['value'], (grid_x, grid_y), method='nearest')
-    # print(grid)
-    # plt.plot(grid)
-    # plt.show()
+    # Visualize raw data without interpolation
+    lons=np.array(df['longitude'])
+    lats=np.array(df['latitude'])
+    data=np.array(df['value'])
+    fig = plt.figure()
+    plt.scatter(lons, lats, c=data, cmap='viridis')
+    plt.colorbar()
+    plt.show()
+
+    # Coverting station data into a np.array of station objects
+    stations = np.empty([len(df),1])
+    for i in range(len(df)):
+        stations = np.append(stations, Station(df.loc[i, 'value'], df.loc[i, 'longitude'], df.loc[i, 'latitude']))
+
+    # Initialize temp grid with MN lons and lats coordinates
+    grid_space = 0.1
+    grid_lon = np.arange(np.amin(lons), np.amax(lons), grid_space)
+    grid_lat = np.arange(np.amin(lats), np.amax(lats), grid_space)
+
+    # myInterval = ot.Interval([-97., 43.5], [-89.5, 49.])
+
+    return('success')
+
 
     # gdf = geopandas.GeoDataFrame(df, geometry=geopandas.points_from_xy(df.longitude, df.latitude))
     # print(gdf.head())
@@ -69,12 +69,17 @@ def weather_import(Token, BeginDate, EndDate, LocationID):
 
 
     # Save as csv
-    df.to_csv('/Users/patrickgibbons/Desktop/git/WeatherPred/WeatherDataFiles/MNweather_'\
-    +str(end_date)+'_noaa.csv', encoding='utf-8', index=False)
+    # df.to_csv('/Users/patrickgibbons/Desktop/git/WeatherPred/WeatherDataFiles/MNweather_'\
+    # +str(end_date)+'_noaa.csv', encoding='utf-8', index=False)
 
-    # Notes from meeting 10/11/2020
-    # Clean up syntax with Lintr
-    # Compartmentalize with function to be bale to run of header function
-    # Start getting working feed forward loop going eith tensorflow
-    # Make it all packaged and modular
-    # Look into ReactJS
+    # df.drop('attributes', inplace=True, axis=1)
+    # df.drop('station', inplace=True, axis=1)
+    # df.drop('datatype', inplace=True, axis=1)
+    # df.drop('datacoverage', inplace=True, axis=1)
+    # df.drop('elevation', inplace=True, axis=1)
+    # df.drop('elevationUnit', inplace=True, axis=1)
+    # df.drop('id', inplace=True, axis=1)
+    # df.drop('maxdate', inplace=True, axis=1)
+    # df.drop('mindate', inplace=True, axis=1)
+    # df.drop('name', inplace=True, axis=1)
+    # df.drop('date', inplace=True, axis=1)
