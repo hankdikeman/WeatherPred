@@ -13,7 +13,7 @@ def interp2d(stations, temp_grid, xcords, ycords, p):
         for j in range(yrange):
             # calculate position of temperature nodes
             xpos = xstart + (i/(xrange-1)) * (xend - xstart)
-            ypos = ystart + (i/(yrange-1)) * (yend - ystart)
+            ypos = ystart + (j/(yrange-1)) * (yend - ystart)
             # Set denominator of IDW to 0
             sum_weights = 0
             for s in stations:

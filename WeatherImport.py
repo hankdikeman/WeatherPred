@@ -62,7 +62,7 @@ def weather_import(Token, BeginDate, EndDate, LocationID):
     space_grid = np.zeros((hor_step,vert_step))
     xcords = (np.amin(lons), np.amax(lons))
     ycords = (np.amin(lats), np.amax(lats))
-    pval = 2
+    pval = 5
     grid = interp2d(stations, temp_grid, xcords, ycords, pval)
     print('Array of interpolated temperatures created')
 
