@@ -32,10 +32,12 @@ def weather_import(Token, BeginDate, EndDate, LocationID):
         df = get_weather(LocationID, datasetid, datatype, start_date, start_date, Token, base_url_data)
         df_weather = df_weather.append(df, ignore_index = True)
         start_date += delta
+    print('Weather data retrieved')
 
     # Weather data call
     df_stations = get_station_info(LocationID, datasetid, Token, base_url_stations)
     df = df_weather.merge(df_stations, left_on = 'station', right_on = 'id', how='inner')
+    print('Station data merged with weather data')
 
     # Visualize raw data without interpolation
     lons=np.array(df['longitude'])
@@ -47,18 +49,45 @@ def weather_import(Token, BeginDate, EndDate, LocationID):
     plt.show()
 
     # Coverting station data into a np.array of station objects
-    stations = np.empty([len(df),1])
+    stations = np.empty(shape=(len(df),), dtype=object)
     for i in range(len(df)):
-        stations = np.append(stations, Station(df.loc[i, 'value'], df.loc[i, 'longitude'], df.loc[i, 'latitude']))
+        var = Station(df.loc[i, 'value'], df.loc[i, 'longitude'], df.loc[i, 'latitude'])
+        stations[i] = var
+    print('Array of Station objects created')
 
-    # Initialize temp grid with MN lons and lats coordinates
-    grid_space = 0.1
-    grid_lon = np.arange(np.amin(lons), np.amax(lons), grid_space)
-    grid_lat = np.arange(np.amin(lats), np.amax(lats), grid_space)
+    # Run interpolation
+    hor_step = 100
+    vert_step = 100
+    temp_grid = np.zeros((hor_step,vert_step))
+    space_grid = np.zeros((hor_step,vert_step))
+    xcords = (np.amin(lons), np.amax(lons))
+    ycords = (np.amin(lats), np.amax(lats))
+    pval = 2
+    grid = interp2d(stations, temp_grid, xcords, ycords, pval)
+    print('Array of interpolated temperatures created')
+
+    # Visualize interpolation data output
+    xaxis = np.arange(np.amin(lons), np.amax(lons), ((np.amax(lons)-np.amin(lons))/(hor_step)))
+    yaxis = np.arange(np.amin(lats), np.amax(lats), ((np.amax(lats)-np.amin(lats))/(vert_step)))
+    gridx, gridy = np.meshgrid(xaxis, yaxis)
+    print(gridx)
+    print(gridy)
+    fig2 = plt.figure()
+    plt.scatter(gridx, gridy, c=grid, cmap='viridis')
+    plt.colorbar()
+    plt.show()
+    plt.plot
+
+    # Return numpy grid of temperature values
+    print('Temp grid returned')
+    print(grid)
+    return(grid)
+
+
 
     # myInterval = ot.Interval([-97., 43.5], [-89.5, 49.])
 
-    return('success')
+
 
 
     # gdf = geopandas.GeoDataFrame(df, geometry=geopandas.points_from_xy(df.longitude, df.latitude))
@@ -83,3 +112,6 @@ def weather_import(Token, BeginDate, EndDate, LocationID):
     # df.drop('mindate', inplace=True, axis=1)
     # df.drop('name', inplace=True, axis=1)
     # df.drop('date', inplace=True, axis=1)
+
+
+    #  temp_grid is an empty 2d numpy array
