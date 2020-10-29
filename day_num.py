@@ -1,3 +1,4 @@
+# Function to calculate days in between start and finish
 import datetime
 def day_num(start_date, end_date):
     delta = datetime.timedelta(days=1)

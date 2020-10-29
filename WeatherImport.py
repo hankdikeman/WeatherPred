@@ -1,17 +1,13 @@
 # IMPORTED PACKAGES
 #needed to make web requests
-def weather_import(Token, BeginDate, EndDate, LocationID):
+def weather_import(Token, BeginDate, EndDate, LocationID, horz_dims, vert_dims, pval):
     import pandas as pd
     import numpy as np
     from WeatherReq import get_weather
     from StationReq import get_station_info
-    from StationObject import Station
     from interp2d import interp2d
-    import geopandas
-    import matplotlib.pyplot as plt
     import datetime
     from interp2d import interp2d
-    from visualize import visualize
     from station_format import station_format
     from gen_format import gen_format
     from day_num import day_num
@@ -28,14 +24,13 @@ def weather_import(Token, BeginDate, EndDate, LocationID):
     # ------------------------------------------------------------------------------
     # CALL, FORMATTING & SAVE
     # Format training data array
-    hor_step = 100
-    vert_step = 100
     days = day_num(start_date, end_date)
-    train_data = np.empty((hor_step, vert_step*days))
+    train_data = np.empty((0, vert_dims))
 
     # Station data call
     df_stations = get_station_info(LocationID, datasetid, Token, base_url_stations)
 
+    # Set date iteration for while loop
     delta = datetime.timedelta(days=1) # time step for dates
 
     while start_date <= end_date:
@@ -44,14 +39,12 @@ def weather_import(Token, BeginDate, EndDate, LocationID):
         # Merge of station and weather data
         df = df_weather.merge(df_stations, left_on = 'station', right_on = 'id', how='inner')
         # Formatting data into interpolated grid
-        grid = gen_format(df, hor_step, vert_step, pval = 5)
-        print(grid)
+        grid = gen_format(df, horz_dims, vert_dims, pval)
         # Save single data grid to larger training data array (current problem getting grid to transfer into train_data correctly)
         train_data = np.append(train_data, grid, axis = 0)
         start_date += delta
     print('Weather data retrieved')
 
     # Return numpy grid of temperature values
-    print('Training data returned')
-    print(train_data)
+    print('Training data from ' + str(BeginDate) + ' to ' + str(EndDate) + ' returned')
     return(train_data)

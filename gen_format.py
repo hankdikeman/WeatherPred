@@ -1,3 +1,4 @@
+# Function to format combined station and weather dataframe into numpy area with spatial grid characteristics
 from station_format import station_format
 import numpy as np
 import pandas as pd
@@ -5,17 +6,15 @@ from interp2d import interp2d
 
 def gen_format(df, hor_step, vert_step, pval):
 
-    # Coverting station data into a np.array of station objects
+    # Coverting combined station and weather data into a np.array of station objects
     stations = station_format(df)
 
-    # Run interpolation
-    hor_step = 100
-    vert_step = 100
+    # Set dimensions of temp grid
     temp_grid = np.zeros((hor_step,vert_step))
-    space_grid = np.zeros((hor_step,vert_step))
+    # Sets spacial parameters based on max and mins of long/lat of collected stations
     xcords = (np.amin(np.array(df['longitude'])), np.amax(np.array(df['longitude'])))
     ycords = (np.amin(np.array(df['latitude'])), np.amax(np.array(df['latitude'])))
-    pval = 5
+    # Run interpolation
     grid = interp2d(stations, temp_grid, xcords, ycords, pval)
     print('Array of interpolated temperatures created')
 
