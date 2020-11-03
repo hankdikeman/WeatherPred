@@ -20,6 +20,9 @@ LocationID = 'FIPS:27'
 datasetid = 'GHCND' #datset id for "Daily Summaries"
 datatype = 'TOBS'
 
+# **Constants should be in all caps
+
+
 # Date range for data being pulled
 BeginDate = [2019, 10, 14] # Year, Month, Day
 EndDate=[2019, 10, 15]
@@ -35,9 +38,10 @@ end_date = datetime.date(EndDate[0], EndDate[1], EndDate[2])
 # Set a time step of one day for iterating through dates
 delta = datetime.timedelta(days=1)
 # Calculate how many days are in date range with function day_num
+# **Look for a datetime package to do this
 days = day_num(start_date, end_date)
 
-# Initialize training dataframe
+# Initialize training data array
 train_data = np.empty((0, vert_dims))
 
 # Pull station data (can be done before anything else because it will pull data for all stations in
@@ -77,6 +81,7 @@ print(train_data)
 # gridx, gridy = np.meshgrid(xaxis, yaxis)
 # visualize(gridx, gridy, grid)
 
-
 # Training data - flattened grid with day grids being rows and columns being positions (2 years
 # Pyinstaller
+
+# want date range and grid dimensions as parameters
