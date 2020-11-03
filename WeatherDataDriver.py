@@ -8,17 +8,19 @@ import datetime
 from interp2d import interp2d
 from station_format import station_format
 from day_num import day_num
-# ------------------------------------------------------------------------------
+
+
+
 # CONSTANTS
 # NOAA Individual access code
-Token = 'ExHqFtwmXTLwOevojJsTbCcgZdlVYuRh'
-# Base NOAA retrivial URLs
-base_url_data = 'https://www.ncdc.noaa.gov/cdo-web/api/v2/data/'
-base_url_stations = 'https://www.ncdc.noaa.gov/cdo-web/api/v2/stations'
+TOKEN = 'ExHqFtwmXTLwOevojJsTbCcgZdlVYuRh'
+# Base NOAA retrieval URLs
+BASE_URL_DATA = 'https://www.ncdc.noaa.gov/cdo-web/api/v2/data/'
+BASE_URL_STATIONS = 'https://www.ncdc.noaa.gov/cdo-web/api/v2/stations'
 # Geographical region for data being pulled (Currently: MN State)
-LocationID = 'FIPS:27'
-datasetid = 'GHCND' #datset id for "Daily Summaries"
-datatype = 'TOBS'
+LOCATION_ID = 'FIPS:27'
+DATASET_ID = 'GHCND' #datset id for "Daily Summaries"
+DATATYPE = 'TOBS'
 
 # **Constants should be in all caps
 
@@ -27,9 +29,10 @@ datatype = 'TOBS'
 BeginDate = [2019, 10, 14] # Year, Month, Day
 EndDate=[2019, 10, 15]
 
-# Interpolation settings
+# get interpolation dimensions from interpshape parameter
 horz_dims = 100
 vert_dims = 100
+# set p-value for inverse distance weighted interp
 pval = 5
 # ------------------------------------------------------------------------------
 # Format dates with Datetime package
@@ -46,11 +49,11 @@ train_data = np.empty((0, vert_dims))
 
 # Pull station data (can be done before anything else because it will pull data for all stations in
 # MN encapsulating all and more of the stations the weateher data will come from)
-df_stations = get_station_info(LocationID, datasetid, Token, base_url_stations)
+df_stations = get_station_info(LOCATION_ID, DATASET_ID, TOKEN, BASE_URL_STATIONS)
 
 while start_date <= end_date:
     # Weather data call
-    df_weather = get_weather(LocationID, datasetid, datatype, start_date, start_date, Token, base_url_data)
+    df_weather = get_weather(LOCATION_ID, DATASET_ID, DATATYPE, start_date, start_date, TOKEN, BASE_URL_DATA)
     # Merge of station and weather data
     df = df_weather.merge(df_stations, left_on = 'station', right_on = 'id', how='inner')
     # Coverting combined station and weather data into a np.array of station objects
