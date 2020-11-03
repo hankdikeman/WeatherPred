@@ -5,7 +5,7 @@ import numpy as np
 # generates and returns convolutional model based on following parameters:
 # x_len = stations west to east, y_len = stations north to south
 # day_num = number of days modelled, num_fil = number of filters used
-def Gen_CNN_Model(x_len, y_len, day_num, num_fil):
+def Gen_CNN_Basic(x_len, y_len, day_num, num_fil):
     # declare model
     CNN_model = models.Sequential()
     # 1 convolutional layer with num_fil 3x3 filters
