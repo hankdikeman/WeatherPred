@@ -11,7 +11,6 @@ from day_num import day_num
 
 
 PullMNWeather(DateRange)
-    # CONSTANTS
     # NOAA Individual access code
     TOKEN = 'ExHqFtwmXTLwOevojJsTbCcgZdlVYuRh'
     # Base NOAA retrieval URLs
