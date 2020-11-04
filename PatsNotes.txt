@@ -1,0 +1,14 @@
+# # **NOTE** Visualizations only for single day data, should not be used usually
+# # Visualize raw data without interpolation
+# visualize(np.array(df['longitude']), np.array(df['latitude']), np.array(df['value']))
+#
+# # Visualize interpolation data output
+# xaxis = np.arange(np.amin(np.array(df['longitude'])), np.amax(np.array(df['longitude'])), ((np.amax(np.array(df['longitude']))-np.amin(np.array(df['longitude'])))/(hor_step)))
+# yaxis = np.arange(np.amin(np.array(df['latitude'])), np.amax(np.array(df['latitude'])), ((np.amax(np.array(df['latitude']))-np.amin(np.array(df['latitude'])))/(vert_step)))
+# gridx, gridy = np.meshgrid(xaxis, yaxis)
+# visualize(gridx, gridy, grid)
+
+# Training data - flattened grid with day grids being rows and columns being positions (2 years
+# Pyinstaller
+
+# want date range and grid dimensions as parameters
