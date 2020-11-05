@@ -36,3 +36,13 @@ def Gen_CNN_Basic(long_nodes, lat_nodes, day_num, num_fil):
     CNN_model.add(layers.Dense(long_nodes*lat_nodes))
     # return generated model
     return CNN_model
+
+####
+#   CNN number 2
+#   insert model generation function here
+####
+
+####
+#   CNN number 3
+#   insert model generation function here
+####
