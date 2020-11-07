@@ -60,10 +60,10 @@ def PullMNWeather(DateRange):
         # Sets spacial parameters based on max and mins of long/lat of collected datat stations
         xcords = (np.amin(np.array(df['longitude'])), np.amax(np.array(df['longitude'])))
         ycords = (np.amin(np.array(df['latitude'])), np.amax(np.array(df['latitude'])))
-        # Formatting data into interpolated grid
+        # Formatting data into interpolated gridimgarray3 = imgarray.view('B')[:,::4]
         grid = interp2d(station_objects, temp_grid, xcords, ycords, pval)
         # Save single data grid to larger training data array (current problem getting grid to transfer into train_data correctly)
-        train_data = np.stack((train_data, grid.flatten()))
+        train_data = np.vstack((train_data, grid.flatten()))
         start_date += DELTA
     print('Weather data retrieved')
 

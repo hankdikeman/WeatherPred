@@ -26,6 +26,6 @@ def interp2d(stations, temp_grid, xcords, ycords, p):
                 # Add dstance to distance weighting
                 sum_weights += 1/(d**p)
             # Divude by sum of sum_weights
-            temp_grid[i,j] = temp_grid[i,j]/sum_weights
+            temp_grid[i,j] = int(temp_grid[i,j]/sum_weights)
     # Return IDW interpolated matrix
     return temp_grid

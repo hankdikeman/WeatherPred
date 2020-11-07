@@ -1,9 +1,15 @@
 import numpy as np
+import pandas as pd
 from MNWeatherPull import *
 
-dateRange = ([1998,10,20],[1998,10,30])
+# set start and end date of weather pull
+startDate = [1998,8,20]
+endDate = [1998,8,30]
+dateRange = (startDate,endDate)
 
-tempvals = PullMNWeather(dateRange)
+# pull data and assign to numpy array
+trainData = PullMNWeather(dateRange)
+print(trainData)
 
-print(tempvals[10:40,:])
-print(np.shape(tempvals))
+# save to csv file
+pd.DataFrame(trainData).to_csv("../../Desktop/MNTrainData.csv")
