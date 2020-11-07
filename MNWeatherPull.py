@@ -41,7 +41,7 @@ def PullMNWeather(DateRange):
     days = day_num(start_date, end_date)
 
     # Initialize training data array
-    train_data = np.empty((0, vert_dims))
+    train_data = np.empty((0, vert_dims*horz_dims))
 
     # Pull station data (can be done before anything else because it will pull data for all stations in
     # MN encapsulating all and more of the stations the weateher data will come from)
@@ -63,7 +63,7 @@ def PullMNWeather(DateRange):
         # Formatting data into interpolated grid
         grid = interp2d(station_objects, temp_grid, xcords, ycords, pval)
         # Save single data grid to larger training data array (current problem getting grid to transfer into train_data correctly)
-        train_data = np.append(train_data, grid, axis = 0)
+        train_data = np.stack((train_data, grid.flatten()))
         start_date += DELTA
     print('Weather data retrieved')
 
