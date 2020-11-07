@@ -4,7 +4,7 @@ from MNWeatherPull import *
 
 # set start and end date of weather pull
 startDate = [1998,8,20]
-endDate = [1998,8,30]
+endDate = [2007,8,30]
 dateRange = (startDate,endDate)
 
 # pull data and assign to numpy array
