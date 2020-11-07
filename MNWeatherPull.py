@@ -10,7 +10,7 @@ from station_format import station_format
 from day_num import day_num
 
 
-PullMNWeather(DateRange)
+def PullMNWeather(DateRange):
     # NOAA Individual access code
     TOKEN = 'ExHqFtwmXTLwOevojJsTbCcgZdlVYuRh'
     # Base NOAA retrieval URLs
