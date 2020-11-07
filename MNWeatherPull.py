@@ -26,10 +26,10 @@ def PullMNWeather(DateRange):
     EndDate = DateRange[1]
 
     # get interpolation dimensions from interpshape parameter
-    horz_dims = 100
-    vert_dims = 100
+    horz_dims = 60
+    vert_dims = 60
     # set p-value for inverse distance weighted interp
-    pval = 5
+    pval = 4
     # ------------------------------------------------------------------------------
     # Format dates with Datetime package
     start_date = datetime.date(BeginDate[0], BeginDate[1], BeginDate[2])
