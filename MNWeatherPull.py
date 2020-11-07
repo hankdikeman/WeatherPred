@@ -32,8 +32,8 @@ def PullMNWeather(DateRange):
     pval = 4
     # ------------------------------------------------------------------------------
     # Format dates with Datetime package
-    start_date = datetime.date(BeginDate[0], BeginDate[1], BeginDate[2])
-    end_date = datetime.date(EndDate[0], EndDate[1], EndDate[2])
+    start_date = BeginDate
+    end_date = EndDate
     # Set a time step of one day for iterating through dates
     DELTA = datetime.timedelta(days=1)
     # Calculate how many days are in date range with function day_num
@@ -65,6 +65,7 @@ def PullMNWeather(DateRange):
         # Save single data grid to larger training data array (current problem getting grid to transfer into train_data correctly)
         train_data = np.vstack((train_data, grid.flatten()))
         start_date += DELTA
+        print("one day done")
     print('Weather data retrieved')
 
     # Return numpy grid of temperature values

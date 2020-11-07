@@ -1,15 +1,24 @@
 import numpy as np
 import pandas as pd
+import datetime
 from MNWeatherPull import *
 
 # set start and end date of weather pull
-startDate = [1998,8,20]
-endDate = [2008,8,30]
-dateRange = (startDate,endDate)
+startDate = datetime.date(2002, 1, 1)
+day_jump = datetime.timedelta(days = 1)
+n_days = 6570
+csvname = "MNTrainData"
 
-# pull data and assign to numpy array
-trainData = PullMNWeather(dateRange)
-print(trainData)
+for timejump in range(n_days):
+    # set date range
+    dateRange = (startDate, startDate)
+    # pull data and assign to numpy array
+    trainData = PullMNWeather(dateRange)
+    # save to csv file
+    with open('../../Desktop/'+csvname+'.csv', 'ab') as f:
+        np.savetxt(f, trainData, fmt = '%d', newline = ", ", delimiter = ',')
+        f.write(b"\n")
 
-# save to csv file
-pd.DataFrame(trainData).to_csv("../../Desktop/MNTrainData.csv")
+    print("saved to file with name " + csvname)
+    # add day to startDate
+    startDate += day_jump

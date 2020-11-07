@@ -22,11 +22,17 @@ def interp2d(stations, temp_grid, xcords, ycords, p):
                 dx = xpos - s.lon
                 dy = ypos - s.lat
                 d = (dx**2 + dy**2)**0.5
-                # Add station contribution to IDW
-                node_temp += s.temp * (1/(d**p))
-                # Add dstance to distance weighting
+                # check if distance = 0, if so set to station temp
+                if d == 0:
+                    node_temp = s.temp
+                    sum_weights = 1
+                    break
+                # perform operation normally otherwise
+                else:
+                    node_temp += s.temp * (1/(d**p))
+                # Add distance to distance weighting
                 sum_weights += 1/(d**p)
-            # Divude by sum of sum_weights
-            temp_grid[i,j] = int(node_temp/sum_weights)
+            # Divide by sum of sum_weights
+            temp_grid[i,j] = node_temp/sum_weights
     # Return IDW interpolated matrix
     return temp_grid
