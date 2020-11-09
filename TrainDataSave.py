@@ -4,9 +4,9 @@ import datetime
 from MNWeatherPull import *
 
 # set start and end date of weather pull
-startDate = datetime.date(2002, 1, 1)
+startDate = datetime.date(2018, 12, 21)
 day_jump = datetime.timedelta(days = 1)
-n_days = 6570
+n_days = 730
 csvname = "MNTrainData"
 
 for timejump in range(n_days):
