@@ -33,16 +33,16 @@ def Gen_CNN_Basic(long_nodes, lat_nodes, day_num, num_fil):
     CNN_model.add(layers.Dense(64,
                                activation = 'relu'))
     # output layer with map for long and lat
-    CNN_model.add(layers.Dense(long_nodes*lat_nodes))
+    CNN_model.add(layers.Dense(long_nodes*lat_nodes, activation = 'sigmoid'))
     # return generated model
     return CNN_model
 
 ####
-#   CNN number 2
+#   CNN number 2: batch normalization
 #   insert model generation function here
 ####
 
 ####
-#   CNN number 3
+#   CNN number 3: CNN-LSTM Neural Net
 #   insert model generation function here
 ####
