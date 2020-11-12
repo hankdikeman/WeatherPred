@@ -91,21 +91,21 @@ def Gen_CNN_LSTM(long_nodes, lat_nodes, day_num, num_fil):
     # declare model
     CNN_model = models.Sequential()
     # add input layer
-    Input(shape=(None, long_nodes, lat_nodes, 1))
+    InpShape = Input(shape=(day_num, long_nodes, lat_nodes, 1))
     # create CNN-LSTM layer w batch norm
-    CNN_model.add(layers.ConvLSTM2D(num_fil, dropout=0.3, recurrent_dropout=0.3))
+    CNN_model.add(layers.ConvLSTM2D(num_fil, kernel_size = (3, 3), dropout=0.3, recurrent_dropout=0.3, input_shape = InpShape))
     CNN_model.add(BatchNormalization())
     # create CNN-LSTM layer w batch norm
-    CNN_model.add(layers.ConvLSTM2D(num_fil, dropout=0.3, recurrent_dropout=0.3))
+    CNN_model.add(layers.ConvLSTM2D(num_fil, (3, 3), dropout=0.3, recurrent_dropout=0.3))
     CNN_model.add(BatchNormalization())
     # create CNN-LSTM layer w batch norm
-    CNN_model.add(layers.ConvLSTM2D(num_fil, dropout=0.3, recurrent_dropout=0.3))
+    CNN_model.add(layers.ConvLSTM2D(num_fil, (3, 3), dropout=0.3, recurrent_dropout=0.3))
     CNN_model.add(BatchNormalization())
     # create CNN-LSTM layer w batch norm
-    CNN_model.add(layers.ConvLSTM2D(num_fil, dropout=0.3, recurrent_dropout=0.3))
+    CNN_model.add(layers.ConvLSTM2D(num_fil, (3, 3), dropout=0.3, recurrent_dropout=0.3))
     CNN_model.add(BatchNormalization())
     # create CNN-LSTM layer w batch norm
-    CNN_model.add(layers.ConvLSTM2D(num_fil, dropout=0.3, recurrent_dropout=0.3))
+    CNN_model.add(layers.ConvLSTM2D(num_fil, (3, 3), dropout=0.3, recurrent_dropout=0.3))
     CNN_model.add(BatchNormalization())
     # two dense layers
     CNN_model.add(layers.Dense(64,
