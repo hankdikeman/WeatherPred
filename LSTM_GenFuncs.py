@@ -21,7 +21,7 @@ def Gen_LSTM_Basic(long_nodes, lat_nodes, day_num):
     LSTM_model.add(Dense(128, activation='relu'))
     LSTM_model.add(Dense(lat_nodes*long_nodes, activation='sigmoid'))
 
-    LSTM_model.compile(optimizer='adam', loss='mean_squared_error',metrics=['accuracy'])
+    LSTM_model.compile(optimizer='adam', loss='mean_squared_error', metrics=['accuracy'])
 
     return LSTM_model
 
