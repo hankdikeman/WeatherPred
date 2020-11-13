@@ -113,4 +113,4 @@ def Gen_CNN_LSTM(long_nodes, lat_nodes, day_num, num_fil):
     CNN_model.add(layers.Dense(64,
                                activation = 'relu'))
     # output layer with map for long and lat
-    CNN_model.add(layers.Dense(long_nodes*lat_nodes, activation = 'sigmoid'))
+    CNN_model.add(layers.Dense(long_nodes*lat_nodes, activation = 'tanh'))
