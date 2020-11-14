@@ -79,6 +79,8 @@ def Gen_CNN_BN(long_nodes, lat_nodes, day_num, num_fil):
                                activation = 'relu'))
     # output layer with map for long and lat
     CNN_model.add(layers.Dense(long_nodes*lat_nodes, activation = 'sigmoid'))
+    # compile model
+    CNN_model.compile(optimizer='adam', loss='mean_squared_error', metrics=['accuracy'])
     # return generated model
     return CNN_model
 
@@ -114,3 +116,7 @@ def Gen_CNN_LSTM(long_nodes, lat_nodes, day_num, num_fil):
                                activation = 'relu'))
     # output layer with map for long and lat
     CNN_model.add(layers.Dense(long_nodes*lat_nodes, activation = 'tanh'))
+    # compile model
+    CNN_model.compile(optimizer='adam', loss='mean_squared_error', metrics=['accuracy'])
+    # return generated model
+    return CNN_model
