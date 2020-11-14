@@ -14,19 +14,19 @@ def Gen_CNN_Basic(long_nodes, lat_nodes, day_num, num_fil):
                                 activation = 'relu',
                                 input_shape = (long_nodes, lat_nodes, day_num)))
     # 2x2 pooling layer
-    CNN_model.add(layers.MaxPooling2d((2, 2)))
+    CNN_model.add(layers.MaxPooling2D((2, 2)))
     # 2nd convolutional layer
     CNN_model.add(layers.Conv2D(num_fil,
                                 (3,3),
                                 activation = 'relu'))
     # 2nd 2x2 pooling layer
-    CNN_model.add(layers.MaxPooling2d((2, 2)))
+    CNN_model.add(layers.MaxPooling2D((2, 2)))
     # 3rd convolutional layer
     CNN_model.add(layers.Conv2D(num_fil,
                                 (3,3),
                                 activation = 'relu'))
     # 3rd pooling layer
-    CNN_model.add(layers.MaxPooling2d((2, 2)))
+    CNN_model.add(layers.MaxPooling2D((2, 2)))
     # flatten output to 1 dimension
     CNN_model.add(layers.Flatten())
     # 1st dense layer with 64 nodes
@@ -34,6 +34,8 @@ def Gen_CNN_Basic(long_nodes, lat_nodes, day_num, num_fil):
                                activation = 'relu'))
     # output layer with map for long and lat
     CNN_model.add(layers.Dense(long_nodes*lat_nodes, activation = 'sigmoid'))
+    # compile model
+    CNN_model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mse'])
     # return generated model
     return CNN_model
 
@@ -53,7 +55,7 @@ def Gen_CNN_BN(long_nodes, lat_nodes, day_num, num_fil):
     # activation layer
     model.add(layers.Activation("relu"))
     # 2x2 pooling layer
-    CNN_model.add(layers.MaxPooling2d((2, 2)))
+    CNN_model.add(layers.MaxPooling2D((2, 2)))
     # 2nd convolutional layer
     CNN_model.add(layers.Conv2D(num_fil,
                                 (3,3)))
@@ -62,7 +64,7 @@ def Gen_CNN_BN(long_nodes, lat_nodes, day_num, num_fil):
     # activation layer
     model.add(layers.Activation("relu"))
     # 2nd 2x2 pooling layer
-    CNN_model.add(layers.MaxPooling2d((2, 2)))
+    CNN_model.add(layers.MaxPooling2D((2, 2)))
     # 3rd convolutional layer
     CNN_model.add(layers.Conv2D(num_fil,
                                 (3,3)))
@@ -71,7 +73,7 @@ def Gen_CNN_BN(long_nodes, lat_nodes, day_num, num_fil):
     # activation layer
     model.add(layers.Activation("relu"))
     # 3rd pooling layer
-    CNN_model.add(layers.MaxPooling2d((2, 2)))
+    CNN_model.add(layers.MaxPooling2D((2, 2)))
     # flatten output to 1 dimension
     CNN_model.add(layers.Flatten())
     # 1st dense layer with 64 nodes
@@ -80,7 +82,7 @@ def Gen_CNN_BN(long_nodes, lat_nodes, day_num, num_fil):
     # output layer with map for long and lat
     CNN_model.add(layers.Dense(long_nodes*lat_nodes, activation = 'sigmoid'))
     # compile model
-    CNN_model.compile(optimizer='adam', loss='mean_squared_error', metrics=['accuracy'])
+    CNN_model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mse'])
     # return generated model
     return CNN_model
 
@@ -117,6 +119,6 @@ def Gen_CNN_LSTM(long_nodes, lat_nodes, day_num, num_fil):
     # output layer with map for long and lat
     CNN_model.add(layers.Dense(long_nodes*lat_nodes, activation = 'tanh'))
     # compile model
-    CNN_model.compile(optimizer='adam', loss='mean_squared_error', metrics=['accuracy'])
+    CNN_model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mse'])
     # return generated model
     return CNN_model

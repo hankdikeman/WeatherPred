@@ -21,7 +21,7 @@ def Gen_LSTM_Basic(long_nodes, lat_nodes, day_num):
     LSTM_model.add(Dense(128, activation='relu'))
     LSTM_model.add(Dense(lat_nodes*long_nodes, activation='sigmoid'))
     # compile
-    LSTM_model.compile(optimizer='adam', loss='mean_squared_error', metrics=['accuracy'])
+    LSTM_model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mse'])
     # return model
     return LSTM_model
 
@@ -43,6 +43,6 @@ def short_LSTM(long_nodes, lat_nodes, day_num):
     # add dense output layer
     LSTM_short.add(layers.Dense(long_nodes*lat_nodes, activation = 'sigmoid'))
     # compile LSTM model
-    LSTM_short.compile(loss = keras.losses.kullback_leibler_divergence, optimizer="adam", metrics=['accuracy'])
+    LSTM_short.compile(loss = 'mean_squared_error', optimizer="adam", metrics=['mse'])
     # return model
     return LSTM_short

@@ -5,7 +5,6 @@ def Convo_Format(filename, x_nodes, y_nodes, day_num):
     rawdata = np.genfromtxt(filename, delimiter = ',')[:,:-1]
     # get shape of raw data
     rows,cols = np.shape(rawdata)
-    print(str(np.amax(rawdata)) + ' ' + str(np.amin(rawdata)))
     # generate empty list of CNN format
     formatted_xdata = np.zeros(shape = (rows-day_num, x_nodes, y_nodes, day_num))
     # loop through all days minus day_num allocation
