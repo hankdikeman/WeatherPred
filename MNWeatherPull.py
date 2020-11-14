@@ -20,6 +20,12 @@ def PullMNWeather(DateRange):
     LOCATION_ID = 'FIPS:27'
     DATASET_ID = 'GHCND' #datset id for "Daily Summaries"
     DATATYPE = 'TOBS'
+    # Temp at time of observation: 'TOBS'
+    # Max Daily Temp: 'TMAX'
+    # Min Daily Temp: 'TMIN'
+    # Precipitation (inches): 'PRCP'
+    # Snowfall amount (inches): 'SNOW'
+    # Snow on ground (inches): 'SNWD'
 
     # Date range for data being pulled, [YYYY, MM, DD]
     BeginDate = DateRange[0]
