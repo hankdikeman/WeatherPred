@@ -19,18 +19,18 @@ y_nodes = 50
 day_num = 4
 val_split = 0.8
 # pull and format data from CSV
-xdata,ydata = LSTM_Format(filename, x_nodes, y_nodes, day_num)
+xdata,ydata = ConvLSTM2D_Format(filename, x_nodes, y_nodes, day_num)
 # split into train and test datasets
 val_split_index = int(np.shape(ydata)[0]*val_split)
-xtraindata,ytraindata = (xdata[:val_split_index,:,:], ydata[:val_split_index,:])
-xtestdata,ytestdata = (xdata[:val_split_index:,:,:], ydata[val_split_index:,:])
+xtraindata,ytraindata = (xdata[:val_split_index,:,:,:,:], ydata[:val_split_index,:])
+xtestdata,ytestdata = (xdata[:val_split_index:,:,:,:,:], ydata[val_split_index:,:])
 
 ##
 #   Model preparation
 ##
 print('generating model')
 # generate model using generation function
-LSTM_model = Gen_LSTM_Basic(x_nodes, y_nodes, day_num)
+CNNLSTM_model = Gen_CNN_LSTM2(x_nodes, y_nodes, day_num, num_fil = 512)
 
 ##
 #   Training/Visualization
@@ -39,13 +39,13 @@ batch_size = 128
 epochs = 50
 print('fitting model')
 # run model on training data
-history = LSTM_model.fit(xtraindata, ytraindata, epochs = epochs, batch_size = batch_size, validation_data=(xtestdata,ytestdata), verbose = 1, validation_split = 0.8)
+history = CNNLSTM_model.fit(xtraindata, ytraindata, epochs = epochs, batch_size = batch_size, validation_data=(xtestdata,ytestdata), verbose = 1, validation_split = 0.8)
 
 plt.plot(history.history['mse'], label='mse train')
 plt.plot(history.history['val_mse'], label = 'mse validate')
 plt.xlabel('Epoch')
 plt.ylabel('Mean Squared Error')
-plt.title('Basic LSTM MeanSquaredError')
+plt.title('LSTM CNN MeanSquaredError')
 plt.legend()
 plt.ylim(0,0.2)
 plt.show()

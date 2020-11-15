@@ -36,7 +36,7 @@ CNN_model = Gen_CNN_BN(x_nodes, y_nodes, day_num, num_fil = 128)
 #   Training/Visualization
 ##
 batch_size = 128
-epochs = 20
+epochs = 50
 print('fitting model')
 # run model on training data
 history = CNN_model.fit(xtraindata, ytraindata, epochs = epochs, batch_size = batch_size, validation_data=(xtestdata,ytestdata), verbose = 1, validation_split = 0.8)
