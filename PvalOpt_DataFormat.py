@@ -7,7 +7,7 @@ from station_format import station_format
 from StationObject import Station
 
 # Parameters: station = integer between 0-40 represents staion that will be deleted
-def PvalOpt_DataFormat(station):
+def PvalOpt_DataFormat():
     # NOAA Individual access code
     TOKEN = 'ExHqFtwmXTLwOevojJsTbCcgZdlVYuRh'
     # Base NOAA retrieval URLs
@@ -35,8 +35,5 @@ def PvalOpt_DataFormat(station):
 
     # Coverting combined station and weather data into a np.array of station objects
     station_objects = station_format(df)
-    # Remove one data point from retrieved dataset and save as seperate variable
-    removed_station = station_objects[station]
-    station_objects = np.delete(station_objects, station)
 
-    return((removed_station, station_objects, min_log, max_log, min_lat, max_lat))
+    return((station_objects, min_log, max_log, min_lat, max_lat))
