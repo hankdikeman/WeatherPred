@@ -51,27 +51,27 @@ def Gen_CNN_BN(long_nodes, lat_nodes, day_num, num_fil):
                                 (3,3),
                                 input_shape = (long_nodes, lat_nodes, day_num)))
     # batch norm layer
-    CNN_model.add(BatchNormalization())
+    CNN_model.add(layers.BatchNormalization())
     # activation layer
-    model.add(layers.Activation("relu"))
+    CNN_model.add(layers.Activation("relu"))
     # 2x2 pooling layer
     CNN_model.add(layers.MaxPooling2D((2, 2)))
     # 2nd convolutional layer
     CNN_model.add(layers.Conv2D(num_fil,
                                 (3,3)))
     # batch norm layer
-    CNN_model.add(BatchNormalization())
+    CNN_model.add(layers.BatchNormalization())
     # activation layer
-    model.add(layers.Activation("relu"))
+    CNN_model.add(layers.Activation("relu"))
     # 2nd 2x2 pooling layer
     CNN_model.add(layers.MaxPooling2D((2, 2)))
     # 3rd convolutional layer
     CNN_model.add(layers.Conv2D(num_fil,
                                 (3,3)))
     # batch norm layer
-    CNN_model.add(BatchNormalization())
+    CNN_model.add(layers.BatchNormalization())
     # activation layer
-    model.add(layers.Activation("relu"))
+    CNN_model.add(layers.Activation("relu"))
     # 3rd pooling layer
     CNN_model.add(layers.MaxPooling2D((2, 2)))
     # flatten output to 1 dimension
@@ -95,29 +95,41 @@ def Gen_CNN_LSTM(long_nodes, lat_nodes, day_num, num_fil):
     # declare model
     CNN_model = models.Sequential()
     # add input layer
-    InpShape = Input(shape=(day_num, long_nodes, lat_nodes, 1))
+    #InpShape = Input(shape=(day_num, long_nodes, lat_nodes, 1))
     # create CNN-LSTM layer w batch norm
-    CNN_model.add(layers.ConvLSTM2D(num_fil, kernel_size = (3, 3), dropout=0.3, recurrent_dropout=0.3, input_shape = InpShape))
-    CNN_model.add(BatchNormalization())
+    CNN_model.add(layers.ConvLSTM2D(num_fil, kernel_size = (3, 3), dropout=0.3, recurrent_dropout=0.3, input_shape = (day_num, long_nodes, lat_nodes, 1), return_sequences=True))
+    CNN_model.add(layers.BatchNormalization())
+    # activation layer
+    CNN_model.add(layers.Activation("relu"))
+    # create CNN-LSTM layer w batch norm
+    CNN_model.add(layers.ConvLSTM2D(num_fil, (3, 3), dropout=0.3, recurrent_dropout=0.3, return_sequences=True))
+    CNN_model.add(layers.BatchNormalization())
+    # activation layer
+    CNN_model.add(layers.Activation("relu"))
+    # create CNN-LSTM layer w batch norm
+    CNN_model.add(layers.ConvLSTM2D(num_fil, (3, 3), dropout=0.3, recurrent_dropout=0.3, return_sequences=True))
+    CNN_model.add(layers.BatchNormalization())
+    # activation layer
+    CNN_model.add(layers.Activation("relu"))
+    # create CNN-LSTM layer w batch norm
+    CNN_model.add(layers.ConvLSTM2D(num_fil, (3, 3), dropout=0.3, recurrent_dropout=0.3, return_sequences=True))
+    CNN_model.add(layers.BatchNormalization())
+    # activation layer
+    CNN_model.add(layers.Activation("relu"))
     # create CNN-LSTM layer w batch norm
     CNN_model.add(layers.ConvLSTM2D(num_fil, (3, 3), dropout=0.3, recurrent_dropout=0.3))
-    CNN_model.add(BatchNormalization())
-    # create CNN-LSTM layer w batch norm
-    CNN_model.add(layers.ConvLSTM2D(num_fil, (3, 3), dropout=0.3, recurrent_dropout=0.3))
-    CNN_model.add(BatchNormalization())
-    # create CNN-LSTM layer w batch norm
-    CNN_model.add(layers.ConvLSTM2D(num_fil, (3, 3), dropout=0.3, recurrent_dropout=0.3))
-    CNN_model.add(BatchNormalization())
-    # create CNN-LSTM layer w batch norm
-    CNN_model.add(layers.ConvLSTM2D(num_fil, (3, 3), dropout=0.3, recurrent_dropout=0.3))
-    CNN_model.add(BatchNormalization())
+    CNN_model.add(layers.BatchNormalization())
+    # activation layer
+    CNN_model.add(layers.Activation("relu"))
+    # flatten output to 1 dimension
+    CNN_model.add(layers.Flatten())
     # two dense layers
     CNN_model.add(layers.Dense(64,
                                activation = 'relu'))
     CNN_model.add(layers.Dense(64,
                                activation = 'relu'))
     # output layer with map for long and lat
-    CNN_model.add(layers.Dense(long_nodes*lat_nodes, activation = 'tanh'))
+    CNN_model.add(layers.Dense(long_nodes*lat_nodes, activation = 'sigmoid'))
     # compile model
     CNN_model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mse'])
     # return generated model

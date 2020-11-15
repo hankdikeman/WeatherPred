@@ -30,7 +30,7 @@ xtestdata,ytestdata = (xdata[:val_split_index:,:,:,:], ydata[val_split_index:,:]
 ##
 print('generating model')
 # generate model using generation function
-CNN_model = Gen_CNN_Basic(x_nodes, y_nodes, day_num, num_fil = 40)
+CNN_model = Gen_CNN_Basic(x_nodes, y_nodes, day_num, num_fil = 128)
 
 ##
 #   Training/Visualization
@@ -42,7 +42,10 @@ print('fitting model')
 history = CNN_model.fit(xtraindata, ytraindata, epochs = epochs, batch_size = batch_size, validation_data=(xtestdata,ytestdata), verbose = 1, validation_split = 0.8)
 
 plt.plot(history.history['mse'], label='mse train')
-plt.plot(history.history['val_mse'], label = 'val_mse')
+plt.plot(history.history['val_mse'], label = 'mse validate')
 plt.xlabel('Epoch')
 plt.ylabel('Mean Squared Error')
+plt.title('Basic CNN MeanSquaredError')
+plt.legend()
+plt.ylim(0,0.2)
 plt.show()
