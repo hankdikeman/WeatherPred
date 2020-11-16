@@ -39,7 +39,7 @@ def short_LSTM(long_nodes, lat_nodes, day_num):
                          dropout=0.2
                         ))
     # add dense processing layer
-    LSTM_short.add(layers.Dense(256, activation = 'tanh'))
+    LSTM_short.add(layers.Dense(256, activation = 'relu'))
     # add dense output layer
     LSTM_short.add(layers.Dense(long_nodes*lat_nodes, activation = 'sigmoid'))
     # compile LSTM model
