@@ -79,4 +79,5 @@ while True:
     # plot predicted
     axs[2,1].imshow(predicted, cmap = 'magma', vmax = max_t, vmin = min_t)
     axs[2,1].set_title('predicted temps, mse = '+str(avg_mse))
+
     plt.show()

@@ -77,12 +77,7 @@ while True:
     axs[2,0].imshow(actual, cmap = 'magma', vmax = max_t, vmin = min_t)
     axs[2,0].set_title('actual temps')
     # plot predicted
-    im = axs[2,1].imshow(predicted, cmap = 'magma', vmax = max_t, vmin = min_t)
+    axs[2,1].imshow(predicted, cmap = 'magma', vmax = max_t, vmin = min_t)
     axs[2,1].set_title('predicted temps, mse = '+str(avg_mse))
-
-    # add colorbar common to all subplots
-    fig.subplots_adjust(right=0.8)
-    cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
-    fig.colorbar(im, cax=cbar_ax)
 
     plt.show()
