@@ -20,10 +20,6 @@ day_num = 4
 val_split = 0.8
 # pull and format data from CSV
 xdata,ydata = Convo_Format(filename, x_nodes, y_nodes, day_num)
-# split into train and test datasets
-val_split_index = int(np.shape(ydata)[0]*val_split)
-xtraindata,ytraindata = (xdata[:val_split_index,:,:,:], ydata[:val_split_index,:])
-xtestdata,ytestdata = (xdata[:val_split_index:,:,:,:], ydata[val_split_index:,:])
 
 ##
 #   Model preparation
@@ -36,10 +32,10 @@ CNN_model = Gen_CNN_BN(x_nodes, y_nodes, day_num, num_fil = 128)
 #   Training/Visualization
 ##
 batch_size = 128
-epochs = 50
+epochs = 5
 print('fitting model')
 # run model on training data
-history = CNN_model.fit(xtraindata, ytraindata, epochs = epochs, batch_size = batch_size, validation_data=(xtestdata,ytestdata), verbose = 1, validation_split = 0.8)
+history = CNN_model.fit(xdata, ydata, epochs = epochs, batch_size = batch_size, validation_split = 0.2, verbose = 1)
 
 plt.plot(history.history['mse'], label='mse train')
 plt.plot(history.history['val_mse'], label = 'mse validate')
@@ -49,3 +45,38 @@ plt.title('BatchNormed CNN MeanSquaredError')
 plt.legend()
 plt.ylim(0,0.2)
 plt.show()
+
+while True:
+    # select out input values
+    ind_vis = int(input("index of selection"))
+    inputs = xdata[ind_vis:ind_vis+1,:,:,:]
+    actual = np.reshape(ydata[ind_vis,:], newshape = (x_nodes,y_nodes))
+    predicted = np.reshape(CNN_model.predict(inputs)[0,:], newshape = (x_nodes,y_nodes))
+    # reshape inputs
+    inputs = np.reshape(inputs, newshape = (x_nodes,y_nodes,day_num))
+
+    # redimensionalize values
+    inputs = ((inputs+1)/2*165)-60
+    actual = ((actual+1)/2*165)-60
+    predicted = ((predicted+1)/2*165)-60
+    avg_mse = int(np.sum(np.square(actual - predicted))/(x_nodes*y_nodes))
+    # declare graph
+    fig,axs = plt.subplots(3,2)
+    max_t = int(np.amax(inputs))
+    min_t = int(np.amin(inputs))
+    # plot inputs
+    axs[0,0].imshow(inputs[:,:,0], cmap = 'magma', vmax = max_t, vmin = min_t)
+    axs[0,0].set_title('4 days prior')
+    axs[0,1].imshow(inputs[:,:,1], cmap = 'magma', vmax = max_t, vmin = min_t)
+    axs[0,1].set_title('3 days prior')
+    axs[1,0].imshow(inputs[:,:,2], cmap = 'magma', vmax = max_t, vmin = min_t)
+    axs[1,0].set_title('2 days prior')
+    axs[1,1].imshow(inputs[:,:,3], cmap = 'magma', vmax = max_t, vmin = min_t)
+    axs[1,1].set_title('1 days prior')
+    # plot actual
+    axs[2,0].imshow(actual, cmap = 'magma', vmax = max_t, vmin = min_t)
+    axs[2,0].set_title('actual temps')
+    # plot predicted
+    axs[2,1].imshow(predicted, cmap = 'magma', vmax = max_t, vmin = min_t)
+    axs[2,1].set_title('predicted temps, mse = '+str(avg_mse))
+    plt.show()

@@ -8,13 +8,15 @@ def Convo_Format(filename, x_nodes, y_nodes, day_num):
     # generate empty list of CNN format
     formatted_xdata = np.zeros(shape = (rows-day_num, x_nodes, y_nodes, day_num))
     # loop through all days minus day_num allocation
+    print(rawdata[5:5+day_num,:].shape)
     for ind in range(rows-day_num):
         # reshape "day_num" section to shape required for x output
-        sample = np.reshape(rawdata[ind:ind+day_num,:], newshape = (x_nodes, y_nodes, day_num))
-        # store x input values in formatted data
-        formatted_xdata[ind,:,:,:] = sample
+        for dayind in range(day_num):
+            formatted_xdata[ind,:,:,dayind] = np.reshape(rawdata[ind+dayind,:], newshape = (x_nodes, y_nodes))
     # take y data from raw data array
-    formatted_ydata = (rawdata[day_num:,:]+60)/165
+    print(formatted_xdata.shape)
+    formatted_xdata = ((formatted_xdata+60)/165)*2-1
+    formatted_ydata = ((rawdata[day_num:,:]+60)/165)*2-1
     # reshape
     return formatted_xdata,formatted_ydata
 
@@ -28,11 +30,11 @@ def ConvLSTM2D_Format(filename, x_nodes, y_nodes, day_num):
     # loop through all days minus day_num allocation
     for ind in range(rows-day_num):
         # reshape "day_num" section to shape required for x output
-        sample = np.reshape(rawdata[ind:ind+day_num,:], newshape = (day_num, x_nodes, y_nodes, 1))
-        # store x input values in formatted data
-        formatted_xdata[ind,:,:,:,:] = sample
+        for dayind in range(day_num):
+            formatted_xdata[:,dayind,:,:,:] = np.reshape(rawdata[ind+dayind,:], newshape = (x_nodes, y_nodes))
     # take y data from raw data array
-    formatted_ydata = (rawdata[day_num:,:]+60)/165
+    formatted_xdata = ((formatted_xdata+60)/165)*2-1
+    formatted_ydata = ((rawdata[day_num:,:]+60)/165)*2-1
     return formatted_xdata,formatted_ydata
 
 def LSTM_Format(filename, x_nodes, y_nodes, day_num):
@@ -45,9 +47,10 @@ def LSTM_Format(filename, x_nodes, y_nodes, day_num):
     # loop through all days minus day_num allocation
     for ind in range(rows-day_num):
         # reshape "day_num" section to shape required for x output
-        sample = np.reshape(rawdata[ind:ind+day_num,:], newshape = (day_num, x_nodes*y_nodes))
+        sample = np.reshape(rawdata[ind:ind+day_num,:], newshape = (1, day_num, x_nodes*y_nodes))
         # store x input values in formatted data
         formatted_xdata[ind,:,:] = sample
     # take y data from raw data array
-    formatted_ydata = (rawdata[day_num:,:]+60)/165
+    formatted_xdata = ((formatted_xdata+60)/165)*2-1
+    formatted_ydata = ((rawdata[day_num:,:]+60)/165)*2-1
     return formatted_xdata,formatted_ydata

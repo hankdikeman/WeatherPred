@@ -20,10 +20,6 @@ day_num = 4
 val_split = 0.8
 # pull and format data from CSV
 xdata,ydata = ConvLSTM2D_Format(filename, x_nodes, y_nodes, day_num)
-# split into train and test datasets
-val_split_index = int(np.shape(ydata)[0]*val_split)
-xtraindata,ytraindata = (xdata[:val_split_index,:,:,:,:], ydata[:val_split_index,:])
-xtestdata,ytestdata = (xdata[:val_split_index:,:,:,:,:], ydata[val_split_index:,:])
 
 ##
 #   Model preparation
@@ -39,7 +35,7 @@ batch_size = 128
 epochs = 20
 print('fitting model')
 # run model on training data
-history = CNNLSTM_model.fit(xtraindata, ytraindata, epochs = epochs, batch_size = batch_size, validation_data=(xtestdata,ytestdata), verbose = 1, validation_split = 0.8)
+history = CNNLSTM_model.fit(xdata, ydata, epochs = epochs, batch_size = batch_size, validation_split = 0.2, verbose = 1)
 
 plt.plot(history.history['mse'], label='mse train')
 plt.plot(history.history['val_mse'], label = 'mse validate')
