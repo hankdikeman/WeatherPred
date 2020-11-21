@@ -19,7 +19,8 @@ def PvalOpt_DataFormat():
     DATATYPE = 'TOBS'
 
     # Date being pulled (Patricks birth date)
-    start_date = datetime.date(1998, 9, 29)
+    start_date = datetime.date(1998, 3, 29)
+    print(start_date)
 
     # MN encapsulating all and more of the stations the weateher data will come from)
     df_stations = get_station_info(LOCATION_ID, DATASET_ID, TOKEN, BASE_URL_STATIONS)
