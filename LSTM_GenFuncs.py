@@ -53,13 +53,16 @@ def LSTM_BatchNorm(long_nodes, lat_nodes, day_num):
 def LSTM_GRU(long_nodes, lat_nodes, day_num):
     return 0
 
+# convolutional processing after LSTM processing, then dense layers
 def LSTM_toConv(long_nodes, lat_nodes, day_num):
     # declare model
     LSTM_conv = models.Sequential()
     # 2 LSTM layers
-    LSTM_conv.add(layers.LSTM(512, return_sequences=True,
+    LSTM_conv.add(layers.LSTM(512,
+                        return_sequences=True,
                         input_shape=(day_num, long_nodes*lat_nodes),
-                        dropout=0.2, recurrent_dropout=0.2
+                        dropout=0.2,
+                        recurrent_dropout=0.2
                         ))
     LSTM_conv.add(layers.LSTM(512,
                          return_sequences=True,
@@ -69,6 +72,8 @@ def LSTM_toConv(long_nodes, lat_nodes, day_num):
     LSTM_conv.add(layers.Conv2D(128,
                                 (day_num, 1),
                                 activation = 'relu'))
+    # flatten from convolutional processing
+    LSTM_conv.add(layers.Flatten())
     # two dense processing layers
     LSTM_conv.add(layers.Dense(256, activation = 'relu'))
     LSTM_conv.add(layers.Dense(256, activation = 'relu'))
