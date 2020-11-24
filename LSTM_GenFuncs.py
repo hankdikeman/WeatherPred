@@ -50,6 +50,9 @@ def short_LSTM(long_nodes, lat_nodes, day_num):
 def LSTM_BatchNorm(long_nodes, lat_nodes, day_num):
     return 0
 
+def LSTM_GRU(long_nodes, lat_nodes, day_num):
+    return 0
+
 def LSTM_toConv(long_nodes, lat_nodes, day_num):
     # declare model
     LSTM_conv = models.Sequential()
@@ -62,5 +65,16 @@ def LSTM_toConv(long_nodes, lat_nodes, day_num):
                          return_sequences=True,
                          dropout=0.2
                         ))
-    # add dense processing layer
+    # add convolutional processing layer
+    LSTM_conv.add(layers.Conv2D(128,
+                                (3,1),
+                                activation = 'relu'))
+    # two dense processing layers
     LSTM_conv.add(layers.Dense(256, activation = 'relu'))
+    LSTM_conv.add(layers.Dense(256, activation = 'relu'))
+    # add dense output layer
+    LSTM_conv.add(layers.Dense(long_nodes*lat_nodes, activation = 'tanh'))
+    # compile LSTM model
+    LSTM_conv.compile(loss = 'mean_squared_error', optimizer="adam", metrics=['mse'])
+    # return model
+    return LSTM_conv
