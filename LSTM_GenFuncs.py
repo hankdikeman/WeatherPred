@@ -67,7 +67,7 @@ def LSTM_toConv(long_nodes, lat_nodes, day_num):
                         ))
     # add convolutional processing layer
     LSTM_conv.add(layers.Conv2D(128,
-                                (3,1),
+                                (day_num, 1),
                                 activation = 'relu'))
     # two dense processing layers
     LSTM_conv.add(layers.Dense(256, activation = 'relu'))
