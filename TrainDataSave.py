@@ -7,7 +7,7 @@ from MNWeatherPull import *
 startDate = datetime.date(2018, 12, 21)
 day_jump = datetime.timedelta(days = 1)
 n_days = 730
-csvname = "MNTrainData"
+csvname = "TempTrainData"
 
 for timejump in range(n_days):
     # set date range
@@ -16,8 +16,8 @@ for timejump in range(n_days):
     trainData = PullMNWeather(dateRange)
     # save to csv file
     with open('../../Desktop/'+csvname+'.csv', 'ab') as f:
+        # date of weather data
         np.savetxt(f, trainData, fmt = '%d', newline = ", ", delimiter = ',')
-        f.write(b"\n")
 
     print("saved to file with name " + csvname)
     # add day to startDate
