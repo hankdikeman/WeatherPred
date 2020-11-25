@@ -20,9 +20,8 @@ filename = "../../Desktop/MNTrainData.csv"
 x_nodes = 50
 y_nodes = 50
 day_num = 4
-days_prior = 2
 # pull and format data from CSV
-xdata,ydata = LSTM_Format2(filename, x_nodes, y_nodes, day_num, days_prior)
+xdata,ydata = LSTM_Format(filename, x_nodes, y_nodes, day_num)
 
 load_or_train = input("(load) model or (retrain) model: ")
 
@@ -32,26 +31,26 @@ load_or_train = input("(load) model or (retrain) model: ")
 if load_or_train == "retrain":
     print('generating model')
     # generate model using generation function
-    LSTM_model = short_LSTM(x_nodes, y_nodes, day_num)
+    LSTM_model = Gen_LSTM_Basic(x_nodes, y_nodes, day_num)
     LSTM_model.summary()
 
     ##
     #   Training/Visualization
     ##
     batch_size = 32
-    epochs = 8
+    epochs = 25
     print('fitting model')
     # run model on training data
     history = LSTM_model.fit(xdata, ydata, epochs = epochs, batch_size = batch_size, validation_split = 0.2, verbose = 1)
 
-    LSTM_model.save('./TrainedModels/L4_2')
+    LSTM_model.save('./TrainedModels/L5')
     print("\007")
 
     plt.plot(history.history['mse'], label='mse train')
     plt.plot(history.history['val_mse'], label = 'mse validate')
     plt.xlabel('Epoch')
     plt.ylabel('Mean Squared Error')
-    plt.title('Short LSTM MeanSquaredError')
+    plt.title('LSTM Basic LSTM MeanSquaredError')
     plt.legend()
     plt.ylim(0,0.2)
     plt.show()
@@ -80,7 +79,7 @@ print("\007")
 print(str(np.amax(mseerrors)) + ' ' + str(np.amin(mseerrors)))
 print(str(np.mean(mseerrors)))
 plt.hist(mseerrors, bins = 25, range = (0,25))
-plt.title('Distribution of fit errors: LSTM short')
+plt.title('Distribution of fit errors: LSTM Basic')
 plt.show()
 
 plt.plot(mseerrors, 'bo', zorder = 50)
@@ -122,7 +121,6 @@ while True:
     # plot predicted
     axs[1,2].imshow(predicted, cmap = 'magma', vmax = max_t, vmin = min_t)
     axs[1,2].set_title('predicted temps, mse = '+str(avg_mse))
-
     plt.show(block = False)
 
     plt.imshow(msevals, cmap = 'magma', vmin = 0, vmax = np.amax(msevals))
