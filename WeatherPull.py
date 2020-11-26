@@ -1,5 +1,5 @@
 
-# Made as a utility to look in detail at data pull requests quickly, can be configured multiple ways
+# Made as a utility to debug data pull requests quickly, can be configured multiple ways to look at variety of aspects of pull
 
 # IMPORTS
 import pandas as pd
@@ -40,5 +40,6 @@ df_weather = get_weather(LOCATION_ID, DATASET_ID, DATATYPE, BeginDate, BeginDate
 # Merge of station and weather data
 df = df_weather.merge(df_stations, left_on = 'station', right_on = 'id', how='inner')
 
+# Visualization of request
 print(df)
 visualize(df['longitude'], df['latitude'], df['value'])
