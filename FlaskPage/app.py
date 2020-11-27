@@ -50,14 +50,25 @@ def index():
 # browse page allows users to view a map for given days
 @app.route('/browse')
 def browse():
-    return 0
+    return render_template('browse.html')
 
 # search page allows searching by location, gives tabulated data
 @app.route('/search')
 def search():
-    return 0
+    return render_template('search.html')
+
+# location result given from location search
+@app.route('/search/<string:loc>/<string:day>')
+def loc_result(loc):
+    ##
+    # get map from db for search parameters
+    ##
+    return render_template('search.html', location_map = search_loc)
 
 # about page details more about webpage and us
 @app.route('/about')
 def about():
-    return 0
+    return render_template('about.html')
+
+if __name__ == "__main__":
+    app.run(debug=True)
