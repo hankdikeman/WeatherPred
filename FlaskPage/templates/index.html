@@ -6,5 +6,41 @@
 
 
 {% block body %}
-
+<div class="container">
+  <div class="card-deck mb-3 text-center">
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header">
+        <h4 class="my-0 font-weight-normal">Browse the Map</h4>
+      </div>
+      <div class="card-body">
+        <ul class="list-unstyled mt-3 mb-4">
+          <li>View weather data and predictions from anywhere in the Continental US</li>
+        </ul>
+        <button type="button" href= "/browse" class="btn btn-lg btn-block btn-primary">Go to page</button>
+      </div>
+    </div>
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header">
+        <h4 class="my-0 font-weight-normal">Search by location</h4>
+      </div>
+      <div class="card-body">
+        <ul class="list-unstyled mt-3 mb-4">
+          <li>Search by state or location, download the data you need</li>
+        </ul>
+        <button type="button" href= "/search" class="btn btn-lg btn-block btn-primary">Go to page</button>
+      </div>
+    </div>
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header">
+        <h4 class="my-0 font-weight-normal">About the site</h4>
+      </div>
+      <div class="card-body">
+        <ul class="list-unstyled mt-3 mb-4">
+          <li>Find out how we make our predictions and how we compare to traditional weather prediction</li>
+        </ul>
+        <button type="button" href= "/about" class="btn btn-lg btn-block btn-primary">Go to page</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
