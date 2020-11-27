@@ -24,8 +24,10 @@ xdata,ydata = LSTM_Format2(filename, x_nodes, y_nodes, day_num, days_prior)
 
 # user selection of model to be examined
 print("Which neural net would you like to train?\nLSTM Basic: 1\nLSTM Short: 2\nBatchNormLSTM: 3\nLSTM w/ Conv: 4\nLSTM/GRU: 5")
-model_num = input("\nPlease enter selection")
+print("\007")
+model_num = int(input("\nPlease enter selection"))
 # user selection of retrain or load model
+print("\007")
 load_or_train = input("\n\n(load) model or (retrain) model? ->")
 
 ##
@@ -75,10 +77,8 @@ for ind_vis in range(np.shape(xdata)[0]):
     predicted = ((predicted+1)/2*165)-60
     mseerrors[ind_vis] = int(np.power(np.sum(np.square(actual - predicted))/(x_nodes*y_nodes),0.5))
     avgtemps[ind_vis] = np.mean(actual)
-    print(mseerrors[ind_vis])
 
 print("\007")
-
 print(str(np.amax(mseerrors)) + ' ' + str(np.amin(mseerrors)))
 print(str(np.mean(mseerrors)))
 plt.hist(mseerrors, bins = 25, range = (0,25))
@@ -125,6 +125,7 @@ while True:
     axs[1,2].imshow(predicted, cmap = 'magma', vmax = max_t, vmin = min_t)
     axs[1,2].set_title('predicted temps, mse = '+str(avg_mse))
 
+    print("\007")
     plt.show(block = False)
 
     plt.imshow(msevals, cmap = 'magma', vmin = 0, vmax = np.amax(msevals))
