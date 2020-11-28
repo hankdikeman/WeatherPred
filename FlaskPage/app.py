@@ -6,13 +6,13 @@ from datetime import datetime
 # declare app
 app = Flask(__name__)
 # define database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
-db = SQLAlchemy(app)
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+#db = SQLAlchemy(app)
 
-class WeatherPred(db.Model):
-    mode = db.Column(db.Integer, nullable=False)
-    temps = db.Column(db.Integer, nullable=False)
-    date = db.Column(db.DataTime, nullable=False)
+#class WeatherPred(db.Model):
+#    mode = db.Column(db.Integer, nullable=False)
+#    temps = db.Column(db.Integer, nullable=False)
+#    date = db.Column(db.DateTime, nullable=False)
 
 # the homepage that directs to browse, search, or about pages
 @app.route('/')
