@@ -19,9 +19,9 @@ TOKEN = 'ExHqFtwmXTLwOevojJsTbCcgZdlVYuRh'
 BASE_URL_DATA = 'https://www.ncdc.noaa.gov/cdo-web/api/v2/data/'
 BASE_URL_STATIONS = 'https://www.ncdc.noaa.gov/cdo-web/api/v2/stations'
 # Geographical region for data being pulled (Currently: MN State)
-LOCATION_ID = 'FIPS:06'
+LOCATION_ID = 'FIPS:48'
 DATASET_ID = 'GHCND' #datset id for "Daily Summaries"
-DATATYPE = 'TAVG'
+DATATYPE = 'TOBS'
 # Temp at time of observation: 'TOBS'
 # Max Daily Temp: 'TMAX'
 # Min Daily Temp: 'TMIN'
@@ -29,17 +29,39 @@ DATATYPE = 'TAVG'
 # Snowfall amount (inches): 'SNOW'
 # Snow on ground (inches): 'SNWD'
 
+HORZ_DIMS = 50
+VERT_DIMS = 50
+
 # Date range for data being pulled, [YYYY, MM, DD]
 BeginDate = datetime.date(2018, 9, 29)
 
+# max_rows = None
+# max_cols = None
+# pd.set_option("display.max_rows", max_rows, "display.max_columns", max_cols)
 
 # MN encapsulating all and more of the stations the weateher data will come from)
 df_stations = get_station_info(LOCATION_ID, DATASET_ID, TOKEN, BASE_URL_STATIONS)
+
 # Weather data call
 df_weather = get_weather(LOCATION_ID, DATASET_ID, DATATYPE, BeginDate, BeginDate, TOKEN, BASE_URL_DATA)
+
 # Merge of station and weather data
 df = df_weather.merge(df_stations, left_on = 'station', right_on = 'id', how='inner')
 
-# Visualization of request
-print(df)
+station_objects = station_format(df)
+# Set dimensions of temp grid
+temp_grid = np.zeros((HORZ_DIMS, VERT_DIMS))
+# Sets spacial parameters based on max and mins of long/lat of collected datat stations
+xcords = (np.amin(np.array(df['longitude'])), np.amax(np.array(df['longitude'])))
+ycords = (np.amin(np.array(df['latitude'])), np.amax(np.array(df['latitude'])))
+# Formatting data into interpolated gridimgarray3 = imgarray.view('B')[:,::4]
+grid = interp2d(station_objects, temp_grid, xcords, ycords, 3)
+
+# Visualization of request points
 visualize(df['longitude'], df['latitude'], df['value'])
+
+# Visualization of interpolated data
+xaxis = np.arange(np.amin(np.array(df['longitude'])), np.amax(np.array(df['longitude'])), (np.amax(np.array(df['longitude'])) - np.amin(np.array(df['longitude'])))/HORZ_DIMS)
+yaxis = np.arange(np.amin(np.array(df['latitude'])), np.amax(np.array(df['latitude'])), (np.amax(np.array(df['latitude'])) - np.amin(np.array(df['latitude'])))/VERT_DIMS)
+gridx, gridy = np.meshgrid(xaxis, yaxis)
+visualize(gridx, gridy, grid)
