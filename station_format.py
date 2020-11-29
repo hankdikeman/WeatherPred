@@ -8,5 +8,5 @@ def station_format(df):
     for i in range(len(df)):
         var = Station(df.loc[i, 'value'], df.loc[i, 'longitude'], df.loc[i, 'latitude'])
         stations[i] = var
-    print('Array of Station objects created')
+    # print('Array of Station objects created')
     return(stations)

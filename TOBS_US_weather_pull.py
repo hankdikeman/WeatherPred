@@ -11,6 +11,7 @@ from day_num import day_num
 from visualize import *
 from token_cycle import *
 from visualize_stations import *
+import matplotlib.pyplot as plt
 
 
 def TOBS_US_weather_pull(Date):
@@ -33,52 +34,54 @@ def TOBS_US_weather_pull(Date):
 
 
     # get interpolation dimensions from interpshape parameter
-    horz_dims = 100
-    vert_dims = 100
+    HORZ_DIMS = 100
+    VERT_DIMS = 50
     # set p-value for inverse distance weighted interp
-    pval = 2.5
+    pval = 3.5
     # ------------------------------------------------------------------------------
 
     # Initialize training data and station array
-    train_data = np.empty((0, vert_dims*horz_dims))
+    train_data = np.empty((0, VERT_DIMS*HORZ_DIMS))
     US_station_objects = np.array([])
 
 
     for i in LOCATION_ID_NUM:
         LOCATION_ID = LOCATION_ID_STR + i
-        print('State num: ' + LOCATION_ID )
+        # print('State num: ' + LOCATION_ID )
         # Station data call
         df_stations = get_station_info((LOCATION_ID_STR + str(i)), DATASET_ID, TOKEN, BASE_URL_STATIONS)
         # Weather data call
         df_weather = get_weather((LOCATION_ID_STR + str(i)), DATASET_ID, DATATYPE, Date, Date, TOKEN, BASE_URL_DATA)
         # Merge of station and weather data
         df = df_weather.merge(df_stations, left_on = 'station', right_on = 'id', how='inner')
+        # print('Length of pull: ' + str(len(df)))
         # Coverting combined station and weather data into a np.array of station objects and adding them to overall station objects for entire US
         US_station_objects = np.append(US_station_objects, station_format(df))
-        print(str(len(US_station_objects)))
+        # print(str(len(US_station_objects)))
 
         TOKEN = token_cycle(TOKEN)
 
-    print('Retrieved data from all states')
+    # print('Retrieved data from all states')
     visualize_stations(US_station_objects)
     US_station_objects = np.array(US_station_objects)
     # Set dimensions of temp grid
-    temp_grid = np.zeros((horz_dims, vert_dims))
+    temp_grid = np.zeros((HORZ_DIMS, VERT_DIMS))
     # Sets spacial parameters based on US geography x direction longitude (65, 125), y direction latitude (25, 50)
     xcords = (-125, -60)
     ycords = (25, 50)
     # Formatting data into interpolated gridimgarray3 = imgarray.view('B')[:,::4]
     grid = interp2d(US_station_objects, temp_grid, xcords, ycords, pval)
-    print('Interpolation complete')
+    # print('Interpolation complete')
     # Save single data grid to larger training data array (current problem getting grid to transfer into train_data correctly)
     train_data = np.vstack((train_data, grid.flatten()))
 
-    print('Weather data retrieved')
+    # print('Weather data retrieved')
 
     # Return numpy grid of temperature values
     print('Training data from ' + str(Date) + ' returned')
 
-    xaxis = np.arange(-125, -65, (125 - 65)/horz_dims)
-    yaxis = np.arange(25, 50, (50 - 25)/vert_dims)
+    xaxis = np.arange(-125, -65, (125 - 65)/HORZ_DIMS)
+    yaxis = np.arange(25, 50, (50 - 25)/VERT_DIMS)
     gridx, gridy = np.meshgrid(xaxis, yaxis)
     visualize(gridx, gridy, grid)
+    plt.show()

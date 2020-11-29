@@ -23,9 +23,9 @@ def interp2d(stations, temp_grid, xcords, ycords, p):
             for s in stations:
                 # Calculate distance between station and point
                 dx = xpos - s.lon
-                if abs(dx) < 4:
+                if abs(dx) < 1:
                     dy = ypos - s.lat
-                    if abs(dy) < 1.5:
+                    if abs(dy) < 1/3:
                         d = (dx**2 + dy**2)**0.5
                         # check if distance = 0, if so set to station temp
                         if d == 0:
@@ -41,6 +41,7 @@ def interp2d(stations, temp_grid, xcords, ycords, p):
             if sum_weights == 0:
                 temp_grid[i,j] = 0
             else:
+                # [row, col]
                 temp_grid[i,j] = node_temp/sum_weights
     # Return IDW interpolated matrix
     return temp_grid

@@ -6,7 +6,7 @@ def get_station_info(locationid, datasetid, mytoken, base_url):
     stations = 'locationid='+str(locationid)+'&'+'datasetid='+str(datasetid)+'&'+'units=standard'+'&'\
     +'limit=1000'
     r = requests.get(base_url, headers = token, params=stations)
-    print("Request status code: "+str(r.status_code))
+    # print("Request status code: "+str(r.status_code))
 
     df = pd.DataFrame.from_dict(r.json()['results'])
 
@@ -18,7 +18,7 @@ def get_station_info(locationid, datasetid, mytoken, base_url):
         stations = 'locationid='+str(locationid)+'&'+'datasetid='+str(datasetid)+'&'+'units=standard'+'&'\
         +'limit=1000' + '&' + 'offset=' + str(count*1000)
         r = requests.get(base_url, headers = token, params=stations)
-        print("Request status code: "+str(r.status_code))
+        # print("Request status code: "+str(r.status_code))
 
         #results comes in json form. Convert to dataframe
         df_pull = pd.DataFrame.from_dict(r.json()['results'])
@@ -27,5 +27,5 @@ def get_station_info(locationid, datasetid, mytoken, base_url):
         df = df.append(df_pull)
 
 
-    print("Successfully retrieved "+str(len(df['id'].unique()))+" stations")
+    # print("Successfully retrieved "+str(len(df['id'].unique()))+" stations")
     return(df)
