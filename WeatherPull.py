@@ -30,8 +30,8 @@ DATATYPE = 'TOBS'
 # Snowfall amount (inches): 'SNOW'
 # Snow on ground (inches): 'SNWD'
 
-HORZ_DIMS = 60
-VERT_DIMS = 30
+num_cols = 60
+num_rows = 30
 
 # Date range for data being pulled, [YYYY, MM, DD]
 BeginDate = datetime.date(2018, 9, 29)
@@ -51,7 +51,7 @@ df = df_weather.merge(df_stations, left_on = 'station', right_on = 'id', how='in
 
 station_objects = station_format(df)
 # Set dimensions of temp grid (rows, cols)
-temp_grid = np.zeros((HORZ_DIMS, VERT_DIMS))
+temp_grid = np.zeros((num_rows, num_cols))
 # Sets spacial parameters based on max and mins of long/lat of collected datat stations
 xcords = (np.amin(np.array(df['longitude'])), np.amax(np.array(df['longitude'])))
 ycords = (np.amin(np.array(df['latitude'])), np.amax(np.array(df['latitude'])))
@@ -64,8 +64,8 @@ grid = interp2d(station_objects, temp_grid, xcords, ycords, 3)
 visualize(df['longitude'], df['latitude'], df['value'])
 
 # Visualization of interpolated data
-xaxis = np.arange(np.amin(np.array(df['longitude'])), np.amax(np.array(df['longitude'])), (np.amax(np.array(df['longitude'])) - np.amin(np.array(df['longitude'])))/HORZ_DIMS)
-yaxis = np.arange(np.amin(np.array(df['latitude'])), np.amax(np.array(df['latitude'])), (np.amax(np.array(df['latitude'])) - np.amin(np.array(df['latitude'])))/VERT_DIMS)
+xaxis = np.arange(np.amin(np.array(df['longitude'])), np.amax(np.array(df['longitude'])), (np.amax(np.array(df['longitude'])) - np.amin(np.array(df['longitude'])))/num_cols)
+yaxis = np.arange(np.amin(np.array(df['latitude'])), np.amax(np.array(df['latitude'])), (np.amax(np.array(df['latitude'])) - np.amin(np.array(df['latitude'])))/num_rows)
 gridx, gridy = np.meshgrid(xaxis, yaxis)
 visualize(gridx, gridy, grid)
 

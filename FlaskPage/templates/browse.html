@@ -7,13 +7,13 @@
 
 {% block body %}
 
+<div class="img-zoom-container">
+  <img id="myimage" src="https://lh3.googleusercontent.com/proxy/fcaTjRO9Hc_8gPdlvBMPwSVaEMBv3a21cNc7Iu8wyz5I25F_mTtAL_Xoq1oMh4_OyFrUUjc4cqg" alt="Map">
+  <div id="myresult" class="img-zoom-result"></div>
+</div>
+
 <script>
  imageZoom("myimage", "myresult");
 </script>
-
-<div class="img-zoom-container">
-  <img id="myimage" src="https://lh3.googleusercontent.com/proxy/fcaTjRO9Hc_8gPdlvBMPwSVaEMBv3a21cNc7Iu8wyz5I25F_mTtAL_Xoq1oMh4_OyFrUUjc4cqg" width="300" height="240" alt="Girl">
-  <div id="myresult" class="img-zoom-result"></div>
-</div>
 
 {% endblock %}
