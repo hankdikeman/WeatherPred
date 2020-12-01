@@ -37,7 +37,7 @@ def TOBS_US_weather_pull(Date):
     HORZ_DIMS = 100
     VERT_DIMS = 50
     # set p-value for inverse distance weighted interp
-    pval = 3.5
+    pval = 2.5
     # ------------------------------------------------------------------------------
 
     # Initialize training data and station array
@@ -65,7 +65,7 @@ def TOBS_US_weather_pull(Date):
     visualize_stations(US_station_objects)
     US_station_objects = np.array(US_station_objects)
     # Set dimensions of temp grid
-    temp_grid = np.zeros((HORZ_DIMS, VERT_DIMS))
+    temp_grid = np.zeros((VERT_DIMS, HORZ_DIMS))
     # Sets spacial parameters based on US geography x direction longitude (65, 125), y direction latitude (25, 50)
     xcords = (-125, -60)
     ycords = (25, 50)
@@ -74,10 +74,10 @@ def TOBS_US_weather_pull(Date):
     # print('Interpolation complete')
     # Save single data grid to larger training data array (current problem getting grid to transfer into train_data correctly)
     train_data = np.vstack((train_data, grid.flatten()))
-
     # print('Weather data retrieved')
 
     # Return numpy grid of temperature values
+    return(train_data)
     print('Training data from ' + str(Date) + ' returned')
 
     xaxis = np.arange(-125, -65, (125 - 65)/HORZ_DIMS)

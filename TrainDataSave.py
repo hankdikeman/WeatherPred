@@ -12,9 +12,10 @@ csvname = "USTrainData"
 for timejump in range(n_days):
     # pull data and assign to numpy array
     trainData = TOBS_US_weather_pull(startDate)
-
+    date = np.array([startDate,;])
+    trainDate = np.append(trainData, date, axis=1)
     # save to csv file
-    with open('/../WeatherData/'+csvname+'.csv', 'ab') as f:
+    with open('/Users/patrickgibbons/Desktop/WeatherData/'+csvname+'.csv', 'ab') as f:
         np.savetxt(f, trainData, fmt = '%d', newline = ',', delimiter = ',')
 
     print("Data for [" + str(startDate) + "] saved to file with name " + csvname)

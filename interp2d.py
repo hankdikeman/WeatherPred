@@ -6,26 +6,25 @@ def interp2d(stations, temp_grid, xcords, ycords, p):
     xstart,xend = xcords
     ystart,yend = ycords
     # retreive temp grid dimensions
-    xrange = np.shape(temp_grid)[0]
-    yrange = np.shape(temp_grid)[1]
-
+    xrange = np.shape(temp_grid)[1]
+    yrange = np.shape(temp_grid)[0]
 
     # loop through all nodes on the temp_grid
-    for i in range(xrange):
-        for j in range(yrange):
+    for i in range(yrange):
+        for j in range(xrange):
             # calculate position of temperature nodes
-            xpos = xstart + (i/(xrange-1)) * (xend - xstart)
-            ypos = ystart + (j/(yrange-1)) * (yend - ystart)
+            xpos = xstart + (j/(xrange-1)) * (xend - xstart)
+            ypos = ystart + (i/(yrange-1)) * (yend - ystart)
             # Set denominator of IDW to 0
             node_temp = 0
             sum_weights = 0
 
             for s in stations:
                 # Calculate distance between station and point
-                dx = xpos - s.lon
-                if abs(dx) < 1:
-                    dy = ypos - s.lat
-                    if abs(dy) < 1/3:
+                dx = abs(xpos - s.lon)
+                if dx < 1:
+                    dy = abs(ypos - s.lat)
+                    if dy < 1/3:
                         d = (dx**2 + dy**2)**0.5
                         # check if distance = 0, if so set to station temp
                         if d == 0:
