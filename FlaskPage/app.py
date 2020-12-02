@@ -2,19 +2,14 @@
 from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
+import os
 
 # declare app
 app = Flask(__name__)
-# define database
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
-#db = SQLAlchemy(app)
 
-#class WeatherPred(db.Model):
-#    mode = db.Column(db.Integer, nullable=False)
-#    temps = db.Column(db.Integer, nullable=False)
-#    date = db.Column(db.DateTime, nullable=False)
-
-
+# define route to static images folder
+PHOTO_FOLDER = 'testpics'
+app.config['MAPS'] = PHOTO_FOLDER
 
 # the homepage that directs to browse, search, or about pages
 @app.route('/')
@@ -36,14 +31,22 @@ def browse(day):
     ##
 
     ##
-    #   generate csv or image
+    #   generate image and save to given filenames
     ##
-    return render_template('browse.html')
+    actual_map_filename = os.path.join(app.config['MAPS'], 'lg_mts.jpg')
+    print(actual_map_filename)
+    predicted_map_filename = os.path.join(app.config['MAPS'], 'ye.png')
+    print(predicted_map_filename)
+    return render_template('browse.html', actual_map_img = actual_map_filename, predicted_map_img = predicted_map_filename)
 
 # search page allows searching by location, gives tabulated data
 @app.route('/search')
 def search():
-    return render_template('search.html')
+    actual_map_filename = os.path.join(app.config['MAPS'], 'ye.png')
+    print(actual_map_filename)
+    predicted_map_filename = os.path.join(app.config['MAPS'], 'ye.png')
+    print(predicted_map_filename)
+    return render_template('search.html', actual_map_img = actual_map_filename, predicted_map_img = predicted_map_filename)
 
 # location result given from location search, loc will likely be state number
 @app.route('/search/<string:loc>/<string:day>')
