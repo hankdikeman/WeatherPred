@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Search Results for {{ loc_code }} on {{ date }}</title>
+
+{% endblock %}
+
+{% block body %}
+<div class="search-return">
+  <a href="/search" class="btn btn-primary btn-lg" role="button">Make Another Search</a>
+</div>
+<hr>
+<div class="map-container">
+  <div class="img-zoom-container">
+    <img id="actual-map" class="zoomed-img" src="{{ url_for('static', filename = actual_map_img) }}" alt="Map">
+    <div id="actual-map-zoom" class="img-zoom-result"></div>
+  </div>
+  <div class="img-zoom-container">
+    <img id="predicted-map" class="zoomed-img" src="{{ url_for('static', filename = predicted_map_img) }}" alt="Map">
+    <div id="predicted-map-zoom" class="img-zoom-result"></div>
+  </div>
+</div>
+
+<script>
+ imageZoom("actual-map", "actual-map-zoom");
+</script>
+<script>
+ imageZoom("predicted-map", "predicted-map-zoom");
+</script>
+
+{% endblock %}

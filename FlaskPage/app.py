@@ -26,13 +26,6 @@ def browse_home():
 # browse page allows users to view a map for given days
 @app.route('/browse/<string:day>')
 def browse(day):
-    ##
-    #  get weather data for day requested
-    ##
-
-    ##
-    #   generate image and save to given filenames
-    ##
     actual_map_filename = os.path.join(app.config['MAPS'], 'lg_mts.jpg')
     print(actual_map_filename)
     predicted_map_filename = os.path.join(app.config['MAPS'], 'ye.png')
@@ -58,21 +51,23 @@ def search_actual_img(loc, day):
     return 0
 
 # search page allows searching by location, gives tabulated data
-@app.route('/search')
+@app.route('/search', methods = ['GET', 'POST'])
 def search():
-    actual_map_filename = os.path.join(app.config['MAPS'], 'ye.png')
-    print(actual_map_filename)
-    predicted_map_filename = os.path.join(app.config['MAPS'], 'ye.png')
-    print(predicted_map_filename)
-    return render_template('search.html', actual_map_img = actual_map_filename, predicted_map_img = predicted_map_filename)
+    if request.method == 'POST':
+        search_day = request.form['search-date']
+        search_loc = request.form['search-loc']
+        return redirect('/search/'+str(search_loc)+'/'+str(search_day))
+    else:
+        return render_template('search.html')
 
 # location result given from location search, loc will likely be state number
 @app.route('/search/<string:loc>/<string:day>')
 def loc_result(loc, day):
-    ##
-    #   get map from db for search parameters, loc and string
-    ##
-    return render_template('search.html', location_map = search_loc)
+    actual_map_filename = os.path.join(app.config['MAPS'], 'ye.png')
+    print(actual_map_filename)
+    predicted_map_filename = os.path.join(app.config['MAPS'], 'ye.png')
+    print(predicted_map_filename)
+    return render_template('search-results.html', loc_code = loc, date = day, actual_map_img = actual_map_filename, predicted_map_img = predicted_map_filename)
 
 # about page details more about webpage and us
 @app.route('/about')
