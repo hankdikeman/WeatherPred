@@ -39,6 +39,24 @@ def browse(day):
     print(predicted_map_filename)
     return render_template('browse.html', actual_map_img = actual_map_filename, predicted_map_img = predicted_map_filename)
 
+# this is stand-in functionality when image generation code is added
+# html image url references will be replaced from static to these
+
+# browse images
+@app.route('/browse/predicted/<string:day>/map')
+def browse_pred_img(day):
+    return 0
+@app.route('/browse/actual/<string:day>/map')
+def browse_actual_img(day):
+    return 0
+# search images
+@app.route('/search/<string:loc>/<string:day>/predicted/map')
+def search_pred_img(loc, day):
+    return 0
+@app.route('/browse/actual/<string:day>/actual/map')
+def search_actual_img(loc, day):
+    return 0
+
 # search page allows searching by location, gives tabulated data
 @app.route('/search')
 def search():
