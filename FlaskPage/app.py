@@ -1,5 +1,5 @@
 # import Flask and SQLAlchemy
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 import os
@@ -26,11 +26,14 @@ def browse_home():
 # browse page allows users to view a map for given days
 @app.route('/browse/<string:day>')
 def browse(day):
+    ##
+    #   Generate images and store them here
+    ##
     actual_map_filename = os.path.join(app.config['MAPS'], 'lg_mts.jpg')
     print(actual_map_filename)
     predicted_map_filename = os.path.join(app.config['MAPS'], 'ye.png')
     print(predicted_map_filename)
-    return render_template('browse.html', actual_map_img = actual_map_filename, predicted_map_img = predicted_map_filename)
+    return render_template('browse.html', date = day)
 
 # this is stand-in functionality when image generation code is added
 # html image url references will be replaced from static to these
@@ -38,17 +41,22 @@ def browse(day):
 # browse images
 @app.route('/browse/predicted/<string:day>/map')
 def browse_pred_img(day):
-    return 0
+    filename = 'browse-pred-map.jpg'
+    return send_from_directory(app.config['MAPS'], filename)
 @app.route('/browse/actual/<string:day>/map')
 def browse_actual_img(day):
-    return 0
+    filename = 'browse-actual-map.jpg'
+    return send_from_directory(app.config['MAPS'], filename)
 # search images
+# add lookup table to properly format searched maps by state
 @app.route('/search/<string:loc>/<string:day>/predicted/map')
 def search_pred_img(loc, day):
-    return 0
-@app.route('/browse/actual/<string:day>/actual/map')
+    filename = 'search-pred-map.jpg'
+    return send_from_directory(app.config['MAPS'], filename)
+@app.route('/browse/<string:loc>/<string:day>/actual/map')
 def search_actual_img(loc, day):
-    return 0
+    filename = 'search-actual-map.jpg'
+    return send_from_directory(app.config['MAPS'], filename)
 
 # search page allows searching by location, gives tabulated data
 @app.route('/search', methods = ['GET', 'POST'])

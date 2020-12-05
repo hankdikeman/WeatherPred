@@ -8,11 +8,11 @@
 {% block body %}
 <div class="map-container">
   <div class="img-zoom-container">
-    <img id="actual-map" class="zoomed-img" src="{{ url_for('static', filename = actual_map_img) }}" alt="Map">
+    <img id="actual-map" class="zoomed-img" src="{{ url_for('.browse_actual_img', day = date) }}" alt="Map">
     <div id="actual-map-zoom" class="img-zoom-result"></div>
   </div>
   <div class="img-zoom-container">
-    <img id="predicted-map" class="zoomed-img" src="{{ url_for('static', filename = predicted_map_img) }}" alt="Map">
+    <img id="predicted-map" class="zoomed-img" src="{{ url_for('.browse_pred_img', day = date) }}" alt="Map">
     <div id="predicted-map-zoom" class="img-zoom-result"></div>
   </div>
 </div>
