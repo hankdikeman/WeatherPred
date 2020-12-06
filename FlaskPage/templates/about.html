@@ -1,29 +1,59 @@
 {% extends 'base.html' %}
-
 {% block head %}
+<div class="container">
 <title>About the Site</title>
-<hr></hr>
-<b><h2>Neural Network Model</h2></b>
-<p>
-  A Long Short Term Memeory (LSTM) Neural Network was used to predict the weather.
-  This is a type of recurrent NN, for unlike standard feed forward NN, LSTM has feedback connections.
-  After being trained with multiple years worth of data, a model with ___ % accuracy was created.
-  </p>
-  <br></br>
-  <b>Authors</b>  
-  <p><i>Henry Dikeman </i>is an incoming senior chemical engineering student at the University of
-Minnesota. His passion is the development of renewable feedstocks and biochemical processes in
-the field of energy production.</p>
-  <br></br>
-  <p> <i>Patrick Gibbons-Peterson </i>is an incoming senior chemical engineering student at the University
-of Minnesota. He is interested in the intersection between chemical engineering and computer
-science and finds purpose in taking on sustainability oriented engineering projects.</p>
-  <br></br>
-  <p> <i>Shrinivas Venkatasubramani </i> is a sophomore chemical engineering and computer
-science student at the University of Minnesota. He is currently exploring different fields to
-discover his interests.</p>
+<hr>
+</hr>
+<h2>Neural Network Model</h2>
+<div>
+   A Long Short Term Memeory (LSTM) Neural Network was used to predict the weather.
+   This is a type of recurrent NN, for unlike standard feed forward NN, LSTM has feedback connections.
+   After being trained with multiple years worth of data, a model with ___ % accuracy was created.
+</div>
+<br></br>
+<div>
+   <h2>Authors</h2>
+</div>
+   <div class="row">
+      <div class="col-md-4">
+         <img src={{ url_for('static', filename='Gallery/Planet.jpg') }} alt="" data-toggle="collapse" data-target="#collapseBio1" aria-expanded="false" aria-controls="collapseExample" style="width:100%;height:100%">
+         <div class="row">
+            <div class="collapse position-absolute" id="collapseBio1">
+               <div class="card card-body">
+                  <i>Shrinivas Venkatasubramani </i> is a sophomore chemical engineering and computer
+                  science student at the University of Minnesota. He is currently exploring different fields to
+                  discover his interests.
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="col-md-4">
+         <img src={{ url_for('static', filename='Gallery/Giratina.jpg') }} alt="" data-toggle="collapse" data-target="#collapseBio2" aria-expanded="false" aria-controls="collapseExample" style="width:100%;height:100%">
+         <div class="row">
+            <div class="collapse position-absolute" id="collapseBio2">
+               <div class="card card-body">
+                  <i>Henry Dikeman </i>is an incoming senior chemical engineering student at the University of
+                  Minnesota. His passion is the development of renewable feedstocks and biochemical processes in
+                  the field of energy production.
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="col-md-4">
+         <img src={{ url_for('static', filename='Gallery/Yveltal.jpg') }} alt="" data-toggle="collapse" data-target="#collapseBio3" aria-expanded="false" aria-controls="collapseExample" style="width:100%;height:100%">
+         <div class="row">
+            <div class="collapse position-absolute" id="collapseBio3">
+               <div class="card card-body">
+                  <i>Patrick Gibbons-Peterson </i>is an incoming senior chemical engineering student at the University
+                  of Minnesota. He is interested in the intersection between chemical engineering and computer
+                  science and finds purpose in taking on sustainability oriented engineering projects.
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
 {% endblock %}
-
 {% block body %}
-
 {% endblock %}
