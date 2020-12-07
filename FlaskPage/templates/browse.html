@@ -6,6 +6,19 @@
 {% endblock %}
 
 {% block body %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm">
+      <h3>Actual Weather</h3>
+    </div>
+    <div class="col-sm">
+    </div>
+    <div class="col-sm">
+      <h3>Predicted Weather</h3>
+    </div>
+  </div>
+</div>
+
 <div class="map-container">
   <div class="img-zoom-container">
     <img id="actual-map" class="zoomed-img" src="{{ url_for('.browse_actual_img', day = date) }}" alt="Map">

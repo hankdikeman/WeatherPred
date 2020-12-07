@@ -8,7 +8,7 @@ import os
 app = Flask(__name__)
 
 # define route to static images folder
-PHOTO_FOLDER = 'testpics'
+PHOTO_FOLDER = 'maps'
 app.config['MAPS'] = PHOTO_FOLDER
 
 # the homepage that directs to browse, search, or about pages
@@ -29,10 +29,6 @@ def browse(day):
     ##
     #   Generate images and store them here
     ##
-    actual_map_filename = os.path.join(app.config['MAPS'], 'lg_mts.jpg')
-    print(actual_map_filename)
-    predicted_map_filename = os.path.join(app.config['MAPS'], 'ye.png')
-    print(predicted_map_filename)
     return render_template('browse.html', date = day)
 
 # this is stand-in functionality when image generation code is added
@@ -71,11 +67,7 @@ def search():
 # location result given from location search, loc will likely be state number
 @app.route('/search/<string:loc>/<string:day>')
 def loc_result(loc, day):
-    actual_map_filename = os.path.join(app.config['MAPS'], 'ye.png')
-    print(actual_map_filename)
-    predicted_map_filename = os.path.join(app.config['MAPS'], 'ye.png')
-    print(predicted_map_filename)
-    return render_template('search-results.html', loc_code = loc, date = day, actual_map_img = actual_map_filename, predicted_map_img = predicted_map_filename)
+    return render_template('search-results.html', loc_code = loc, date = day)
 
 # about page details more about webpage and us
 @app.route('/about')
