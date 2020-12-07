@@ -20,7 +20,7 @@ def index():
 @app.route('/browse')
 def browse_home():
     # initial browse page redirects to "tomorrow" browse page
-    today = (datetime.now()+timedelta(days = 1)).strftime("%m%d%Y")
+    today = (datetime.now()+timedelta(days = 1)).strftime("%Y-%m-%d")
     return redirect('/browse/'+today)
 
 # browse page allows users to view a map for given days
@@ -35,21 +35,21 @@ def browse(day):
 # html image url references will be replaced from static to these
 
 # browse images
-@app.route('/browse/predicted/<string:day>/map')
+@app.route('/browse/predicted/<string:day>/map', methods = ['GET'])
 def browse_pred_img(day):
     filename = 'browse-pred-map.jpg'
     return send_from_directory(app.config['MAPS'], filename)
-@app.route('/browse/actual/<string:day>/map')
+@app.route('/browse/actual/<string:day>/map', methods = ['GET'])
 def browse_actual_img(day):
     filename = 'browse-actual-map.jpg'
     return send_from_directory(app.config['MAPS'], filename)
 # search images
 # add lookup table to properly format searched maps by state
-@app.route('/search/<string:loc>/<string:day>/predicted/map')
+@app.route('/search/<string:loc>/<string:day>/predicted/map', methods = ['GET'])
 def search_pred_img(loc, day):
     filename = 'search-pred-map.jpg'
     return send_from_directory(app.config['MAPS'], filename)
-@app.route('/browse/<string:loc>/<string:day>/actual/map')
+@app.route('/browse/<string:loc>/<string:day>/actual/map', methods = ['GET'])
 def search_actual_img(loc, day):
     filename = 'search-actual-map.jpg'
     return send_from_directory(app.config['MAPS'], filename)
