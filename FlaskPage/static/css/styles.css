@@ -41,3 +41,8 @@ body {
   background-size: cover;
   background-color: #cccccc;
 }
+
+.container {
+  padding-right: 15px;
+  padding-left: 15px;
+}
