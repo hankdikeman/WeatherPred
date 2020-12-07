@@ -6,10 +6,19 @@
 {% endblock %}
 
 {% block body %}
-<div class="search-return">
-  <a href="/search" class="btn btn-primary btn-lg" role="button">Make Another Search</a>
+<div class="container">
+  <div class="row">
+    <div class="col-sm">
+      <h3>Actual Weather</h3>
+    </div>
+    <div class="col-sm">
+
+    </div>
+    <div class="col-sm">
+      <h3>Predicted Weather</h3>
+    </div>
+  </div>
 </div>
-<hr>
 <div class="map-container">
   <div class="img-zoom-container">
     <img id="actual-map" class="zoomed-img" src="{{ url_for('.search_actual_img', day = date, loc = loc_code) }}" alt="Map">
@@ -19,6 +28,10 @@
     <img id="predicted-map" class="zoomed-img" src="{{ url_for('.search_pred_img',  day = date, loc = loc_code) }}" alt="Map">
     <div id="predicted-map-zoom" class="img-zoom-result"></div>
   </div>
+</div>
+<hr>
+<div class="search-return">
+  <a href="/search" class="btn btn-primary btn-lg" role="button">Make Another Search</a>
 </div>
 
 <script>
