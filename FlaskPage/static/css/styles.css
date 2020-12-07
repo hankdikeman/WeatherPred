@@ -42,7 +42,6 @@ body {
   background-color: #cccccc;
 }
 
-<<<<<<< HEAD
 select::-ms-expand {
   display: none;
 }
@@ -115,9 +114,4 @@ select:focus + .focus {
   height: 0.5em;
   background-color: var(--select-arrow);
   clip-path: polygon(100% 0%, 0 0%, 50% 100%);
-=======
-.container {
-  padding-right: 15px;
-  padding-left: 15px;
->>>>>>> ae71c47da2ef66179a50499a20269efaf4f673de
 }

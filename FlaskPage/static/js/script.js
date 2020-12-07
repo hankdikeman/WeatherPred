@@ -54,7 +54,7 @@ function imageZoom(imgID, resultID) {
   }
 }
 
-$(document).ready(function() {
+/* $(document).ready(function() {
 
 
 $('[data-toggle="collapse"]').click(function() {
@@ -65,3 +65,4 @@ $('[data-toggle="collapse"]').click(function() {
     $(this).text("Show");
   }
 });
+*/
