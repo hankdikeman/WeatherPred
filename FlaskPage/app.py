@@ -27,7 +27,12 @@ def browse_home():
 @app.route('/browse/<string:day>')
 def browse(day):
     ##
+    #   query database to get data for day
+    ##
+
+    ##
     #   Generate images and store them here
+    #   cartopy, geoplotlib, gmplot, Folium
     ##
     return render_template('browse.html', date = day)
 
@@ -67,12 +72,25 @@ def search():
 # location result given from location search, loc will likely be state number
 @app.route('/search/<string:loc>/<string:day>')
 def loc_result(loc, day):
+    ##
+    #   query database to get data for loc and day
+    ##
+
+    ##
+    #   generate images using image library
+    #   cartopy, geoplotlib, gmplot, Folium
+    ##
     return render_template('search-results.html', loc_code = loc, date = day)
 
 # about page details more about webpage and us
 @app.route('/about')
 def about():
     return render_template('about.html')
+
+def pullWeatherData():
+    # placeholder function to query NOAA and push days data to database
+    # also removes data from one year ago
+    return 0
 
 if __name__ == "__main__":
     app.run(debug=True)
