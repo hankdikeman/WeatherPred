@@ -11,3 +11,9 @@ body {
   background-size: cover;
   background-color: #cccccc;
 }
+
+.day-slider
+{
+    width: 100% !important;
+    align-self: center;
+}

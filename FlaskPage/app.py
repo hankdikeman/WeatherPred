@@ -30,6 +30,8 @@ def forecast():
 # browse page allows users to view a map for given days
 @app.route('/forecast/<string:day>')
 def browse(day):
+    backdate = (datetime.now()-timedelta(days = 2)).strftime("%Y-%m-%d")
+    frontdate = (datetime.now()+timedelta(days = 10)).strftime("%Y-%m-%d")
     ##
     #   query database to get data for day
     ##
@@ -38,7 +40,7 @@ def browse(day):
     #   Generate images and store them here
     #   cartopy, geoplotlib, gmplot, Folium
     ##
-    return render_template('forecast.html', date = day)
+    return render_template('forecast.html', date = day, backdate = backdate, frontdate = frontdate)
 
 # this is stand-in functionality when image generation code is added
 # html image url references will be replaced from static to these
