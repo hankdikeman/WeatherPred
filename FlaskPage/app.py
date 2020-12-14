@@ -11,21 +11,27 @@ app = Flask(__name__)
 PHOTO_FOLDER = 'maps'
 app.config['MAPS'] = PHOTO_FOLDER
 
-# the homepage that directs to browse, search, or about pages
 @app.route('/')
+def base_redirect():
+    return redirect('/forecast')
+
+# the homepage that directs to browse, search, or about pages
+@app.route('/navigate')
 def index():
     return render_template('index.html')
 
 # base browse page redirects to next day by default
-@app.route('/browse')
-def browse_home():
+@app.route('/forecast')
+def forecast():
     # initial browse page redirects to "tomorrow" browse page
     today = (datetime.now()+timedelta(days = 1)).strftime("%Y-%m-%d")
-    return redirect('/browse/'+today)
+    return redirect('/forecast/'+today)
 
 # browse page allows users to view a map for given days
-@app.route('/browse/<string:day>')
+@app.route('/forecast/<string:day>')
 def browse(day):
+    backdate = (datetime.now()-timedelta(days = 2)).strftime("%Y-%m-%d")
+    frontdate = (datetime.now()+timedelta(days = 10)).strftime("%Y-%m-%d")
     ##
     #   query database to get data for day
     ##
@@ -34,53 +40,56 @@ def browse(day):
     #   Generate images and store them here
     #   cartopy, geoplotlib, gmplot, Folium
     ##
-    return render_template('browse.html', date = day)
+    return render_template('forecast.html', date = day, backdate = backdate, frontdate = frontdate)
 
 # this is stand-in functionality when image generation code is added
 # html image url references will be replaced from static to these
 
-# browse images
-@app.route('/browse/predicted/<string:day>/map', methods = ['GET'])
-def browse_pred_img(day):
-    filename = 'browse-pred-map.jpg'
-    return send_from_directory(app.config['MAPS'], filename)
-@app.route('/browse/actual/<string:day>/map', methods = ['GET'])
-def browse_actual_img(day):
-    filename = 'browse-actual-map.jpg'
+# forecast images
+@app.route('/forecast/predicted/<string:day>/map', methods = ['GET'])
+def forecast_img(day):
+    filename = 'forecast_disp_map.jpg'
+    print("getting img for forecast")
     return send_from_directory(app.config['MAPS'], filename)
 # search images
 # add lookup table to properly format searched maps by state
-@app.route('/search/<string:loc>/<string:day>/predicted/map', methods = ['GET'])
-def search_pred_img(loc, day):
-    filename = 'search-pred-map.jpg'
+@app.route('/browse/<string:loc>/<string:day>/predicted/map', methods = ['GET'])
+def browse_pred_img(loc, day):
+    print("pred " + loc + " "+ day)
+    filename = 'browse-pred-map.jpg'
     return send_from_directory(app.config['MAPS'], filename)
 @app.route('/browse/<string:loc>/<string:day>/actual/map', methods = ['GET'])
-def search_actual_img(loc, day):
-    filename = 'search-actual-map.jpg'
+def browse_actual_img(loc, day):
+    print("actual " + loc + " "+ day)
+    filename = 'browse-actual-map.jpg'
     return send_from_directory(app.config['MAPS'], filename)
 
 # search page allows searching by location, gives tabulated data
-@app.route('/search', methods = ['GET', 'POST'])
+@app.route('/browse')
 def search():
+    today = datetime.now().strftime("%Y-%m-%d")
+    return redirect('/browse/USA/'+str(today))
+
+# location result given from location search, loc will likely be state number
+@app.route('/browse/<string:loc>/<string:day>', methods = ['GET', 'POST'])
+def loc_result(loc, day):
     if request.method == 'POST':
         search_day = request.form['search-date']
         search_loc = request.form['search-loc']
-        return redirect('/search/'+str(search_loc)+'/'+str(search_day))
+        print(str(200))
+        return redirect('/browse/'+str(search_loc)+'/'+str(search_day))
     else:
-        return render_template('search.html')
+        backdate = (datetime.now()-timedelta(days = 30)).strftime("%Y-%m-%d")
+        frontdate = (datetime.now()+timedelta(days = 10)).strftime("%Y-%m-%d")
+        ##
+        #   query database to get data for loc and day
+        ##
 
-# location result given from location search, loc will likely be state number
-@app.route('/search/<string:loc>/<string:day>')
-def loc_result(loc, day):
-    ##
-    #   query database to get data for loc and day
-    ##
-
-    ##
-    #   generate images using image library
-    #   cartopy, geoplotlib, gmplot, Folium
-    ##
-    return render_template('search-results.html', loc_code = loc, date = day)
+        ##
+        #   generate images using image library
+        #   cartopy, geoplotlib, gmplot, Folium
+        ##
+        return render_template('browse.html', loc_code = loc, date = day, backdate = backdate, frontdate = frontdate)
 
 # about page details more about webpage and us
 @app.route('/about')
