@@ -57,7 +57,13 @@ def LSTM_Format(filename, x_nodes, y_nodes, day_num):
 
 def LSTM_Format2(filename, x_nodes, y_nodes, day_num, day_prior):
     # import temp data from csv
-    rawdata = np.genfromtxt(filename, delimiter = ',')[:,:-1]
+    rawdata = np.genfromtxt(filename, delimiter = ',')[:,:-4]
+    print(np.shape(rawdata))
+    print(np.amax(rawdata))
+    print(np.amin(rawdata))
+    print(rawdata[:,0])
+    flatdata = np.sort(rawdata, axis = None)
+    print(flatdata[-10:-1])
     # get shape of raw data
     rows,cols = np.shape(rawdata)
     # sample index

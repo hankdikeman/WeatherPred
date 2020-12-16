@@ -15,8 +15,8 @@ plt.style.use('seaborn-white')
 ###
 print('preprocessing data')
 # constants for data processing
-filename = "../../Desktop/MNTrainData.csv"
-x_nodes,y_nodes = (50,50)
+filename = "../../Desktop/USTrainDataV2.csv"
+x_nodes,y_nodes = (100,175)
 day_num = 4
 days_prior = 1
 # pull and format data from CSV
