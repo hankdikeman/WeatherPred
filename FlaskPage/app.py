@@ -2,6 +2,7 @@
 from flask import Flask, render_template, request, redirect, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
+import folium
 import os
 
 # declare app
@@ -36,10 +37,10 @@ def browse(day):
     #   query database to get data for day
     ##
 
-    ##
-    #   Generate images and store them here
-    #   cartopy, geoplotlib, gmplot, Folium
-    ##
+    start_coords = (46.9540700, 142.7360300)
+    folium_map = folium.Map(location=start_coords, zoom_start=14, height = '75%')
+    folium_map.save('templates/forecastmap.html')
+
     return render_template('forecast.html', date = day, backdate = backdate, frontdate = frontdate)
 
 # this is stand-in functionality when image generation code is added

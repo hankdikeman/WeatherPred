@@ -1,3 +1,4 @@
 .DS_Store
 TrainedModels/
 __pycache__/
+FlaskPage/templates/forecastmap.html
