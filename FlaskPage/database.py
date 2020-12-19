@@ -38,15 +38,12 @@ if __name__ == "__main__":
         file_name = "/Trail CSV/MNTrainData.csv" #sample CSV file used:
         data = Load_Data(file_name)
 
-        for r in data:
+        for i in data:
             record = Weather_History(**{
-            for c in record:
-                'x_coordinate : r
-                'y_coordinate : c
-                'temperature : r[c]
+                'temperature : [i]
                 s.add(record) #Add all the records
             })
-            c = 0            
+            c = 0
 
         s.commit() #Attempt to commit all the records
     except:
