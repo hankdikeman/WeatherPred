@@ -3,7 +3,10 @@ from flask import Flask, render_template, request, redirect, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 import folium
+from folium import plugins
 import os
+import numpy as np
+
 
 # Longitude
 xcords = (-125, -60)
@@ -14,6 +17,17 @@ VERT_DIMS = 100
 
 lat_vals= np.arange(ycords[0], ycords[1], (ycords[1]-ycords[0])/VERT_DIMS)
 lon_vals= np.arange(xcords[0], xcords[1], (xcords[1]-xcords[0])/HORZ_DIMS)
+
+def display_format(csv_line):
+    disp = np.empty(shape = (HORZ_DIMS*VERT_DIMS, 3))
+    count = 0
+    for lats in lat_vals:
+        for lons in lon_vals:
+            disp[count, 0] = lats
+            disp[count, 1] = lons
+            disp[count, 2] = csv_line[count]
+            count += 1
+    return disp
 
 # declare app
 app = Flask(__name__)
@@ -35,7 +49,7 @@ def index():
 @app.route('/forecast')
 def forecast():
     # initial browse page redirects to "tomorrow" browse page
-    today = (datetime.now()+timedelta(days = 1)).strftime("%Y-%m-%d")
+    today = (datetime.now()+timedelta(days = 3)).strftime("%Y-%m-%d")
     return redirect('/forecast/'+today)
 
 # browse page allows users to view a map for given days
@@ -46,10 +60,17 @@ def browse(day):
     ##
     #   query database to get data for day
     ##
+    csv_line= np.genfromtxt('/Users/patrickgibbons/Desktop/WeatherData/USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[100,:-4]
+    csv_line = np.reshape(csv_line, newshape = (17500))
+    forecastdata = display_format(csv_line)
 
-    start_coords = (46.9540700, 142.7360300)
-    folium_map = folium.Map(location=start_coords, zoom_start=14, height = '75%')
+
+    start_coords = (45, -93)
+    folium_map = folium.Map(location=start_coords, zoom_start=1, height = '75%')
+
+    folium_map.add_children(plugins.HeatMap(forecastdata, radius = 100, blur = 15))
     folium_map.save('templates/forecastmap.html')
+
 
     return render_template('forecast.html', date = day, backdate = backdate, frontdate = frontdate)
 
@@ -114,13 +135,3 @@ def pullWeatherData():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-def display_format(csv_line):
-    disp = np.empty(shape = (17500, 3))
-    count = 0
-    for lats in lat_vals:
-        for lons in lon_vals:
-            disp[count, 0] = lats
-            disp[count, 1] = lons
-            disp[count, 2] = csv_line[count]
-            count += 1
