@@ -18,8 +18,7 @@ class Weather_History(Base):
     __tablename__ = 'Weather_History'
     __table_args__ = {'sqlite_autoincrement': True}
     #tell SQLAlchemy the name of column and its attributes:
-    x_coordinate = Column(Integer, primary_key=True, nullable=False)
-    y_coordinate = Column(Integer, nullable=False)
+    day = Column(Integer, primary_key=True, nullable=False)
     temperature = Column(Integer, nullable=False)
 
 if __name__ == "__main__":
@@ -38,12 +37,8 @@ if __name__ == "__main__":
         file_name = "/Trail CSV/MNTrainData.csv" #sample CSV file used:
         data = Load_Data(file_name)
 
-        for r in data:
-            record = Weather_History(**{
-            for c in record:
-                'x_coordinate : r
-                'y_coordinate : c
-                'temperature : r[c]
+        for r in data:                
+                'temperature : [i]
                 s.add(record) #Add all the records
             })
             c = 0
