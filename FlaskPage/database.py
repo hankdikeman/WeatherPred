@@ -1,10 +1,13 @@
-from flask import Flask, render_template, request, redirect, send_from_directory
-from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime, timedelta
+from numpy import genfromtxt
+from time import time
+from datetime import datetime
+from sqlalchemy import Column, Integer, Float, Date
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///weather.db'
-db = SQLAlchemy(app)
+#database.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///weather.db'
+#db = SQLAlchemy(database)
 
 # Check if there is a header in csv file.
 def Load_Data(file_name):
@@ -18,9 +21,11 @@ class Weather_History(Base):
     __tablename__ = 'Weather_History'
     __table_args__ = {'sqlite_autoincrement': True}
     #tell SQLAlchemy the name of column and its attributes:
-    x_coordinate = Column(Integer, primary_key=True, nullable=False)
-    y_coordinate = Column(Integer, nullable=False)
-    temperature = Column(Integer, nullable=False)
+    id = Column(Integer, primary_key=True, nullable=False)
+    day =  Column(Integer, nullable=False)
+    month =  Column(Integer, nullable=False)
+    year =  Column(Integer, nullable=False)
+    temperature = Column(Text, nullable=False)
 
 if __name__ == "__main__":
     t = time()
@@ -35,15 +40,17 @@ if __name__ == "__main__":
     s = session()
 
     try:
-        file_name = "/Trail CSV/MNTrainData.csv" #sample CSV file used:
-        data = Load_Data(file_name)
+        #file_name = "/Trail CSV/MNTrainData.csv" #sample CSV file used:
+
 
         for i in data:
             record = Weather_History(**{
-                'temperature : [i]
-                s.add(record) #Add all the records
+                'day' : i[0]
+                'month' : i[1]
+                'year' : i[2]
+                'temp' : i
             })
-            c = 0
+            s.add(record) #Add all the records
 
         s.commit() #Attempt to commit all the records
     except:
