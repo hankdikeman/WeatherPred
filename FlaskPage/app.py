@@ -5,6 +5,16 @@ from datetime import datetime, timedelta
 import folium
 import os
 
+# Longitude
+xcords = (-125, -60)
+HORZ_DIMS = 175
+# Latitude
+ycords = (25, 50)
+VERT_DIMS = 100
+
+lat_vals= np.arange(ycords[0], ycords[1], (ycords[1]-ycords[0])/VERT_DIMS)
+lon_vals= np.arange(xcords[0], xcords[1], (xcords[1]-xcords[0])/HORZ_DIMS)
+
 # declare app
 app = Flask(__name__)
 
@@ -104,3 +114,13 @@ def pullWeatherData():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+def display_format(csv_line):
+    disp = np.empty(shape = (17500, 3))
+    count = 0
+    for lats in lat_vals:
+        for lons in lon_vals:
+            disp[count, 0] = lats
+            disp[count, 1] = lons
+            disp[count, 2] = csv_line[count]
+            count += 1
