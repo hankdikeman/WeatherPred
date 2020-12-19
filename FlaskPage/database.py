@@ -41,14 +41,20 @@ if __name__ == "__main__":
 
     try:
         #file_name = "/Trail CSV/MNTrainData.csv" #sample CSV file used:
+        csv_line= np.genfromtxt('/Users/patrickgibbons/Desktop/WeatherData/USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[-30:,:-1]
 
-
-        for i in data:
+        for row in range(np.shape(csv_line)[0]):
+            concat_str = []
+            for col in range(np.shape(csv_line)[1]-3):
+                concat_str.append(str(csv_line[row,col]))
+                concat_str.append(',')
+            concat_str.pop()
+            # save entry date into db
             record = Weather_History(**{
-                'day' : i[0]
-                'month' : i[1]
-                'year' : i[2]
-                'temp' : i
+                'day' : csv_line[-1]
+                'month' : csv_line[-2]
+                'year' : csv_line[-3]
+                'temperature' : ''.join(concat_str)
             })
             s.add(record) #Add all the records
 
