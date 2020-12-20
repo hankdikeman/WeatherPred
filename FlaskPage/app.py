@@ -25,7 +25,7 @@ def display_format(csv_line):
         for lons in lon_vals:
             disp[count, 0] = lats
             disp[count, 1] = lons
-            disp[count, 2] = csv_line[count]
+            disp[count, 2] = (csv_line[count]+50)/2
             count += 1
     return disp
 
@@ -49,7 +49,7 @@ def index():
 @app.route('/forecast')
 def forecast():
     # initial browse page redirects to "tomorrow" browse page
-    today = (datetime.now()+timedelta(days = 3)).strftime("%Y-%m-%d")
+    today = (datetime.now()+timedelta(days = 8)).strftime("%Y-%m-%d")
     return redirect('/forecast/'+today)
 
 # browse page allows users to view a map for given days
@@ -65,10 +65,10 @@ def browse(day):
     forecastdata = display_format(csv_line)
 
 
-    start_coords = (45, -93)
-    folium_map = folium.Map(location=start_coords, zoom_start=1, height = '75%')
+    start_coords = (39.8, -98.6)
+    folium_map = folium.Map(location=start_coords, zoom_start = 4, height = '75%')
 
-    folium_map.add_children(plugins.HeatMap(forecastdata, radius = 100, blur = 15))
+    folium_map.add_children(plugins.HeatMap(forecastdata, radius = 15, min_opacity = 0))
     folium_map.save('templates/forecastmap.html')
 
 
