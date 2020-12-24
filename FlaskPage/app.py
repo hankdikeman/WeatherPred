@@ -25,35 +25,39 @@ VERT_DIMS = 100
 start_coords = (39.8, -98.6)
 # generate lists of sample points
 lat_vals= np.arange(ycords[0], ycords[1], (ycords[1]-ycords[0])/VERT_DIMS)
-lon_vals= np.arange(xcords[0], xcords[1], (xcords[1]-xcords[0])/HORZ_DIMS)
+long_vals= np.arange(xcords[0], xcords[1], (xcords[1]-xcords[0])/HORZ_DIMS)
 
+# function to generate three 1D lists of weather data: lat, long, and temps
 def display_format(data_line):
     # three empty 1D lists
     long = np.empty(shape = (HORZ_DIMS*VERT_DIMS))
     lat = np.empty(shape = (HORZ_DIMS*VERT_DIMS))
     temps = np.empty(shape = (HORZ_DIMS*VERT_DIMS))
-    # assign values to list
+    # assign values to list (lat, long, and temp)
     count = 0
     for lats in lat_vals:
-        for lons in lon_vals:
+        for lons in long_vals:
             long[count] = lons
             lat[count] = lats
             temps[count] = (data_line[count])
             count += 1
+    # return collected values
     return long,lat,temps
 
+# function to generate folium map with heatmap layer, takes in 1D lists of: long, lat, temps
 def gen_folium_map(longitude, latitude, data_line):
-    # make meshes
-    longmesh,latmesh = np.meshgrid(lat_vals, lon_vals)
+    # make meshes of longitude and latitude values (100,175)
+    longmesh,latmesh = np.meshgrid(long_vals, lat_vals)
     # make initial folium map
-    folium_map = folium.Map(location=start_coords, zoom_start = 4, height = '75%')
-    # make temperature mesh more dense
-    temp_mesh = griddata((longitude, latitude), data_line, (longmesh, latmesh), method = 'linear')
-    # generate matplotlib contour plot
+    folium_map = folium.Map(location = start_coords, zoom_start = 4, height = '75%')
+    # generate temperature mesh to match latitude and longitude meshes
+    temp_mesh = np.reshape(data_line, newshape = (VERT_DIMS, HORZ_DIMS))
+    # temp_mesh = griddata((longitude, latitude), data_line, (longmesh, latmesh), method = 'linear')
+    # generate matplotlib contour plot from lat, long, and temp meshes
     fig = Figure()
     ax = fig.add_subplot(111)
-    temp_contour = ax.contourf(longmesh, latmesh, temp_mesh, alpha = 0.5, linestyles = 'None', vmin = 0, vmax = 100)
-    # generate geojson list
+    temp_contour = ax.contourf(longmesh, latmesh, temp_mesh, alpha = 0.7, linestyles = 'None', vmin = 0, vmax = 100)
+    # generate geojson data from contour plot
     temp_geojson = geojsoncontour.contourf_to_geojson(
                         contourf = temp_contour,
                         min_angle_deg = 3.0,
@@ -61,7 +65,7 @@ def gen_folium_map(longitude, latitude, data_line):
                         stroke_width = 1,
                         fill_opacity = 0.5
                         )
-    # make folium layer
+    # generate folium chloropleth and add to previously created map
     folium.GeoJson(
         temp_geojson,
         style_function=lambda x: {
@@ -70,8 +74,8 @@ def gen_folium_map(longitude, latitude, data_line):
             'fillColor':    x['properties']['fill'],
             'opacity':      0.6
         }).add_to(folium_map)
+    # return map
     return folium_map
-
 
 # declare app
 app = Flask(__name__)
@@ -104,16 +108,18 @@ def browse(day):
     ##
     #   query database to get data for day
     ##
-    # pull one line from csv
-    # three lists from csv line for lat, long, and temp
+
+    # pull line from csv and reformat to 1D (17500)
     data_line= np.genfromtxt('USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[100,:-4]
     data_line = np.reshape(data_line, newshape = (17500))
-    # couple with latitude and longitude data
+
+    # couple with latitude and longitude data, save to arrays
     long_data,lat_data,temp_data = display_format(data_line)
 
-    # generate folium map from function
+    # generate folium map from three arrays: longitude, latitude, and temps
     folium_map = gen_folium_map(longitude = long_data, latitude = lat_data, data_line = temp_data)
 
+    # save folium map to templates folder (included in browse.html)
     folium_map.save('templates/forecastmap.html')
     return render_template('forecast.html', date = day, backdate = backdate, frontdate = frontdate)
 
