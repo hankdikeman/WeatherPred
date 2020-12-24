@@ -1,19 +1,20 @@
-# import Flask and SQLAlchemy
+# import packages
 import matplotlib as mpl
-from matplotlib.figure import Figure
 mpl.use('Agg')
+from matplotlib.figure import Figure
 from flask import Flask, render_template, request, redirect, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 import folium
-from folium import plugins
 import os
 import numpy as np
-import matplotlib.pyplot as plt
-from scipy.interpolate import griddata
 import geojsoncontour
-# reset matplotlib so it doesn't open popups
+from scipy.ndimage import gaussian_filter
 
+# print current time for timing code throughput
+def printTime(chunk):
+    currTime = datetime.now().time()
+    print(chunk + ": " + currTime)
 
 # Longitude
 xcords = (-125, -60)
@@ -52,11 +53,20 @@ def gen_folium_map(longitude, latitude, data_line):
     folium_map = folium.Map(location = start_coords, zoom_start = 4, height = '75%')
     # generate temperature mesh to match latitude and longitude meshes
     temp_mesh = np.reshape(data_line, newshape = (VERT_DIMS, HORZ_DIMS))
-    # temp_mesh = griddata((longitude, latitude), data_line, (longmesh, latmesh), method = 'linear')
+    # gaussian filter to smooth out data
+    temp_mesh = gaussian_filter(temp_mesh, sigma = 2)
     # generate matplotlib contour plot from lat, long, and temp meshes
     fig = Figure()
     ax = fig.add_subplot(111)
-    temp_contour = ax.contourf(longmesh, latmesh, temp_mesh, alpha = 0.7, linestyles = 'None', vmin = 0, vmax = 100)
+    temp_contour = ax.contourf(
+                        longmesh,
+                        latmesh,
+                        temp_mesh,
+                        alpha = 0.7,
+                        linestyles = 'None',
+                        vmin = 0, vmax = 100,
+                        cmap = 'gist_ncar'
+                        )
     # generate geojson data from contour plot
     temp_geojson = geojsoncontour.contourf_to_geojson(
                         contourf = temp_contour,
@@ -110,7 +120,7 @@ def browse(day):
     ##
 
     # pull line from csv and reformat to 1D (17500)
-    data_line= np.genfromtxt('USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[100,:-4]
+    data_line= np.genfromtxt('USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[320,:-4]
     data_line = np.reshape(data_line, newshape = (17500))
 
     # couple with latitude and longitude data, save to arrays
