@@ -1,4 +1,7 @@
 # import Flask and SQLAlchemy
+import matplotlib as mpl
+from matplotlib.figure import Figure
+# mpl.use('Agg')
 from flask import Flask, render_template, request, redirect, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
@@ -6,6 +9,10 @@ import folium
 from folium import plugins
 import os
 import numpy as np
+import matplotlib.pyplot as plt
+from scipy.interpolate import griddata
+import geojsoncontour
+# reset matplotlib so it doesn't open popups
 
 
 # Longitude
@@ -14,20 +21,74 @@ HORZ_DIMS = 175
 # Latitude
 ycords = (25, 50)
 VERT_DIMS = 100
-
+# start coords
+start_coords = (39.8, -98.6)
+# generate lists of sample points
 lat_vals= np.arange(ycords[0], ycords[1], (ycords[1]-ycords[0])/VERT_DIMS)
 lon_vals= np.arange(xcords[0], xcords[1], (xcords[1]-xcords[0])/HORZ_DIMS)
 
-def display_format(csv_line):
-    disp = np.empty(shape = (HORZ_DIMS*VERT_DIMS, 3))
+def display_format(data_line):
+    # three empty 1D lists
+    long = np.empty(shape = (HORZ_DIMS*VERT_DIMS))
+    lat = np.empty(shape = (HORZ_DIMS*VERT_DIMS))
+    temps = np.empty(shape = (HORZ_DIMS*VERT_DIMS))
+    # assign values to list
     count = 0
     for lats in lat_vals:
         for lons in lon_vals:
-            disp[count, 0] = lats
-            disp[count, 1] = lons
-            disp[count, 2] = (csv_line[count]+50)/2
+            long[count] = lons
+            lat[count] = lats
+            temps[count] = (data_line[count])
             count += 1
-    return disp
+    print(temps[1200:1230])
+    return long,lat,temps
+
+def gen_folium_map(longitude, latitude, data_line):
+    print("2nd long shape " + str(np.shape(longitude)))
+    print("2nd lat shape " + str(np.shape(latitude)))
+    print("2nd temp shape " + str(np.shape(data_line)))
+    print(longitude[1200:1230])
+    print(latitude[1200:1230])
+    print(data_line[1200:1230])
+    print(np.sum(data_line))
+    for dp in data_line:
+        print(dp)
+    # make meshes
+    longmesh,latmesh = np.meshgrid(lat_vals, lon_vals)
+    # make initial folium map
+    folium_map = folium.Map(location=start_coords, zoom_start = 4, height = '75%')
+    # make temperature mesh more dense
+    print("error1")
+    temp_mesh = griddata((longitude, latitude), data_line, (longmesh, latmesh), method = 'linear')
+    print(np.shape(temp_mesh))
+    print(np.shape(longmesh))
+    print(np.shape(latmesh))
+    # generate matplotlib contour plot
+    print("error2")
+    fig = Figure()
+    ax = fig.add_subplot(111)
+    temp_contour = ax.contourf(longmesh, latmesh, temp_mesh, alpha = 0.5, linestyles = 'None', vmin = 0, vmax = 100)
+    # generate geojson list
+    print("error3")
+    temp_geojson = geojsoncontour.contourf_to_geojson(
+                        contourf = temp_contour,
+                        min_angle_deg = 3.0,
+                        ndigits = 5,
+                        stroke_width = 1,
+                        fill_opacity = 0.5
+                        )
+    # make folium layer
+    print('error4')
+    folium.GeoJson(
+        temp_geojson,
+        style_function=lambda x: {
+            'color':        x['properties']['stroke'],
+            'weight':       x['properties']['stroke-width'],
+            'fillColor':    x['properties']['fill'],
+            'opacity':      0.6
+        }).add_to(folium_map)
+    return folium_map
+
 
 # declare app
 app = Flask(__name__)
@@ -49,7 +110,7 @@ def index():
 @app.route('/forecast')
 def forecast():
     # initial browse page redirects to "tomorrow" browse page
-    today = (datetime.now()+timedelta(days = 8)).strftime("%Y-%m-%d")
+    today = (datetime.now()+timedelta(days = 1)).strftime("%Y-%m-%d")
     return redirect('/forecast/'+today)
 
 # browse page allows users to view a map for given days
@@ -60,18 +121,18 @@ def browse(day):
     ##
     #   query database to get data for day
     ##
-    csv_line= np.genfromtxt('/Users/patrickgibbons/Desktop/WeatherData/USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[100,:-4]
-    csv_line = np.reshape(csv_line, newshape = (17500))
-    forecastdata = display_format(csv_line)
+    # pull one line from csv
+    # three lists from csv line for lat, long, and temp
+    long_data,lat_data,temp_data = display_format(data_line)
 
+    print("1st long shape " + str(np.shape(long_data)))
+    print("1st lat shape " + str(np.shape(lat_data)))
+    print("1st temp shape " + str(np.shape(temp_data)))
 
-    start_coords = (39.8, -98.6)
-    folium_map = folium.Map(location=start_coords, zoom_start = 4, height = '75%')
+    # generate folium map from function
+    folium_map = gen_folium_map(longitude = long_data, latitude = lat_data, data_line = temp_data)
 
-    folium_map.add_children(plugins.HeatMap(forecastdata, radius = 15, min_opacity = 0))
     folium_map.save('templates/forecastmap.html')
-
-
     return render_template('forecast.html', date = day, backdate = backdate, frontdate = frontdate)
 
 # this is stand-in functionality when image generation code is added
