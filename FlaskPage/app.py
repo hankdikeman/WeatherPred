@@ -11,6 +11,7 @@ import numpy as np
 import geojsoncontour
 import json
 from scipy.ndimage import gaussian_filter
+import branca
 
 # print current time for timing code throughput
 def printTime(chunk):
@@ -52,6 +53,13 @@ def display_format(data_line):
 # function to generate folium map with heatmap layer, takes in 1D lists of: long, lat, temps
 def gen_folium_map(longitude, latitude, data_line, zoomstart = 4, startcords = start_coords, mapheight = '75%'):
     printTime("top gen folmap")
+    # Setup colormap
+    colors = ['#26195e', '#024c7a', '#185110', '#abdda4', '#F2F29E', '#eac5a1', '#cc7475']
+    vmin = 0
+    vmax = 100
+    levels = len(colors)
+    color_map = branca.colormap.LinearColormap(colors, vmin=vmin, vmax=vmax).to_step(levels)
+    color_map.caption = 'Temperature (F)'
     # make meshes of longitude and latitude values (100,175)
     longmesh,latmesh = np.meshgrid(long_vals, lat_vals)
     # make initial folium map
@@ -70,7 +78,7 @@ def gen_folium_map(longitude, latitude, data_line, zoomstart = 4, startcords = s
                         alpha = 0.7,
                         linestyles = 'None',
                         vmin = 0, vmax = 100,
-                        cmap = 'gist_ncar'
+                        colors = colors
                         )
     # generate geojson data from contour plot
     temp_geojson = geojsoncontour.contourf_to_geojson(
@@ -89,6 +97,11 @@ def gen_folium_map(longitude, latitude, data_line, zoomstart = 4, startcords = s
             'fillColor':    x['properties']['fill'],
             'opacity':      0.6
         }).add_to(folium_map)
+
+
+    # Combine folium and color map
+    folium_map.add_child(color_map)
+
     # return map
     printTime("bot gen folmap")
     return folium_map
@@ -163,7 +176,7 @@ def browse(day):
     printTime("start load")
     printTime("start open data")
     # pull line from csv and reformat to 1D (17500)
-    data_line= np.genfromtxt('USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[390,:-4]
+    data_line= np.genfromtxt('/Users/patrickgibbons/Desktop/WeatherData/USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[390,:-4]
     data_line = np.reshape(data_line, newshape = (17500))
     printTime("end open data")
 
@@ -219,7 +232,7 @@ def loc_result(loc, day):
         ##
 
         # pull two days of data from csv
-        data_line = np.genfromtxt('USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[320:322,:-4]
+        data_line = np.genfromtxt('/Users/patrickgibbons/Desktop/WeatherData/USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[320:322,:-4]
         pred_day = np.reshape(data_line[0,:], newshape = (17500))
         actual_day = np.reshape(data_line[1,:], newshape = (17500))
 
