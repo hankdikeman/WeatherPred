@@ -30,6 +30,10 @@ start_coords = (39.8, -98.6)
 # generate lists of sample points
 lat_vals= np.arange(ycords[0], ycords[1], (ycords[1]-ycords[0])/VERT_DIMS)
 long_vals= np.arange(xcords[0], xcords[1], (xcords[1]-xcords[0])/HORZ_DIMS)
+# load pickled mask arrays
+filter_data_mask = np.empty(shape = (VERT_DIMS,HORZ_DIMS))
+with open('static/no_stations_mask.npy', 'rb') as filename:
+        filter_data_mask = np.load(filename)
 
 # function to generate three 1D lists of weather data: lat, long, and temps
 def display_format(data_line):
@@ -67,7 +71,10 @@ def gen_folium_map(longitude, latitude, data_line, zoomstart = 4, startcords = s
     # generate temperature mesh to match latitude and longitude meshes
     temp_mesh = np.reshape(data_line, newshape = (VERT_DIMS, HORZ_DIMS))
     # gaussian filter to smooth out data
-    temp_mesh = gaussian_filter(temp_mesh, sigma = 2)
+    # temp_mesh = gaussian_filter(temp_mesh, sigma = 2)
+    temp_mesh = gaussian_filter(temp_mesh * filter_data_mask, sigma=2)
+    temp_mesh /= gaussian_filter(filter_data_mask, sigma=2)
+    temp_mesh[np.logical_not(filter_data_mask)] = np.nan
     # generate matplotlib contour plot from lat, long, and temp meshes
     fig = Figure()
     ax = fig.add_subplot(111)
@@ -176,7 +183,7 @@ def browse(day):
     printTime("start load")
     printTime("start open data")
     # pull line from csv and reformat to 1D (17500)
-    data_line= np.genfromtxt('/Users/patrickgibbons/Desktop/WeatherData/USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[390,:-4]
+    data_line= np.genfromtxt('USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[390,:-4]
     data_line = np.reshape(data_line, newshape = (17500))
     printTime("end open data")
 
@@ -232,7 +239,7 @@ def loc_result(loc, day):
         ##
 
         # pull two days of data from csv
-        data_line = np.genfromtxt('/Users/patrickgibbons/Desktop/WeatherData/USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[320:322,:-4]
+        data_line = np.genfromtxt('USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[320:322,:-4]
         pred_day = np.reshape(data_line[0,:], newshape = (17500))
         actual_day = np.reshape(data_line[1,:], newshape = (17500))
 
