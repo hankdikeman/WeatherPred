@@ -26,16 +26,13 @@
   </div>
 </div>
 
-{% include "actual_browsemap.html" %}
-{% include "pred_browsemap.html" %}
-
 <div class="container">
   <div class="row">
     <div class="col-6">
-      <br>
+      <iframe style="border: none;" class="map", src="{{ url_for('.browse_actual_map') }}" width="100%" height="500px"></iframe>
     </div>
     <div class="col-6">
-      <br>
+      <iframe style="border: none;" class="map", src="{{ url_for('.browse_pred_map') }}" width="100%" height="500px"></iframe>
     </div>
   </div>
 </div>
