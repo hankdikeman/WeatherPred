@@ -26,13 +26,16 @@
   </div>
 </div>
 
+{% include "actual_browsemap.html" %}
+{% include "pred_browsemap.html" %}
+
 <div class="container">
   <div class="row">
     <div class="col-6">
-      <img id="actual-map" class="browse-img" src="{{ url_for('.browse_actual_img', day = date, loc = loc_code) }}" alt="Map">
+      <br>
     </div>
     <div class="col-6">
-      <img id="predicted-map" class="browse-img" src="{{ url_for('.browse_pred_img', day = date, loc = loc_code) }}" alt="Map">
+      <br>
     </div>
   </div>
 </div>

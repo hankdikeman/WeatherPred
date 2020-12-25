@@ -14,7 +14,7 @@ from scipy.ndimage import gaussian_filter
 # print current time for timing code throughput
 def printTime(chunk):
     currTime = datetime.now().time()
-    print(chunk + ": " + currTime)
+    print(chunk + ": ", currTime)
 
 # Longitude
 xcords = (-125, -60)
@@ -30,6 +30,7 @@ long_vals= np.arange(xcords[0], xcords[1], (xcords[1]-xcords[0])/HORZ_DIMS)
 
 # function to generate three 1D lists of weather data: lat, long, and temps
 def display_format(data_line):
+    printTime("top disp output")
     # three empty 1D lists
     long = np.empty(shape = (HORZ_DIMS*VERT_DIMS))
     lat = np.empty(shape = (HORZ_DIMS*VERT_DIMS))
@@ -43,14 +44,16 @@ def display_format(data_line):
             temps[count] = (data_line[count])
             count += 1
     # return collected values
+    printTime("bot disp output")
     return long,lat,temps
 
 # function to generate folium map with heatmap layer, takes in 1D lists of: long, lat, temps
-def gen_folium_map(longitude, latitude, data_line):
+def gen_folium_map(longitude, latitude, data_line, zoomstart = 4, startcords = start_coords, mapheight = '75%'):
+    printTime("top gen folmap")
     # make meshes of longitude and latitude values (100,175)
     longmesh,latmesh = np.meshgrid(long_vals, lat_vals)
     # make initial folium map
-    folium_map = folium.Map(location = start_coords, zoom_start = 4, height = '75%')
+    folium_map = folium.Map(location = startcords, zoom_start = zoomstart, height = '75%')
     # generate temperature mesh to match latitude and longitude meshes
     temp_mesh = np.reshape(data_line, newshape = (VERT_DIMS, HORZ_DIMS))
     # gaussian filter to smooth out data
@@ -85,6 +88,7 @@ def gen_folium_map(longitude, latitude, data_line):
             'opacity':      0.6
         }).add_to(folium_map)
     # return map
+    printTime("bot gen folmap")
     return folium_map
 
 # declare app
@@ -118,10 +122,12 @@ def browse(day):
     ##
     #   query database to get data for day
     ##
-
+    printTime("start load")
+    printTime("start open data")
     # pull line from csv and reformat to 1D (17500)
     data_line= np.genfromtxt('USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[320,:-4]
     data_line = np.reshape(data_line, newshape = (17500))
+    printTime("end open data")
 
     # couple with latitude and longitude data, save to arrays
     long_data,lat_data,temp_data = display_format(data_line)
@@ -129,31 +135,34 @@ def browse(day):
     # generate folium map from three arrays: longitude, latitude, and temps
     folium_map = gen_folium_map(longitude = long_data, latitude = lat_data, data_line = temp_data)
 
+    printTime("start save map")
     # save folium map to templates folder (included in browse.html)
     folium_map.save('templates/forecastmap.html')
+    printTime("end save map")
+    printTime("end load")
     return render_template('forecast.html', date = day, backdate = backdate, frontdate = frontdate)
 
 # this is stand-in functionality when image generation code is added
 # html image url references will be replaced from static to these
 
 # forecast images
-@app.route('/forecast/predicted/<string:day>/map', methods = ['GET'])
-def forecast_img(day):
-    filename = 'forecast_disp_map.jpg'
-    print("getting img for forecast")
-    return send_from_directory(app.config['MAPS'], filename)
-# search images
-# add lookup table to properly format searched maps by state
-@app.route('/browse/<string:loc>/<string:day>/predicted/map', methods = ['GET'])
-def browse_pred_img(loc, day):
-    print("pred " + loc + " "+ day)
-    filename = 'browse-pred-map.jpg'
-    return send_from_directory(app.config['MAPS'], filename)
-@app.route('/browse/<string:loc>/<string:day>/actual/map', methods = ['GET'])
-def browse_actual_img(loc, day):
-    print("actual " + loc + " "+ day)
-    filename = 'browse-actual-map.jpg'
-    return send_from_directory(app.config['MAPS'], filename)
+# @app.route('/forecast/predicted/<string:day>/map', methods = ['GET'])
+# def forecast_img(day):
+#     filename = 'forecast_disp_map.jpg'
+#     print("getting img for forecast")
+#     return send_from_directory(app.config['MAPS'], filename)
+# # search images
+# # add lookup table to properly format searched maps by state
+# @app.route('/browse/<string:loc>/<string:day>/predicted/map', methods = ['GET'])
+# def browse_pred_img(loc, day):
+#     print("pred " + loc + " "+ day)
+#     filename = 'browse-pred-map.jpg'
+#     return send_from_directory(app.config['MAPS'], filename)
+# @app.route('/browse/<string:loc>/<string:day>/actual/map', methods = ['GET'])
+# def browse_actual_img(loc, day):
+#     print("actual " + loc + " "+ day)
+#     filename = 'browse-actual-map.jpg'
+#     return send_from_directory(app.config['MAPS'], filename)
 
 # search page allows searching by location, gives tabulated data
 @app.route('/browse')
@@ -180,6 +189,33 @@ def loc_result(loc, day):
         #   generate images using image library
         #   cartopy, geoplotlib, gmplot, Folium
         ##
+
+        # pull two days of data from csv
+        data_line = np.genfromtxt('USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[320:322,:-4]
+        pred_day = np.reshape(data_line[0,:], newshape = (17500))
+        actual_day = np.reshape(data_line[1,:], newshape = (17500))
+
+        # generate longitude, latitude and temperature lists
+        long_data,lat_data,pred_data = display_format(pred_day)
+        __,__,actual_data = display_format(actual_day)
+
+        # generate folium html from
+        pred_map = gen_folium_map(
+                        longitude = long_data,
+                        latitude = lat_data,
+                        data_line = pred_data,
+                        mapheight = '20%'
+                        )
+        pred_map.save('templates/pred_browsemap.html')
+
+        actual_map = gen_folium_map(
+                        longitude = long_data,
+                        latitude = lat_data,
+                        data_line = actual_data,
+                        mapheight = '20%'
+                        )
+        actual_map.save('templates/actual_browsemap.html')
+
         return render_template('browse.html', loc_code = loc, date = day, backdate = backdate, frontdate = frontdate)
 
 # about page details more about webpage and us

@@ -2,3 +2,5 @@
 TrainedModels/
 __pycache__/
 FlaskPage/templates/forecastmap.html
+FlaskPage/templates/actual_browsemap.html
+FlaskPage/templates/pred_browsemap.html
