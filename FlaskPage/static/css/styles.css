@@ -17,3 +17,13 @@ body {
     width: 100% !important;
     align-self: center;
 }
+
+.border iframe {
+    border: none;
+    width: 300px;
+    height: 100px;
+    margin: 0;
+    padding: 0;
+    opacity: 0.8;
+    display:block; /* Add this */
+}

@@ -142,27 +142,17 @@ def browse(day):
     printTime("end load")
     return render_template('forecast.html', date = day, backdate = backdate, frontdate = frontdate)
 
-# this is stand-in functionality when image generation code is added
-# html image url references will be replaced from static to these
-
-# forecast images
-# @app.route('/forecast/predicted/<string:day>/map', methods = ['GET'])
-# def forecast_img(day):
-#     filename = 'forecast_disp_map.jpg'
-#     print("getting img for forecast")
-#     return send_from_directory(app.config['MAPS'], filename)
-# # search images
-# # add lookup table to properly format searched maps by state
-# @app.route('/browse/<string:loc>/<string:day>/predicted/map', methods = ['GET'])
-# def browse_pred_img(loc, day):
-#     print("pred " + loc + " "+ day)
-#     filename = 'browse-pred-map.jpg'
-#     return send_from_directory(app.config['MAPS'], filename)
-# @app.route('/browse/<string:loc>/<string:day>/actual/map', methods = ['GET'])
-# def browse_actual_img(loc, day):
-#     print("actual " + loc + " "+ day)
-#     filename = 'browse-actual-map.jpg'
-#     return send_from_directory(app.config['MAPS'], filename)
+# forecast templates for iframes
+@app.route('/forecast/predicted/map/img', methods = ['GET'])
+def forecast_map():
+    return render_template('forecastmap.html')
+# browse templates for iframes
+@app.route('/browse/predicted/map/img', methods = ['GET'])
+def browse_pred_map():
+    return render_template('pred_browsemap.html')
+@app.route('/browse/actual/map/img', methods = ['GET'])
+def browse_actual_map():
+    return render_template('actual_browsemap.html')
 
 # search page allows searching by location, gives tabulated data
 @app.route('/browse')
