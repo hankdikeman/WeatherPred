@@ -163,7 +163,7 @@ def browse(day):
     printTime("start load")
     printTime("start open data")
     # pull line from csv and reformat to 1D (17500)
-    data_line= np.genfromtxt('USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[320,:-4]
+    data_line= np.genfromtxt('USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[390,:-4]
     data_line = np.reshape(data_line, newshape = (17500))
     printTime("end open data")
 
