@@ -9,6 +9,7 @@ import folium
 import os
 import numpy as np
 import geojsoncontour
+import json
 from scipy.ndimage import gaussian_filter
 
 # print current time for timing code throughput
@@ -16,6 +17,7 @@ def printTime(chunk):
     currTime = datetime.now().time()
     print(chunk + ": ", currTime)
 
+# Geospatial coordinate declarations
 # Longitude
 xcords = (-125, -60)
 HORZ_DIMS = 175
@@ -91,8 +93,44 @@ def gen_folium_map(longitude, latitude, data_line, zoomstart = 4, startcords = s
     printTime("bot gen folmap")
     return folium_map
 
+def pull_db_instance(target_month, target_day, target_year, predictive):
+    # generate datetime object with target date
+    target_date = datetime(year = target_year, month = target_month, day = target_day)
+    # query for correct date and data type (predicted/actual)
+    instance = WeatherDay.query.filter(and_(
+                                    WeatherDay.date == target_date,
+                                    WeatherDay.predictive == predictive
+                                    )).first_or_404()
+    # unpack db entry and return
+    temps,date = unpack_db_entry(instance)
+    # return unpacked values
+    return temps,date
+
+def unpack_db_entry(instance):
+    # get numpy array from json text file
+    temps = np.array(json.loads(instance.temps))
+    # get date from date column
+    date = instance.date
+    # return tuple of unpacked temperature and date
+    return temps,date
+
 # declare app
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+class WeatherDay(db.Model):
+    id = db.Column(db.Integer, unique = True, primary_key=True)
+    date = db.Column(db.DateTime, nullable = False)
+    temps = db.Column(db.Text, unique=True, nullable=False)
+    predictive = db.Column(db.Boolean, nullable = False)
+
+    def __repr__(self):
+        if self.predictive == True:
+            return "<Pred Temps %r>" % self.date.strftime("%m/%d/%Y")
+        else:
+            return "<Actual Temps %r>" % self.date.strftime("%m/%d/%Y")
 
 # define route to static images folder
 PHOTO_FOLDER = 'maps'
