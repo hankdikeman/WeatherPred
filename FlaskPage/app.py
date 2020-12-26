@@ -34,6 +34,11 @@ long_vals= np.arange(xcords[0], xcords[1], (xcords[1]-xcords[0])/HORZ_DIMS)
 filter_data_mask = np.empty(shape = (VERT_DIMS,HORZ_DIMS))
 with open('static/no_stations_mask.npy', 'rb') as filename:
         filter_data_mask = np.load(filename)
+# load pickled statecode location dictionary
+statecode_dict = np.empty(shape = (51,3))
+with open('static/statecode_loc.npy', 'rb') as filename:
+        statecode_dict = np.load(filename, allow_pickle = True)
+statecode_dict = {code:(lat,long) for (code,lat,long) in statecode_dict[:,]}
 
 # function to generate three 1D lists of weather data: lat, long, and temps
 def display_format(data_line):
@@ -63,7 +68,7 @@ def gen_folium_map(longitude, latitude, data_line, zoomstart = 4, startcords = s
     vmax = 120
     levels = len(colors)
     color_map = branca.colormap.LinearColormap(colors, vmin=vmin, vmax=vmax).to_step(levels)
-    color_map.caption = 'Temperature (F)'
+    color_map.caption = 'Temperature (°F)'
     # make meshes of longitude and latitude values (100,175)
     longmesh,latmesh = np.meshgrid(long_vals, lat_vals)
     # make initial folium map
@@ -84,7 +89,7 @@ def gen_folium_map(longitude, latitude, data_line, zoomstart = 4, startcords = s
                         temp_mesh,
                         alpha = 0.7,
                         linestyles = 'None',
-                        vmin = 0, vmax = 100,
+                        vmin = vmin, vmax = vmax,
                         colors = colors
                         )
     # generate geojson data from contour plot
@@ -113,9 +118,7 @@ def gen_folium_map(longitude, latitude, data_line, zoomstart = 4, startcords = s
     printTime("bot gen folmap")
     return folium_map
 
-def pull_db_instance(target_month, target_day, target_year, predictive):
-    # generate datetime object with target date
-    target_date = datetime(year = target_year, month = target_month, day = target_day)
+def pull_db_instance(target_date, predictive):
     # query for correct date and data type (predicted/actual)
     instance = WeatherDay.query.filter(and_(
                                     WeatherDay.date == target_date,
@@ -229,17 +232,25 @@ def loc_result(loc, day):
     else:
         backdate = (datetime.now()-timedelta(days = 30)).strftime("%Y-%m-%d")
         frontdate = (datetime.now()+timedelta(days = 10)).strftime("%Y-%m-%d")
-        ##
-        #   query database to get data for loc and day
-        ##
+
+        # parse location code and assign start coordinates
+        if(loc != "USA"):
+            # pull required latitude and longitude from dict
+            start_lat,start_long = statecode_dict[loc]
+            zoom_start = 7
+        else:
+            start_lat,start_long = start_coords
+            zoom_start = 4
+
+        # parse date and store in datetime object (for querying)
+        selected_day = datetime.strptime(day, "%Y-%m-%d")
 
         ##
-        #   generate images using image library
-        #   cartopy, geoplotlib, gmplot, Folium
+        #  database query goes here
         ##
 
         # pull two days of data from csv
-        data_line = np.genfromtxt('USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[320:322,:-4]
+        data_line = np.genfromtxt('USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[460:462,:-4]
         pred_day = np.reshape(data_line[0,:], newshape = (17500))
         actual_day = np.reshape(data_line[1,:], newshape = (17500))
 
@@ -252,7 +263,9 @@ def loc_result(loc, day):
                         longitude = long_data,
                         latitude = lat_data,
                         data_line = pred_data,
-                        mapheight = '20%'
+                        mapheight = '20%',
+                        zoomstart = zoom_start,
+                        startcords = (start_lat,start_long)
                         )
         pred_map.save('templates/pred_browsemap.html')
 
@@ -260,7 +273,9 @@ def loc_result(loc, day):
                         longitude = long_data,
                         latitude = lat_data,
                         data_line = actual_data,
-                        mapheight = '20%'
+                        mapheight = '20%',
+                        zoomstart = zoom_start,
+                        startcords = (start_lat,start_long)
                         )
         actual_map.save('templates/actual_browsemap.html')
 
@@ -270,11 +285,6 @@ def loc_result(loc, day):
 @app.route('/about')
 def about():
     return render_template('about.html')
-
-def pullWeatherData():
-    # placeholder function to query NOAA and push days data to database
-    # also removes data from one year ago
-    return 0
 
 if __name__ == "__main__":
     app.run(debug=True)
