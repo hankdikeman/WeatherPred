@@ -67,7 +67,7 @@ def gen_folium_map(longitude, latitude, data_line, zoomstart = 4, startcords = s
     # make meshes of longitude and latitude values (100,175)
     longmesh,latmesh = np.meshgrid(long_vals, lat_vals)
     # make initial folium map
-    folium_map = folium.Map(location = startcords, zoom_start = zoomstart, height = '75%')
+    folium_map = folium.Map(location = startcords, zoom_start = zoomstart, height = '75%', scrollWheelZoom=False)
     # generate temperature mesh to match latitude and longitude meshes
     temp_mesh = np.reshape(data_line, newshape = (VERT_DIMS, HORZ_DIMS))
     # gaussian filter to smooth out data
@@ -183,7 +183,7 @@ def browse(day):
     printTime("start load")
     printTime("start open data")
     # pull line from csv and reformat to 1D (17500)
-    data_line= np.genfromtxt('USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[390,:-4]
+    data_line= np.genfromtxt('/Users/patrickgibbons/Desktop/WeatherData/USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[390,:-4]
     data_line = np.reshape(data_line, newshape = (17500))
     printTime("end open data")
 
@@ -239,7 +239,7 @@ def loc_result(loc, day):
         ##
 
         # pull two days of data from csv
-        data_line = np.genfromtxt('USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[320:322,:-4]
+        data_line = np.genfromtxt('/Users/patrickgibbons/Desktop/WeatherData/USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[320:322,:-4]
         pred_day = np.reshape(data_line[0,:], newshape = (17500))
         actual_day = np.reshape(data_line[1,:], newshape = (17500))
 
