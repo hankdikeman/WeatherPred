@@ -66,8 +66,8 @@ def gen_folium_map(longitude, latitude, data_line, zoomstart = 4, startcords = s
     colors = ['#26195e', '#024c7a', '#185110', '#abdda4', '#F2F29E', '#eac5a1', '#cc7475']
     vmin = -20
     vmax = 120
-    levels = len(colors)
-    color_map = branca.colormap.LinearColormap(colors, vmin=vmin, vmax=vmax).to_step(levels)
+    levels = [-20 + 20*x for x in range(8)]
+    color_map = branca.colormap.LinearColormap(colors, vmin=vmin, vmax=vmax).to_step(len(colors))
     color_map.caption = 'Temperature (°F)'
     # make meshes of longitude and latitude values (100,175)
     longmesh,latmesh = np.meshgrid(long_vals, lat_vals)
@@ -82,7 +82,6 @@ def gen_folium_map(longitude, latitude, data_line, zoomstart = 4, startcords = s
     # generate temperature mesh to match latitude and longitude meshes
     temp_mesh = np.reshape(data_line, newshape = (VERT_DIMS, HORZ_DIMS))
     # gaussian filter to smooth out data
-    # temp_mesh = gaussian_filter(temp_mesh, sigma = 2)
     temp_mesh = gaussian_filter(temp_mesh * filter_data_mask, sigma=2)
     temp_mesh /= gaussian_filter(filter_data_mask, sigma=2)
     temp_mesh[np.logical_not(filter_data_mask)] = np.nan
@@ -93,6 +92,7 @@ def gen_folium_map(longitude, latitude, data_line, zoomstart = 4, startcords = s
                         longmesh,
                         latmesh,
                         temp_mesh,
+                        levels = levels,
                         alpha = 0.7,
                         linestyles = 'None',
                         vmin = vmin, vmax = vmax,
