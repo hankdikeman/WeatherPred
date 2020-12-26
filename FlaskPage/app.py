@@ -155,10 +155,6 @@ class WeatherDay(db.Model):
         else:
             return "<Actual Temps %r>" % self.date.strftime("%m/%d/%Y")
 
-# define route to static images folder
-PHOTO_FOLDER = 'maps'
-app.config['MAPS'] = PHOTO_FOLDER
-
 @app.route('/')
 def base_redirect():
     return redirect('/forecast')
