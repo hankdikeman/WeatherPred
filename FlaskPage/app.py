@@ -72,7 +72,13 @@ def gen_folium_map(longitude, latitude, data_line, zoomstart = 4, startcords = s
     # make meshes of longitude and latitude values (100,175)
     longmesh,latmesh = np.meshgrid(long_vals, lat_vals)
     # make initial folium map
-    folium_map = folium.Map(location = startcords, zoom_start = zoomstart, height = '75%')
+    folium_map = folium.Map(
+                    location = startcords,
+                    zoom_start = zoomstart,
+                    height = '75%',
+                    tiles = 'OpenStreetMap',
+                    scrollWheelZoom=False
+                    )
     # generate temperature mesh to match latitude and longitude meshes
     temp_mesh = np.reshape(data_line, newshape = (VERT_DIMS, HORZ_DIMS))
     # gaussian filter to smooth out data
@@ -109,11 +115,8 @@ def gen_folium_map(longitude, latitude, data_line, zoomstart = 4, startcords = s
             'fillColor':    x['properties']['fill'],
             'opacity':      0.6
         }).add_to(folium_map)
-
-
     # Combine folium and color map
     folium_map.add_child(color_map)
-
     # return map
     printTime("bot gen folmap")
     return folium_map
@@ -190,8 +193,11 @@ def browse(day):
     long_data,lat_data,temp_data = display_format(data_line)
 
     # generate folium map from three arrays: longitude, latitude, and temps
-    folium_map = gen_folium_map(longitude = long_data, latitude = lat_data, data_line = temp_data)
-
+    folium_map = gen_folium_map(
+                        longitude = long_data,
+                        latitude = lat_data,
+                        data_line = temp_data
+                        )
     printTime("start save map")
     # save folium map to templates folder (included in browse.html)
     folium_map.save('templates/forecastmap.html')
