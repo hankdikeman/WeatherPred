@@ -171,7 +171,7 @@ def index():
 @app.route('/forecast')
 def forecast():
     # initial browse page redirects to "tomorrow" browse page
-    today = (datetime.now()+timedelta(days = 1)).strftime("%Y-%m-%d")
+    today = datetime.now().strftime("%Y-%m-%d")
     return redirect('/forecast/'+today)
 
 # browse page allows users to view a map for given days
