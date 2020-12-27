@@ -1,7 +1,7 @@
 from numpy import genfromtxt
 from time import time
 from datetime import datetime
-from sqlalchemy import Column, Integer, Float, Date
+from sqlalchemy import Column, Integer, Float, Date, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     try:
         #file_name = "/Trail CSV/MNTrainData.csv" #sample CSV file used:
-        csv_line= np.genfromtxt('/Users/patrickgibbons/Desktop/WeatherData/USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[-30:,:-1]
+        csv_line= np.genfromtxt('/Users/uvman/OneDrive/Documents/School/2020/WeatherPred/USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[-30:,:-1]
 
         for row in range(np.shape(csv_line)[0]):
             concat_str = []
@@ -51,9 +51,9 @@ if __name__ == "__main__":
             concat_str.pop()
             # save entry date into db
             record = Weather_History(**{
-                'day' : csv_line[-1]
-                'month' : csv_line[-2]
-                'year' : csv_line[-3]
+                'day' : csv_line[-1],
+                'month' : csv_line[-2],
+                'year' : csv_line[-3],
                 'temperature' : ''.join(concat_str)
             })
             s.add(record) #Add all the records
@@ -63,3 +63,13 @@ if __name__ == "__main__":
         s.rollback() #Rollback the changes on error
     finally:
         s.close() #Close the connection
+
+  # Query Stuff
+  weather_range = (
+    session.query(Weather_History)
+    .filter(Weather_History.day == 01)
+    .filter(Weather_History.month == 03)
+    .filter(Weather_History.year == 2020)
+    )
+  if weather_range is not None:
+      return
