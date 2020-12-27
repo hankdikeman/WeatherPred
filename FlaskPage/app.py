@@ -75,7 +75,7 @@ def gen_folium_map(longitude, latitude, data_line, zoomstart = 4, startcords = s
     folium_map = folium.Map(
                     location = startcords,
                     zoom_start = zoomstart,
-                    height = '75%',
+                    height = mapheight,
                     tiles = 'OpenStreetMap',
                     scrollWheelZoom=False
                     )
@@ -265,7 +265,7 @@ def loc_result(loc, day):
                         longitude = long_data,
                         latitude = lat_data,
                         data_line = pred_data,
-                        mapheight = '20%',
+                        mapheight = '100%',
                         zoomstart = zoom_start,
                         startcords = (start_lat,start_long)
                         )
@@ -275,7 +275,7 @@ def loc_result(loc, day):
                         longitude = long_data,
                         latitude = lat_data,
                         data_line = actual_data,
-                        mapheight = '20%',
+                        mapheight = '100%',
                         zoomstart = zoom_start,
                         startcords = (start_lat,start_long)
                         )
