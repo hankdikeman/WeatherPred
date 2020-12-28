@@ -1,121 +1,22 @@
 # import packages
-import matplotlib as mpl
-mpl.use('Agg')
-from matplotlib.figure import Figure
 from flask import Flask, render_template, request, redirect, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 import folium
-import os
 import numpy as np
-import geojsoncontour
 import json
-from scipy.ndimage import gaussian_filter
-import branca
+import heatmap_utils
 
 # print current time for timing code throughput
 def printTime(chunk):
     currTime = datetime.now().time()
     print(chunk + ": ", currTime)
 
-# Geospatial coordinate declarations
-# Longitude
-xcords = (-125, -60)
-HORZ_DIMS = 175
-# Latitude
-ycords = (25, 50)
-VERT_DIMS = 100
-# start coords
-start_coords = (39.8, -98.6)
-# generate lists of sample points
-lat_vals= np.arange(ycords[0], ycords[1], (ycords[1]-ycords[0])/VERT_DIMS)
-long_vals= np.arange(xcords[0], xcords[1], (xcords[1]-xcords[0])/HORZ_DIMS)
-# load pickled mask arrays
-filter_data_mask = np.empty(shape = (VERT_DIMS,HORZ_DIMS))
-with open('static/no_stations_mask.npy', 'rb') as filename:
-        filter_data_mask = np.load(filename)
 # load pickled statecode location dictionary
 statecode_dict = np.empty(shape = (51,3))
 with open('static/statecode_loc.npy', 'rb') as filename:
         statecode_dict = np.load(filename, allow_pickle = True)
 statecode_dict = {code:(lat,long) for (code,lat,long) in statecode_dict[:,]}
-
-# function to generate three 1D lists of weather data: lat, long, and temps
-def display_format(data_line):
-    # three empty 1D lists
-    long = np.empty(shape = (HORZ_DIMS*VERT_DIMS))
-    lat = np.empty(shape = (HORZ_DIMS*VERT_DIMS))
-    temps = np.empty(shape = (HORZ_DIMS*VERT_DIMS))
-    # assign values to list (lat, long, and temp)
-    count = 0
-    for lats in lat_vals:
-        for lons in long_vals:
-            long[count] = lons
-            lat[count] = lats
-            temps[count] = (data_line[count])
-            count += 1
-    # return collected values
-    return long,lat,temps
-
-# function to generate folium map with heatmap layer, takes in 1D lists of: long, lat, temps
-def gen_folium_map(longitude, latitude, data_line, zoomstart = 4, startcords = (39.8, -98.6), mapheight = '100%'):
-    # Setup colormap
-    colors = ['#26195e', '#024c7a', '#185110', '#abdda4', '#F2F29E', '#eac5a1', '#cc7475']
-    vmin = -20
-    vmax = 120
-    levels = [-20 + 20*x for x in range(8)]
-    color_map = branca.colormap.LinearColormap(colors, vmin=vmin, vmax=vmax).to_step(len(colors))
-    color_map.caption = 'Temperature (°F)'
-    # make meshes of longitude and latitude values (100,175)
-    longmesh,latmesh = np.meshgrid(long_vals, lat_vals)
-    # make initial folium map
-    folium_map = folium.Map(
-                    location = startcords,
-                    zoom_start = zoomstart,
-                    height = mapheight,
-                    tiles = 'OpenStreetMap',
-                    scrollWheelZoom=False
-                    )
-    # generate temperature mesh to match latitude and longitude meshes
-    temp_mesh = np.reshape(data_line, newshape = (VERT_DIMS, HORZ_DIMS))
-    # gaussian filter to smooth out data
-    temp_mesh = gaussian_filter(temp_mesh * filter_data_mask, sigma=2)
-    temp_mesh /= gaussian_filter(filter_data_mask, sigma=2)
-    temp_mesh[np.logical_not(filter_data_mask)] = np.nan
-    # generate matplotlib contour plot from lat, long, and temp meshes
-    fig = Figure()
-    ax = fig.add_subplot(111)
-    temp_contour = ax.contourf(
-                        longmesh,
-                        latmesh,
-                        temp_mesh,
-                        levels = levels,
-                        alpha = 0.7,
-                        linestyles = 'None',
-                        vmin = vmin, vmax = vmax,
-                        colors = colors
-                        )
-    # generate geojson data from contour plot
-    temp_geojson = geojsoncontour.contourf_to_geojson(
-                        contourf = temp_contour,
-                        min_angle_deg = 3.0,
-                        ndigits = 5,
-                        stroke_width = 1,
-                        fill_opacity = 0.5
-                        )
-    # generate folium chloropleth and add to previously created map
-    folium.GeoJson(
-        temp_geojson,
-        style_function=lambda x: {
-            'color':        x['properties']['stroke'],
-            'weight':       x['properties']['stroke-width'],
-            'fillColor':    x['properties']['fill'],
-            'opacity':      0.6
-        }).add_to(folium_map)
-    # Combine folium and color map
-    folium_map.add_child(color_map)
-    # return map
-    return folium_map
 
 def pull_db_instance(target_date, predictive):
     # query for correct date and data type (predicted/actual)
@@ -183,10 +84,10 @@ def browse(day):
     data_line = np.reshape(data_line, newshape = (17500))
 
     # couple with latitude and longitude data, save to arrays
-    long_data,lat_data,temp_data = display_format(data_line)
+    long_data,lat_data,temp_data = heatmap_utils.display_format(data_line)
 
     # generate folium map from three arrays: longitude, latitude, and temps
-    folium_map = gen_folium_map(
+    folium_map = heatmap_utils.gen_folium_map(
                         longitude = long_data,
                         latitude = lat_data,
                         data_line = temp_data
@@ -247,11 +148,11 @@ def loc_result(loc, day):
         actual_day = np.reshape(data_line[1,:], newshape = (17500))
 
         # generate longitude, latitude and temperature lists
-        long_data,lat_data,pred_data = display_format(pred_day)
-        __,__,actual_data = display_format(actual_day)
+        long_data,lat_data,pred_data = heatmap_utils.display_format(pred_day)
+        __,__,actual_data = heatmap_utils.display_format(actual_day)
 
         # generate folium html from
-        pred_map = gen_folium_map(
+        pred_map = heatmap_utils.gen_folium_map(
                         longitude = long_data,
                         latitude = lat_data,
                         data_line = pred_data,
@@ -261,7 +162,7 @@ def loc_result(loc, day):
                         )
         pred_map.save('templates/pred_browsemap.html')
 
-        actual_map = gen_folium_map(
+        actual_map = heatmap_utils.gen_folium_map(
                         longitude = long_data,
                         latitude = lat_data,
                         data_line = actual_data,
