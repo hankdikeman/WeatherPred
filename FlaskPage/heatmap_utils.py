@@ -56,7 +56,7 @@ def gen_folium_map(longitude, latitude, data_line, zoomstart = 4, startcords = (
                     location = startcords,
                     zoom_start = zoomstart,
                     height = mapheight,
-                    tiles = 'OpenStreetMap',
+                    tiles = 'CartoDB positron',
                     scrollWheelZoom=False
                     )
     # generate temperature mesh to match latitude and longitude meshes
