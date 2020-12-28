@@ -42,7 +42,6 @@ statecode_dict = {code:(lat,long) for (code,lat,long) in statecode_dict[:,]}
 
 # function to generate three 1D lists of weather data: lat, long, and temps
 def display_format(data_line):
-    printTime("top disp output")
     # three empty 1D lists
     long = np.empty(shape = (HORZ_DIMS*VERT_DIMS))
     lat = np.empty(shape = (HORZ_DIMS*VERT_DIMS))
@@ -56,12 +55,10 @@ def display_format(data_line):
             temps[count] = (data_line[count])
             count += 1
     # return collected values
-    printTime("bot disp output")
     return long,lat,temps
 
 # function to generate folium map with heatmap layer, takes in 1D lists of: long, lat, temps
-def gen_folium_map(longitude, latitude, data_line, zoomstart = 4, startcords = start_coords, mapheight = '75%'):
-    printTime("top gen folmap")
+def gen_folium_map(longitude, latitude, data_line, zoomstart = 4, startcords = (39.8, -98.6), mapheight = '100%'):
     # Setup colormap
     colors = ['#26195e', '#024c7a', '#185110', '#abdda4', '#F2F29E', '#eac5a1', '#cc7475']
     vmin = -20
@@ -118,7 +115,6 @@ def gen_folium_map(longitude, latitude, data_line, zoomstart = 4, startcords = s
     # Combine folium and color map
     folium_map.add_child(color_map)
     # return map
-    printTime("bot gen folmap")
     return folium_map
 
 def pull_db_instance(target_date, predictive):
@@ -142,14 +138,14 @@ def unpack_db_entry(instance):
 
 # declare app
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/weatherdata.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 class WeatherDay(db.Model):
     id = db.Column(db.Integer, unique = True, primary_key=True)
     date = db.Column(db.DateTime, nullable = False)
-    temps = db.Column(db.Text, unique=True, nullable=False)
+    temps = db.Column(db.Text, nullable=False)
     predictive = db.Column(db.Boolean, nullable = False)
 
     def __repr__(self):
@@ -182,12 +178,9 @@ def browse(day):
     ##
     #   query database to get data for day
     ##
-    printTime("start load")
-    printTime("start open data")
     # pull line from csv and reformat to 1D (17500)
     data_line= np.genfromtxt('USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[390,:-4]
     data_line = np.reshape(data_line, newshape = (17500))
-    printTime("end open data")
 
     # couple with latitude and longitude data, save to arrays
     long_data,lat_data,temp_data = display_format(data_line)
@@ -198,11 +191,8 @@ def browse(day):
                         latitude = lat_data,
                         data_line = temp_data
                         )
-    printTime("start save map")
     # save folium map to templates folder (included in browse.html)
     folium_map.save('templates/forecastmap.html')
-    printTime("end save map")
-    printTime("end load")
     return render_template('forecast.html', date = day, backdate = backdate, frontdate = frontdate)
 
 # forecast templates for iframes
