@@ -132,7 +132,7 @@ def loc_result(loc, day):
             start_lat,start_long = statecode_dict[loc]
             zoom_start = 7
         else:
-            start_lat,start_long = start_coords
+            start_lat,start_long = (39.8, -98.6)
             zoom_start = 4
 
         # parse date and store in datetime object (for querying)

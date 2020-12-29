@@ -16,19 +16,17 @@ if __name__ == '__main__':
     # create db file
     db.create_all()
 
-    ##
-    #   need to load in csv file here
-    ##
+    data_line = np.genfromtxt('FlaskPage/db_populate122820.csv', delimiter=',')[:,:-1]
 
     # iterate through lines in csv to be stored (where csv data stored in csv_file)
     for rownum in range(np.shape(csv_file)[0]):
         # collect temp data and turn to json text file
-        temp_data = csv_file[rownum,:-4]
+        temp_data = csv_file[rownum,:-3]
         temp_data_text = json.dumps(temp_data, cls=NumpyEncoder)
         # collect date data and store as datetime object
-        line_month = csv_file[rownum,-4]
-        line_day = csv_file[rownum,-3]
-        line_year = csv_file[rownum,-2]
+        line_month = csv_file[rownum,-2]
+        line_day = csv_file[rownum,-1]
+        line_year = csv_file[rownum,-3]
         line_date = datetime(year = line_year, month = line_month, day = line_day)
         # store in object format
         added_row = WeatherDay(date = line_date, temps = temp_data_text, predictive = PREDICTIVE)
