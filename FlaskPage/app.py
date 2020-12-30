@@ -91,7 +91,7 @@ def browse(day):
                         longitude = long_data,
                         latitude = lat_data,
                         data_line = temp_data,
-                        mapheight = '60%'
+                        mapheight = '65%'
                         )
     # save folium map to templates folder (included in browse.html)
     folium_map.save('templates/forecastmap.html')
