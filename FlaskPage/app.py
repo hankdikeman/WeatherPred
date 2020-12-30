@@ -80,7 +80,7 @@ def browse(day):
     #   query database to get data for day
     ##
     # pull line from csv and reformat to 1D (17500)
-    data_line= np.genfromtxt('USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[390,:-4]
+    data_line= np.genfromtxt('/Users/patrickgibbons/Desktop/WeatherData/USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[390,:-4]
     data_line = np.reshape(data_line, newshape = (17500))
 
     # couple with latitude and longitude data, save to arrays
@@ -90,7 +90,8 @@ def browse(day):
     folium_map = heatmap_utils.gen_folium_map(
                         longitude = long_data,
                         latitude = lat_data,
-                        data_line = temp_data
+                        data_line = temp_data,
+                        mapheight = '60%'
                         )
     # save folium map to templates folder (included in browse.html)
     folium_map.save('templates/forecastmap.html')
@@ -143,7 +144,7 @@ def loc_result(loc, day):
         ##
 
         # pull two days of data from csv
-        data_line = np.genfromtxt('USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[460:462,:-4]
+        data_line = np.genfromtxt('/Users/patrickgibbons/Desktop/WeatherData/USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[460:462,:-4]
         pred_day = np.reshape(data_line[0,:], newshape = (17500))
         actual_day = np.reshape(data_line[1,:], newshape = (17500))
 
