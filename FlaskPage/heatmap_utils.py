@@ -46,7 +46,7 @@ def gen_folium_map(longitude, latitude, data_line, zoomstart = 4, startcords = (
     colors = ['#26195e', '#024c7a', '#185110', '#abdda4', '#F2F29E', '#eac5a1', '#cc7475']
     vmin = -20
     vmax = 120
-    levels = [-20 + 20*x for x in range(8)]
+    levels = [-20 + 20*x for x in range(len(colors))]
     color_map = branca.colormap.LinearColormap(colors, vmin=vmin, vmax=vmax).to_step(len(colors))
     color_map.caption = 'Temperature (°F)'
     # make meshes of longitude and latitude values (100,175)
