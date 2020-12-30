@@ -21,17 +21,17 @@ statecode_dict = {code:(lat,long) for (code,lat,long) in statecode_dict[:,]}
 
 def pull_db_instance(target_date, predictive):
     # query for correct date and data type (predicted/actual)
-    instance = WeatherDay.query.filter(and_(
-                                    WeatherDay.date == target_date,
-                                    WeatherDay.predictive == predictive
-                                    )).first()
+    instance = WeatherDay.query.filter(
+                                    (WeatherDay.date == target_date) and
+                                    (WeatherDay.predictive == predictive)
+                                    ).first()
     if(instance):
         # unpack db entry and return
         temps,date = unpack_db_entry(instance)
         # return unpacked values
         return temps
     else:
-        return None
+        return "null"
 
 def unpack_db_entry(instance):
     # get numpy array from json text file
@@ -87,7 +87,7 @@ def browse(day):
 
     pulled_data = pull_db_instance(target_date = selected_day, predictive = False)
 
-    if(pulled_data):
+    if(not(isinstance(pulled_data, str))):
         data_line = np.reshape(pulled_data, newshape = (17500))
 
         # couple with latitude and longitude data, save to arrays
@@ -103,7 +103,7 @@ def browse(day):
         folium_map.save('templates/forecastmap.html')
         return render_template('forecast.html', date = day, backdate = backdate, frontdate = frontdate)
     else:
-        with open('templates/forecast.html', 'w') as filename:
+        with open('templates/forecastmap.html', 'w') as filename:
             filename.write(f"<p>No data for {day}</p>")
         return render_template('forecast.html', date = day, backdate = backdate, frontdate = frontdate)
 
@@ -131,7 +131,6 @@ def loc_result(loc, day):
     if request.method == 'POST':
         search_day = request.form['search-date']
         search_loc = request.form['search-loc']
-        print(str(200))
         return redirect('/browse/'+str(search_loc)+'/'+str(search_day))
     else:
         backdate = (datetime.now()-timedelta(days = 30)).strftime("%Y-%m-%d")
@@ -151,37 +150,43 @@ def loc_result(loc, day):
 
         pulled_data = pull_db_instance(target_date = selected_day, predictive = False)
 
-        # pull two days of data from csv
-        data_line = np.genfromtxt('USTrainData1_1_2002TO9_17_2004.csv', delimiter=',')[460:462,:-4]
-        pred_day = np.reshape(data_line[0,:], newshape = (17500))
-        actual_day = np.reshape(data_line[1,:], newshape = (17500))
+        if(not(isinstance(pulled_data, str))):
+            # pull two days of data from csv
+            pred_day = np.reshape(pulled_data, newshape = (17500))
+            actual_day = np.reshape(pulled_data, newshape = (17500))
 
-        # generate longitude, latitude and temperature lists
-        long_data,lat_data,pred_data = heatmap_utils.display_format(pred_day)
-        __,__,actual_data = heatmap_utils.display_format(actual_day)
+            # generate longitude, latitude and temperature lists
+            long_data,lat_data,pred_data = heatmap_utils.display_format(pred_day)
+            __,__,actual_data = heatmap_utils.display_format(actual_day)
 
-        # generate folium html from
-        pred_map = heatmap_utils.gen_folium_map(
-                        longitude = long_data,
-                        latitude = lat_data,
-                        data_line = pred_data,
-                        mapheight = '100%',
-                        zoomstart = zoom_start,
-                        startcords = (start_lat,start_long)
-                        )
-        pred_map.save('templates/pred_browsemap.html')
+            # generate folium html from
+            pred_map = heatmap_utils.gen_folium_map(
+                            longitude = long_data,
+                            latitude = lat_data,
+                            data_line = pred_data,
+                            mapheight = '100%',
+                            zoomstart = zoom_start,
+                            startcords = (start_lat,start_long)
+                            )
+            pred_map.save('templates/pred_browsemap.html')
 
-        actual_map = heatmap_utils.gen_folium_map(
-                        longitude = long_data,
-                        latitude = lat_data,
-                        data_line = actual_data,
-                        mapheight = '100%',
-                        zoomstart = zoom_start,
-                        startcords = (start_lat,start_long)
-                        )
-        actual_map.save('templates/actual_browsemap.html')
+            actual_map = heatmap_utils.gen_folium_map(
+                            longitude = long_data,
+                            latitude = lat_data,
+                            data_line = actual_data,
+                            mapheight = '100%',
+                            zoomstart = zoom_start,
+                            startcords = (start_lat,start_long)
+                            )
+            actual_map.save('templates/actual_browsemap.html')
 
-        return render_template('browse.html', loc_code = loc, date = day, backdate = backdate, frontdate = frontdate)
+            return render_template('browse.html', loc_code = loc, date = day, backdate = backdate, frontdate = frontdate)
+        else:
+            with open('templates/actual_browsemap.html', 'w') as filename:
+                filename.write(f"<p>No data for {day}</p>")
+            with open('templates/pred_browsemap.html', 'w') as filename:
+                filename.write(f"<p>No data for {day}</p>")
+            return render_template('browse.html', date = day, backdate = backdate, frontdate = frontdate)
 
 # about page details more about webpage and us
 @app.route('/about')
