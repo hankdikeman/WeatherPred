@@ -97,7 +97,8 @@ def browse(day):
         folium_map = heatmap_utils.gen_folium_map(
                             longitude = long_data,
                             latitude = lat_data,
-                            data_line = temp_data
+                            data_line = temp_data,
+                            mapheight = '65%'
                             )
         # save folium map to templates folder (included in browse.html)
         folium_map.save('templates/forecastmap.html')
