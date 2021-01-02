@@ -180,8 +180,11 @@ def loc_result(loc, day):
             start_lat, start_long = (39.8, -98.6)
             zoom_start = 4
 
-        # parse date and store in datetime object (for querying)
-        selected_day = datetime.strptime(day, "%Y-%m-%d")
+        # strip date string and convert to datetime object
+        try:
+            selected_day = datetime.strptime(day, "%Y-%m-%d")
+        except ValueError:
+            abort(400)
 
         # pull and store temperature data from database
         pulled_data = pull_db_instance(
