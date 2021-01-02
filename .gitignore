@@ -4,3 +4,5 @@ __pycache__/
 FlaskPage/templates/forecastmap.html
 FlaskPage/templates/actual_browsemap.html
 FlaskPage/templates/pred_browsemap.html
+FlaskPage/templates/forecastfail.html
+FlaskPage/templates/browsefail.html

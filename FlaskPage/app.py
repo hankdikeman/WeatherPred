@@ -43,12 +43,15 @@ def unpack_db_entry(instance):
 
 # declare app
 app = Flask(__name__)
+# set database path
 db_path = os.path.join(os.path.dirname(__file__), 'weatherdata.db')
 db_uri = 'sqlite:///{}'.format(db_path)
+# set app config for database
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+# weather data class for database
 class WeatherDay(db.Model):
     id = db.Column(db.Integer, unique = True, primary_key=True)
     date = db.Column(db.DateTime, nullable = False)
@@ -80,13 +83,17 @@ def forecast():
 # browse page allows users to view a map for given days
 @app.route('/forecast/<string:day>')
 def browse(day):
+    # get front and backdate for slider
     backdate = (datetime.now()-timedelta(days = 2)).strftime("%Y-%m-%d")
     frontdate = (datetime.now()+timedelta(days = 10)).strftime("%Y-%m-%d")
 
+    # strip date string and convert to datetime object
     selected_day = datetime.strptime(day, "%Y-%m-%d")
 
+    # store temperature data from database to file
     pulled_data = pull_db_instance(target_date = selected_day, predictive = False)
 
+    # check to see if non-null data was pulled upon request
     if(not(isinstance(pulled_data, str))):
         data_line = np.reshape(pulled_data, newshape = (17500))
 
@@ -103,6 +110,8 @@ def browse(day):
         # save folium map to templates folder (included in browse.html)
         folium_map.save('templates/forecastmap.html')
         return render_template('forecast.html', date = day, backdate = backdate, frontdate = frontdate)
+
+    # if no valid data was pulled then render "no data" document
     else:
         with open('templates/forecastmap.html', 'w') as filename:
             filename.write(f"<p>No data for {day}</p>")
@@ -134,6 +143,7 @@ def loc_result(loc, day):
         search_loc = request.form['search-loc']
         return redirect('/browse/'+str(search_loc)+'/'+str(search_day))
     else:
+        # set front and backdate
         backdate = (datetime.now()-timedelta(days = 30)).strftime("%Y-%m-%d")
         frontdate = (datetime.now()+timedelta(days = 10)).strftime("%Y-%m-%d")
 
@@ -149,8 +159,10 @@ def loc_result(loc, day):
         # parse date and store in datetime object (for querying)
         selected_day = datetime.strptime(day, "%Y-%m-%d")
 
+        # pull and store temperature data from database
         pulled_data = pull_db_instance(target_date = selected_day, predictive = False)
 
+        # if non null data was pulled from database then render maps
         if(not(isinstance(pulled_data, str))):
             # pull two days of data from csv
             pred_day = np.reshape(pulled_data, newshape = (17500))
@@ -160,7 +172,7 @@ def loc_result(loc, day):
             long_data,lat_data,pred_data = heatmap_utils.display_format(pred_day)
             __,__,actual_data = heatmap_utils.display_format(actual_day)
 
-            # generate folium html from
+            # generate folium html file for predicted map
             pred_map = heatmap_utils.gen_folium_map(
                             longitude = long_data,
                             latitude = lat_data,
@@ -171,6 +183,7 @@ def loc_result(loc, day):
                             )
             pred_map.save('templates/pred_browsemap.html')
 
+            # generate actual temperature data map from database pull
             actual_map = heatmap_utils.gen_folium_map(
                             longitude = long_data,
                             latitude = lat_data,
