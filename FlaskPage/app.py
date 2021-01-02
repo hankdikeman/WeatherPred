@@ -26,9 +26,10 @@ statecode_dict = {code: (lat, long)
 def pull_db_instance(target_date, predictive):
     # query for correct date and data type (predicted/actual)
     instance = WeatherDay.query.filter(
-        (WeatherDay.date == target_date) and
-        (WeatherDay.predictive == predictive)
+        WeatherDay.date == target_date,
+        WeatherDay.predictive == predictive
     ).first()
+    print(instance)
     if(instance):
         # unpack db entry and return
         temps, date = unpack_db_entry(instance)
@@ -172,7 +173,7 @@ def loc_result(loc, day):
         backdate = (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d")
         frontdate = (datetime.now() + timedelta(days=10)).strftime("%Y-%m-%d")
 
-        # parse location code and assign start coordinates
+        # parse location code and assign start coordinates for maps
         if(loc != "USA"):
             # pull required latitude and longitude from dict
             start_lat, start_long = statecode_dict[loc]
@@ -187,31 +188,18 @@ def loc_result(loc, day):
         except ValueError:
             abort(400)
 
-        # pull and store temperature data from database
-        pulled_data = pull_db_instance(
+        # generate query for actual data
+        pulled_data_actual = pull_db_instance(
             target_date=selected_day, predictive=False)
 
-        # if non null data was pulled from database then render maps
-        if(not(isinstance(pulled_data, str))):
+        # check whether actual data exists in database
+        if(not(isinstance(pulled_data_actual, str))):
             # pull two days of data from csv
-            pred_day = np.reshape(pulled_data, newshape=(17500))
-            actual_day = np.reshape(pulled_data, newshape=(17500))
+            actual_day = np.reshape(pulled_data_actual, newshape=(17500))
 
             # generate longitude, latitude and temperature lists
-            long_data, lat_data, pred_data = heatmap_utils.display_format(
-                pred_day)
-            __, __, actual_data = heatmap_utils.display_format(actual_day)
-
-            # generate folium html file for predicted map
-            pred_map = heatmap_utils.gen_folium_map(
-                longitude=long_data,
-                latitude=lat_data,
-                data_line=pred_data,
-                mapheight='100%',
-                zoomstart=zoom_start,
-                startcords=(start_lat, start_long)
-            )
-            pred_map.save('templates/pred_browsemap.html')
+            long_data, lat_data, actual_data = heatmap_utils.display_format(
+                actual_day)
 
             # generate actual temperature data map from database pull
             actual_map = heatmap_utils.gen_folium_map(
@@ -223,16 +211,39 @@ def loc_result(loc, day):
                 startcords=(start_lat, start_long)
             )
             actual_map.save('templates/actual_browsemap.html')
-
-            return render_template('browse.html', loc_code=loc, date=day, backdate=backdate, frontdate=frontdate)
         else:
             with open('templates/actual_browsemap.html', 'w') as filename:
                 filename.write(
                     f"<p style='text-align:center;'>No data for {day}</p>")
+
+        # generate query for predicted data
+        pulled_data_pred = pull_db_instance(
+            target_date=selected_day, predictive=True)
+
+        # check whether predicted data exists
+        if(not(isinstance(pulled_data_pred, str))):
+            # reshape predicted data
+            pred_day = np.reshape(pulled_data_pred, newshape=(17500))
+            # generate (17500) shape data for longitude latitude and temps
+            long_data, lat_data, pred_data = heatmap_utils.display_format(
+                pred_day)
+            # generate folium html file for predicted map
+            pred_map = heatmap_utils.gen_folium_map(
+                longitude=long_data,
+                latitude=lat_data,
+                data_line=pred_data,
+                mapheight='100%',
+                zoomstart=zoom_start,
+                startcords=(start_lat, start_long)
+            )
+            # save predicted map to html file
+            pred_map.save('templates/pred_browsemap.html')
+        else:
             with open('templates/pred_browsemap.html', 'w') as filename:
                 filename.write(
                     f"<p style='text-align:center;'>No data for {day}</p>")
-            return render_template('browse.html', loc_code=loc, date=day, backdate=backdate, frontdate=frontdate)
+        # render browse template
+        return render_template('browse.html', loc_code=loc, date=day, backdate=backdate, frontdate=frontdate)
 
 
 # about page details more about webpage and us
