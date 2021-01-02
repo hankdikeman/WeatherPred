@@ -130,7 +130,8 @@ def browse(day):
     # if no valid data was pulled then render "no data" document
     else:
         with open('templates/forecastmap.html', 'w') as filename:
-            filename.write(f"<p>No data for {day}</p>")
+            filename.write(
+                f"<p style='text-align:center;'>No data for {day}</p>")
         return render_template('forecast.html', date=day, backdate=backdate, frontdate=frontdate)
 
 
@@ -226,10 +227,12 @@ def loc_result(loc, day):
             return render_template('browse.html', loc_code=loc, date=day, backdate=backdate, frontdate=frontdate)
         else:
             with open('templates/actual_browsemap.html', 'w') as filename:
-                filename.write(f"<p>No data for {day}</p>")
+                filename.write(
+                    f"<p style='text-align:center;'>No data for {day}</p>")
             with open('templates/pred_browsemap.html', 'w') as filename:
-                filename.write(f"<p>No data for {day}</p>")
-            return render_template('browse.html', date=day, backdate=backdate, frontdate=frontdate)
+                filename.write(
+                    f"<p style='text-align:center;'>No data for {day}</p>")
+            return render_template('browse.html', loc_code=loc, date=day, backdate=backdate, frontdate=frontdate)
 
 
 # about page details more about webpage and us
