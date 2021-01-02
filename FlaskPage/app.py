@@ -1,5 +1,5 @@
 # import packages
-from flask import Flask, render_template, request, redirect, send_from_directory
+from flask import Flask, render_template, request, redirect, send_from_directory, abort
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 import folium
@@ -88,7 +88,10 @@ def browse(day):
     frontdate = (datetime.now()+timedelta(days = 10)).strftime("%Y-%m-%d")
 
     # strip date string and convert to datetime object
-    selected_day = datetime.strptime(day, "%Y-%m-%d")
+    try:
+        selected_day = datetime.strptime(day, "%Y-%m-%d")
+    except ValueError:
+        abort(400)
 
     # store temperature data from database to file
     pulled_data = pull_db_instance(target_date = selected_day, predictive = False)
@@ -206,6 +209,16 @@ def loc_result(loc, day):
 @app.route('/about')
 def about():
     return render_template('about.html')
+
+# invalid url field error handler
+@app.errorhandler(400)
+def invalid_date(e):
+    return render_template('invalid_field.html'), 400
+
+# invalid URL address error handler
+@app.errorhandler(404)
+def invalid_date(e):
+    return render_template('page_not_found.html'), 404
 
 if __name__ == "__main__":
     app.run(debug=True)
