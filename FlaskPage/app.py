@@ -109,7 +109,12 @@ def browse(day):
     # store temperature data from database to file
     pulled_data = pull_db_instance(target_date=selected_day, predictive=False)
 
-    # check to see if non-null data was pulled upon request
+    # if actual temps are not available, try to pull predicted values
+    if(isinstance(pulled_data, str)):
+        pulled_data = pull_db_instance(
+            target_date=selected_day, predictive=True)
+
+    # check to see if data was pulled or default string message upon query
     if(not(isinstance(pulled_data, str))):
         data_line = np.reshape(pulled_data, newshape=(17500))
 
