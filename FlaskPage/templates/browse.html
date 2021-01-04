@@ -40,18 +40,18 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-3">
+    <div class="col-1">
 
     </div>
-    <div class="col-6">
+    <div class="col-10">
       <div class="card mb-4 shadow-sm">
-        <div class="card-header">
-          <h4 class="my-0 font-weight-normal" style="text-align:center;">Select Different Date/Location</h4>
+        <div class="card-header" style="margin-bottom:0px;display:inline;">
+          <h3 class="my-0 font-weight-normal" style="text-align:center;">Select Different Date/Location</h3>
         </div>
         <div class="card-body" style="text-align:center;">
           <form action="{{ request.path }}" method="POST">
-            <div class="select" style="text-align:center;">
-              <label for="search-date" style="font-size:1.25em;">Date:</label>
+            <div class="select" style="text-align:center;padding-top:0px;">
+              <label for="search-date" style="font-size:1.25em;"><u><strong><i>Date</i></strong></u></label>
               <input type="date" id="search-date" name="search-date"
                    value="{{ date }}"
                    min="{{ backdate }}" max="{{ frontdate }}"
@@ -59,7 +59,7 @@
             </div>
             <hr style="height:10pt; visibility:hidden; margin:0px; border: 0px;">
             <div class="select" style="text-align:center;">
-              <label for="search-loc" style="font-size:1.25em;">Location:</label>
+              <label for="search-loc" style="font-size:1.25em;"><u><strong><i>Location</i></strong></u></label>
               <select id="search-loc" name="search-loc" style="font-size:1.25em;text-align-last:center;width:100%;">
                 <option value="USA">Nationwide</option>
               	<option value="AL">Alabama</option>
@@ -115,13 +115,14 @@
               	<option value="WY">Wyoming</option>
               </select>
             </div>
+            <hr style="height:10pt; visibility:hidden; margin:0px; border: 0px;">
             <hr style="border-width:1px;border-color:gray;">
             <input type="submit" value="Search" style="font-size:1.5em;text-align:center;width:100%;">
           </form>
         </div>
       </div>
     </div>
-    <div class="col-3">
+    <div class="col-1">
 
     </div>
   </div>
