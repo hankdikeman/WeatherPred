@@ -10,6 +10,7 @@ body {
   background-image: url(../images/mts_bg.jpg);
   background-size: cover;
   background-color: #cccccc;
+  font-family: "Roboto", sans-serif;
 }
 
 .day-slider
