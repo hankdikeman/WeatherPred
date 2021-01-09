@@ -8,10 +8,10 @@
 
 body{
   background-color: #f4f4f5;
-  /*background-image: url(../images/mts_bg.jpg);
-    background-size: cover;
-    background-color: #cccccc;
-    */
+  background-image: url(../images/mts_bg.jpg);
+  background-size: cover;
+  /*background-color: #cccccc;*/
+
 }
 
 .day-slider
@@ -28,4 +28,8 @@ body{
     padding: 0;
     opacity: 0.8;
     display:block; /* Add this */
+}
+
+.navbar-text {
+  font-size:1.75rem;
 }
