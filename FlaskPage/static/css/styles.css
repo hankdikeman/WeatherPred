@@ -34,3 +34,6 @@ body{
 .navbar-text {
   font-size:1.75rem;
 }
+#ex1Slider .slider-selection {
+	background: #BABABA;
+}
