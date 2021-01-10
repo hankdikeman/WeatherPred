@@ -26,7 +26,10 @@ def load_weather_model(filename):
 # This is a function to update the database for weather prediction data
 ##
 if __name__ == "__main__":
-    # store current date
+    # load and store model
+    filename = "placeholder"
+    weather_model = load_weather_model(filename=filename)
+    # store current date and date limits
     curr_date = datetime.now()
     back_limit = curr_date - datetime.timedelta(days=30)
     front_limit = curr_date + datetime.timedelta(days=10)
