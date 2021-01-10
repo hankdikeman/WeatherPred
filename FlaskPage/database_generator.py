@@ -7,6 +7,7 @@ from app import db, WeatherDay
 PREDICTIVE = False
 
 
+# encoder class for numpy files
 class NumpyEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, np.ndarray):
