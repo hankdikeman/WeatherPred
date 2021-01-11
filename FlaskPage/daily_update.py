@@ -49,3 +49,4 @@ if __name__ == "__main__":
     # pull new day of data and commit, use existing function
 
     # predict next ten days and commit
+    # use pull_db_instance and weather_model.predict for this
