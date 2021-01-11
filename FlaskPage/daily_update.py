@@ -46,6 +46,6 @@ if __name__ == "__main__":
     # delete oldest actual data day and commit
     delete_day(target_date=back_limit, predictive=False)
 
-    # pull new day of data and commit
+    # pull new day of data and commit, use existing function
 
     # predict next ten days and commit
