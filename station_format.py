@@ -4,9 +4,11 @@ from StationObject import Station
 
 def station_format(df):
     # Takes in information in combined stations and weather dataframe and returns array of station objects for interpolation function
-    stations = np.empty(shape=(len(df),), dtype=object)
+    stations = []
     for i in range(len(df)):
-        var = Station(df.loc[i, 'value'], df.loc[i, 'longitude'], df.loc[i, 'latitude'])
-        stations[i] = var
+        if df.loc[i, 'value'] < 150:
+            var = Station(df.loc[i, 'value'], df.loc[i, 'longitude'], df.loc[i, 'latitude'])
+            stations.append(var)
     # print('Array of Station objects created')
-    return(stations)
+    Sarray = np.array(stations)
+    return(Sarray)
