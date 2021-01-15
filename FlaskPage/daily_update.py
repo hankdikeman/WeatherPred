@@ -74,7 +74,7 @@ if __name__ == "__main__":
 
     # delete oldest actual data day and commit
     delete_day(target_date=back_limit, predictive=False)
-    delete_day(target_date=back_limit, predictive=False)
+    delete_day(target_date=back_limit, predictive=True)
 
     # pull new day of data and commit, use existing function
     pull_date = curr_date - datetime.timedelta(days=30)
@@ -96,11 +96,11 @@ if __name__ == "__main__":
         pull_date += datetime.timedelta(days=1)
 
     # set back limit for temperature data to be pulled
-    query_date = curr_date - datetime.timedelta(days=21)
+    query_date = curr_date - datetime.timedelta(days=30)
     array_index = 0
     # create empty 2D array for temperature data
     unformatted_temp_data = np.empty(
-        shape=((front_limit - pull_date, LONG_DIMS * LAT_DIMS)))
+        shape=((front_limit - query_date, LONG_DIMS * LAT_DIMS)))
     # loop through range of days and store any actual days of data
     while query_date < front_limit:
         # pull actual data if it exists
@@ -109,6 +109,7 @@ if __name__ == "__main__":
                 target_date=query_date, predictive=False), newshape=(1, LONG_DIMS * LAT_DIMS))
         # make new predictions if there is enough days to make new predictions
         if array_index >= MODEL_DAY_NUM:
+            delete_day(target_date=query_date, predictive=True)
             # generate new prediction inputs from existing data in unformatted_temp_data
             model_inputs = np.reshape(
                 unformatted_temp_data[array_index - MODEL_DAY_NUM:array_index, :], newshape=(1, MODEL_DAY_NUM, LONG_DIMS * LAT_DIMS))
