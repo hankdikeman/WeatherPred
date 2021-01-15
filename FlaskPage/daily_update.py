@@ -103,10 +103,6 @@ if __name__ == "__main__":
         shape=((front_limit - query_date, LONG_DIMS * LAT_DIMS)))
     # loop through range of days and store any actual days of data
     while query_date < front_limit:
-        # pull actual data if it exists
-        if check_exists(target_date=query_date, predictive=False):
-            unformatted_temp_data[array_index, :] = np.reshape(pull_db_instance(
-                target_date=query_date, predictive=False), newshape=(1, LONG_DIMS * LAT_DIMS))
         # make new predictions if there is enough days to make new predictions
         if array_index >= MODEL_DAY_NUM:
             delete_day(target_date=query_date, predictive=True)
@@ -116,13 +112,14 @@ if __name__ == "__main__":
             # nondimensionalize model inputs to fit requirements of model
             model_inputs = nondimensionalize_input(model_inputs)
             # generate new prediction from number of days of existing data
-            new_prediction = np.reshape(weather_model.predict(
-                model_inputs)[0, :], newshape=(LONG_DIMS, LAT_DIMS))
+            new_prediction_temps = np.reshape(weather_model.predict(
+                model_inputs), newshape=(LONG_DIMS, LAT_DIMS))
             # redimensionalize outputs of predictive model
-            new_prediction_temps = redimensionalize_output(new_prediction)
+            new_prediction_temps = redimensionalize_output(
+                new_prediction_temps)
             # encode prediction in JSON file
             encoded_new_prediction = json.dumps(
-                new_prediction, cls=NumpyEncoder)
+                new_prediction_temps, cls=NumpyEncoder)
             # generate new WeatherDay object with existing data
             new_predicted_row = WeatherDay(
                 date=query_date, temps=encoded_new_prediction, predictive=True)
@@ -130,8 +127,12 @@ if __name__ == "__main__":
             db.session.add(new_predicted_row)
             # commit all rows to database
             db.session.commit()
+        # pull actual data if it exists
+        if check_exists(target_date=query_date, predictive=False):
+            unformatted_temp_data[array_index, :] = np.reshape(pull_db_instance(
+                target_date=query_date, predictive=False), newshape=(1, LONG_DIMS * LAT_DIMS))
         # add predictive data to database if there is no actual data
-        if not check_exists(target_date=query_date, predictive=False):
+        elif not check_exists(target_date=query_date, predictive=False):
             unformatted_temp_data[array_index, :] = np.reshape(pull_db_instance(
                 target_date=query_date, predictive=True), newshape=(1, LONG_DIMS * LAT_DIMS))
         # iterate array index and queried date
