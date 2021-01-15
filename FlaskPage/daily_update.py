@@ -9,9 +9,18 @@ LONG_DIMS = 175
 LAT_DIMS = 100
 MODEL_DAY_NUM = 7
 
-# placeholder function for deleting predicted/actual day
+
+# redimensionalize output of model
+def redimensionalize_output(output_array):
+    return output_array
 
 
+# nondimensionalize input of model
+def nondimensionalize_input(input_array):
+    return input_array
+
+
+# delete targeted day
 def delete_day(target_date, predictive):
     WeatherDay.query.filter(
         WeatherDay.date == target_date,
@@ -101,7 +110,22 @@ if __name__ == "__main__":
         # make new predictions if there is enough days to make new predictions
         if array_index >= MODEL_DAY_NUM:
             prediction_data = np.reshape(
-                unformatted_temp_data[array_index - MODEL_DAY_NUM:array_index, :], newshape=(1, MODEL_DAY_NUM, LONG_DIMS * LAT_DIMS))
+                model_inputs=np.reshape(
+                    unformatted_temp_data[array_index - MODEL_DAY_NUM:array_index, :], newshape=(1, MODEL_DAY_NUM, LONG_DIMS * LAT_DIMS)))
+            model_inputs = nondimensionalize_input(model_inputs)
+            new_prediction = np.reshape(weather_model.predict(
+                model_inputs)[0, :], newshape=(LONG_DIMS, LAT_DIMS))
+            new_prediction_temps = redimensionalize_output(new_prediction)
+            encoded_new_prediction = json.dumps(
+                new_prediction, cls=NumpyEncoder)
+            # commit new prediction to database
+            new_predicted_row = WeatherDay(
+                date=query_date, temps=encoded_new_prediction, predictive=True)
+            # add in new row
+            db.session.add(new_data_row)
+            # commit all rows to database
+            db.session.commit()
+
         # otherwise pull existing data
         elif check_exists(target_date=query_date, predictive=True):
             unformatted_temp_data[array_index, :] = np.reshape(pull_db_instance(
