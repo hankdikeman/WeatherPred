@@ -1,19 +1,36 @@
 {% extends 'base.html' %}
 {% block head %}
-<div class="container">
 <title>About the Site</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+{% endblock %}
+
+
+{% block body %}
+
+
 <hr>
 </hr>
-<h2>Neural Network Model</h2>
-<div>
-   A Long Short Term Memeory (LSTM) Neural Network was used to predict the weather.
-   This is a type of recurrent NN, for unlike standard feed forward NN, LSTM has feedback connections.
-   After being trained with multiple years worth of data, a model with ___ % accuracy was created.
+
+<main role="main">
+<div  style="background:powderblue !important" class="jumbotron">
+  <div class="col-sm-8 mx-auto">
+    <h1>Neural Network Model</h1>
+    <p>
+      A Long Short Term Memeory (LSTM) Neural Network was used to predict the weather.
+      This is a type of recurrent NN, for unlike standard feed forward NN, LSTM has feedback connections.
+      After being trained with multiple years worth of data, a model with ___ % accuracy was created.
+    </p>
+
+    <p>
+      <a href= "/navigate" class="btn btn-primary btn-lg" role="button">Go to page</a>
+      </p>
+   </div>
 </div>
+</main>
 <br></br>
-<div>
+
+<div style="background:powderblue !important" class="jumbotron">
    <h2>Authors</h2>
-</div>
    <div class="row">
       <div class="col-md-4">
          <img src={{ url_for('static', filename='Gallery/Planet.jpg') }} alt="" data-toggle="collapse" data-target="#collapseBio1" aria-expanded="false" aria-controls="collapseExample" style="width:100%;height:100%">
@@ -52,8 +69,7 @@
          </div>
       </div>
    </div>
-</div>
+
 
 {% endblock %}
-{% block body %}
-{% endblock %}
+</div>
