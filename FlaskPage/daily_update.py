@@ -27,11 +27,11 @@ def load_weather_model(filename):
 ##
 if __name__ == "__main__":
     # load and store model
-    filename = "placeholder"
+    filename = "models/placeholder"
     weather_model = load_weather_model(filename=filename)
     # store current date and date limits
     curr_date = datetime.now()
-    back_limit = curr_date - datetime.timedelta(days=30)
+    back_limit = curr_date - datetime.timedelta(days=31)
     front_limit = curr_date + datetime.timedelta(days=10)
 
     # initialize weather prediction table
@@ -44,6 +44,7 @@ if __name__ == "__main__":
         del_date = del_date + datetime.timedelta(days=1)
 
     # delete oldest actual data day and commit
+    delete_day(target_date=back_limit, predictive=False)
     delete_day(target_date=back_limit, predictive=False)
 
     # pull new day of data and commit, use existing function
