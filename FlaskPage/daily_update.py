@@ -68,7 +68,7 @@ if __name__ == "__main__":
     delete_day(target_date=back_limit, predictive=False)
 
     # pull new day of data and commit, use existing function
-    pull_date = curr_date - datetime.timedelta(days=10)
+    pull_date = curr_date - datetime.timedelta(days=30)
     while pull_date < datetime.now():
         # query the date in question
         actual_data_exists = check_exists(
@@ -87,16 +87,22 @@ if __name__ == "__main__":
         pull_date += datetime.timedelta(days=1)
 
     # set back limit for temperature data to be pulled
-    query_date = curr_date - datetime.timedelta(days=7)
+    query_date = curr_date - datetime.timedelta(days=21)
     array_index = 0
     # create empty 2D array for temperature data
     unformatted_temp_data = np.empty(
         shape=((front_limit - pull_date, LONG_DIMS * LAT_DIMS)))
     # loop through range of days and store any actual days of data
     while query_date < front_limit:
+        # pull actual data if it exists
         if check_exists(target_date=query_date, predictive=False):
             unformatted_temp_data[array_index, :] = np.reshape(pull_db_instance(
                 target_date=query_date, predictive=False), newshape=(1, LONG_DIMS * LAT_DIMS))
+        # otherwise pull existing data
+        elif check_exists(target_date=query_date, predictive=True):
+            unformatted_temp_data[array_index, :] = np.reshape(pull_db_instance(
+                target_date=query_date, predictive=True), newshape=(1, LONG_DIMS * LAT_DIMS))
+        if array_index >= MODEL_DAY_NUM:
         query_date += datetime.timedelta(days=1)
         array_index += 1
 
