@@ -109,20 +109,24 @@ if __name__ == "__main__":
                 target_date=query_date, predictive=False), newshape=(1, LONG_DIMS * LAT_DIMS))
         # make new predictions if there is enough days to make new predictions
         if array_index >= MODEL_DAY_NUM:
-            prediction_data = np.reshape(
-                model_inputs=np.reshape(
-                    unformatted_temp_data[array_index - MODEL_DAY_NUM:array_index, :], newshape=(1, MODEL_DAY_NUM, LONG_DIMS * LAT_DIMS)))
+            # generate new prediction inputs from existing data in unformatted_temp_data
+            model_inputs = np.reshape(
+                unformatted_temp_data[array_index - MODEL_DAY_NUM:array_index, :], newshape=(1, MODEL_DAY_NUM, LONG_DIMS * LAT_DIMS))
+            # nondimensionalize model inputs to fit requirements of model
             model_inputs = nondimensionalize_input(model_inputs)
+            # generate new prediction from number of days of existing data
             new_prediction = np.reshape(weather_model.predict(
                 model_inputs)[0, :], newshape=(LONG_DIMS, LAT_DIMS))
+            # redimensionalize outputs of predictive model
             new_prediction_temps = redimensionalize_output(new_prediction)
+            # encode prediction in JSON file
             encoded_new_prediction = json.dumps(
                 new_prediction, cls=NumpyEncoder)
-            # commit new prediction to database
+            # generate new WeatherDay object with existing data
             new_predicted_row = WeatherDay(
                 date=query_date, temps=encoded_new_prediction, predictive=True)
-            # add in new row
-            db.session.add(new_data_row)
+            # add in new predicted row
+            db.session.add(new_predicted_row)
             # commit all rows to database
             db.session.commit()
 
