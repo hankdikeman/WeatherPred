@@ -1,7 +1,7 @@
 import json
 import numpy as np
 from datetime import datetime
-from app import db, WeatherDay, pull_db_instance, unpack_db_entry
+from app import db, WeatherDay, pull_db_instance
 from tensorflow.keras import models
 from current_TOBS_weather_pull import current_TOBS_weather_pull
 
