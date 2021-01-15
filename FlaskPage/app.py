@@ -93,8 +93,12 @@ def forecast():
 
 
 # browse page allows users to view a map for given days
-@app.route('/forecast/<string:day>')
+@app.route('/forecast/<string:day>', methods=['GET', 'POST'])
 def browse(day):
+    if request.method == 'POST':
+        request_day = request.form['d0']
+        return redirect('/forecast/' + str(request_day))
+    
     # get front and backdate for slider
     backdate = (datetime.now() - timedelta(days=2)).strftime("%Y-%m-%d")
     frontdate = (datetime.now() + timedelta(days=10)).strftime("%Y-%m-%d")
@@ -105,6 +109,8 @@ def browse(day):
         selected_day = datetime.strptime(day, "%Y-%m-%d")
     except ValueError:
         abort(400)
+
+
 
     # store temperature data from database to file
     pulled_data = pull_db_instance(target_date=selected_day, predictive=False)
