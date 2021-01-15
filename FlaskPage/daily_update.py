@@ -23,6 +23,20 @@ def load_weather_model(filename):
     return weather_model
 
 
+def check_exists(target_date, predictive):
+    return db.session.query(WeatherDay.id).filter(
+        WeatherDay.date == target_date,
+        WeatherDay.predictive == predictive).scalar() is not None
+
+
+# encoder class for numpy files
+class NumpyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return json.JSONEncoder.default(self, obj)
+
+
 ##
 # This is a function to update the database for weather prediction data
 ##
@@ -49,7 +63,25 @@ if __name__ == "__main__":
     delete_day(target_date=back_limit, predictive=False)
 
     # pull new day of data and commit, use existing function
-    current_TOBS = current_TOBS_weather_pull(curr_date)
+    pull_date = curr_date - datetime.timedelta(days=10)
+    while pull_date < datetime.now():
+        # query the date in question
+        actual_data_exists = check_exists(
+            target_date=pull_date, predictive=False)
+        if(not actual_data_exists):
+            # pull new day of data
+            current_TOBS = current_TOBS_weather_pull(curr_date)
+            new_day_pull = json.dumps(current_TOBS[:-3], cls=NumpyEncoder)
+            # create new WeatherDay object
+            new_data_row = WeatherDay(
+                date=pull_date, temps=new_day_pull, predictive=False)
+            # add in new row
+            db.session.add(new_data_row)
+            # commit all rows to database
+            db.session.commit()
+
+    # pull together data for predictions
 
     # predict next ten days and commit
+
     # use pull_db_instance and weather_model.predict for this
