@@ -98,7 +98,7 @@ def browse(day):
     if request.method == 'POST':
         print(100)
         print(request.form['dayslider'])
-        request_day = (datetime.now() - timedelta(days=1 -
+        request_day = (datetime.now() - timedelta(days=2 -
                                                   int(request.form['dayslider']))).strftime("%Y-%m-%d")
         print(request_day)
         return redirect('/forecast/' + str(request_day))
@@ -110,7 +110,7 @@ def browse(day):
         # strip date string and convert to datetime object
         try:
             selected_day = datetime.strptime(day, "%Y-%m-%d")
-            deltadate = int((selected_day - datetime.now()).days + 2)
+            deltadate = int((selected_day - datetime.now()).days + 3)
         except ValueError:
             abort(400)
 
