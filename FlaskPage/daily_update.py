@@ -84,7 +84,7 @@ if __name__ == "__main__":
             db.session.add(new_data_row)
             # commit all rows to database
             db.session.commit()
-        pull_date += timedelta(days=1)
+        pull_date += datetime.timedelta(days=1)
 
     # set back limit for temperature data to be pulled
     query_date = curr_date - datetime.timedelta(days=7)
@@ -95,8 +95,9 @@ if __name__ == "__main__":
     # loop through range of days and store any actual days of data
     while query_date < front_limit:
         if check_exists(target_date=query_date, predictive=False):
-            unformatted_temp_data[array_index, :] = pull_db_instance()
-        query_date += timedelta(days=1)
+            unformatted_temp_data[array_index, :] = np.reshape(pull_db_instance(
+                target_date=query_date, predictive=False), newshape=(1, LONG_DIMS * LAT_DIMS))
+        query_date += datetime.timedelta(days=1)
         array_index += 1
 
     # pull together data for predictions
