@@ -5,8 +5,13 @@ from app import db, WeatherDay, pull_db_instance, unpack_db_entry
 from tensorflow.keras import models
 from current_TOBS_weather_pull import current_TOBS_weather_pull
 
+LONG_DIMS = 175
+LAT_DIMS = 100
+MODEL_DAY_NUM = 7
 
 # placeholder function for deleting predicted/actual day
+
+
 def delete_day(target_date, predictive):
     WeatherDay.query.filter(
         WeatherDay.date == target_date,
@@ -79,9 +84,30 @@ if __name__ == "__main__":
             db.session.add(new_data_row)
             # commit all rows to database
             db.session.commit()
+        pull_date += timedelta(days=1)
+
+    # set back limit for temperature data to be pulled
+    query_date = curr_date - datetime.timedelta(days=7)
+    array_index = 0
+    # create empty 2D array for temperature data
+    unformatted_temp_data = np.empty(
+        shape=((front_limit - pull_date, LONG_DIMS * LAT_DIMS)))
+    # loop through range of days and store any actual days of data
+    while query_date < front_limit:
+        if check_exists(target_date=query_date, predictive=False):
+            unformatted_temp_data[array_index, :] = pull_db_instance()
+        query_date += timedelta(days=1)
+        array_index += 1
 
     # pull together data for predictions
-
+    formatted_xdata = np.empty(shape=(sample_ind, day_num, x_nodes * y_nodes))
+    # loop through all days minus day_num allocation
+    for ind in range(sample_ind):
+        # reshape "day_num" section to shape required for x output
+        sample = np.reshape(
+            rawdata[ind:ind + day_num, :], newshape=(1, day_num, long_nodes * lat_nodes))
+        # store x input values in formatted data
+        formatted_xdata[ind, :, :] = sample
     # predict next ten days and commit
 
     # use pull_db_instance and weather_model.predict for this
