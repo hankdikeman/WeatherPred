@@ -29,7 +29,6 @@ def pull_db_instance(target_date, predictive):
         WeatherDay.date == target_date,
         WeatherDay.predictive == predictive
     ).first()
-    print(instance)
     if(instance):
         # unpack db entry and return
         temps, date = unpack_db_entry(instance)
@@ -97,55 +96,58 @@ def forecast():
 @app.route('/forecast/<string:day>', methods=['GET', 'POST'])
 def browse(day):
     if request.method == 'POST':
-        request_day = request.form['d0']
+        print(100)
+        print(request.form['dayslider'])
+        request_day = (datetime.now() - timedelta(days=1 -
+                                                  int(request.form['dayslider']))).strftime("%Y-%m-%d")
+        print(request_day)
         return redirect('/forecast/' + str(request_day))
-    
-    # get front and backdate for slider
-    backdate = (datetime.now() - timedelta(days=2)).strftime("%Y-%m-%d")
-    frontdate = (datetime.now() + timedelta(days=10)).strftime("%Y-%m-%d")
-    currdate = (datetime.now()).strftime("%Y-%m-%d")
-
-    # strip date string and convert to datetime object
-    try:
-        selected_day = datetime.strptime(day, "%Y-%m-%d")
-    except ValueError:
-        abort(400)
-
-
-
-    # store temperature data from database to file
-    pulled_data = pull_db_instance(target_date=selected_day, predictive=False)
-
-    # if actual temps are not available, try to pull predicted values
-    if(isinstance(pulled_data, str)):
-        pulled_data = pull_db_instance(
-            target_date=selected_day, predictive=True)
-
-    # check to see if data was pulled or default string message upon query
-    if(not(isinstance(pulled_data, str))):
-        data_line = np.reshape(pulled_data, newshape=(17500))
-
-        # couple with latitude and longitude data, save to arrays
-        long_data, lat_data, temp_data = heatmap_utils.display_format(
-            data_line)
-
-        # generate folium map from three arrays: longitude, latitude, and temps
-        folium_map = heatmap_utils.gen_folium_map(
-            longitude=long_data,
-            latitude=lat_data,
-            data_line=temp_data,
-            mapheight='100%'
-        )
-        # save folium map to templates folder (included in browse.html)
-        folium_map.save('templates/forecastmap.html')
-        return render_template('forecast.html', date=day, backdate=backdate, frontdate=frontdate)
-
-    # if no valid data was pulled then render "no data" document
     else:
-        with open('templates/forecastmap.html', 'w') as filename:
-            filename.write(
-                f"<p style='text-align:center;'>No data for {day}</p>")
-        return render_template('forecast.html', date=day, backdate=backdate, frontdate=frontdate)
+        # get front and backdate for slider
+        backdate = (datetime.now() - timedelta(days=2)).strftime("%Y-%m-%d")
+        frontdate = (datetime.now() + timedelta(days=10)).strftime("%Y-%m-%d")
+
+        # strip date string and convert to datetime object
+        try:
+            selected_day = datetime.strptime(day, "%Y-%m-%d")
+            deltadate = int((selected_day - datetime.now()).days + 2)
+        except ValueError:
+            abort(400)
+
+        # store temperature data from database to file
+        pulled_data = pull_db_instance(
+            target_date=selected_day, predictive=False)
+
+        # if actual temps are not available, try to pull predicted values
+        if(isinstance(pulled_data, str)):
+            pulled_data = pull_db_instance(
+                target_date=selected_day, predictive=True)
+
+        # check to see if data was pulled or default string message upon query
+        if(not(isinstance(pulled_data, str))):
+            data_line = np.reshape(pulled_data, newshape=(17500))
+
+            # couple with latitude and longitude data, save to arrays
+            long_data, lat_data, temp_data = heatmap_utils.display_format(
+                data_line)
+
+            # generate folium map from three arrays: longitude, latitude, and temps
+            folium_map = heatmap_utils.gen_folium_map(
+                longitude=long_data,
+                latitude=lat_data,
+                data_line=temp_data,
+                mapheight='100%'
+            )
+            # save folium map to templates folder (included in browse.html)
+            folium_map.save('templates/forecastmap.html')
+            return render_template('forecast.html', date=day, backdate=backdate, frontdate=frontdate, sliderpos=deltadate)
+
+        # if no valid data was pulled then render "no data" document
+        else:
+            with open('templates/forecastmap.html', 'w') as filename:
+                filename.write(
+                    f"<p style='text-align:center;'>No data for {day}</p>")
+            return render_template('forecast.html', date=day, backdate=backdate, frontdate=frontdate, sliderpos=deltadate)
 
 
 # forecast templates for iframes
@@ -154,8 +156,6 @@ def forecast_map():
     return render_template('forecastmap.html')
 
 # search page allows searching by location, gives tabulated data
-
-
 
 
 # browse templates for iframes
@@ -175,8 +175,6 @@ def browse_actual_map():
 def search():
     today = datetime.now().strftime("%Y-%m-%d")
     return redirect('/browse/USA/' + str(today))
-
-
 
 
 # location result given from location search, loc will likely be state number
