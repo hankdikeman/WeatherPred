@@ -7,17 +7,19 @@ from current_TOBS_weather_pull import current_TOBS_weather_pull
 
 LONG_DIMS = 175
 LAT_DIMS = 100
+MAX_TEMP = 140
+MIN_TEMP = -50
 MODEL_DAY_NUM = 7
 
 
 # redimensionalize output of model
 def redimensionalize_output(output_array):
-    return output_array
+    return np.interp(output_array, (MIN_TEMP, MAX_TEMP), (-1, +1))
 
 
 # nondimensionalize input of model
 def nondimensionalize_input(input_array):
-    return input_array
+    return np.interp(input_array, (-1, +1), (MIN_TEMP, MAX_TEMP))
 
 
 # delete targeted day
