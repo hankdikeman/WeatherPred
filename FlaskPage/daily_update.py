@@ -3,6 +3,7 @@ import numpy as np
 from datetime import datetime
 from app import db, WeatherDay, pull_db_instance, unpack_db_entry
 from tensorflow.keras import models
+from current_TOBS_weather_pull import current_TOBS_weather_pull
 
 
 # placeholder function for deleting predicted/actual day
@@ -47,6 +48,7 @@ if __name__ == "__main__":
     delete_day(target_date=back_limit, predictive=False)
 
     # pull new day of data and commit, use existing function
+    current_TOBS = current_TOBS_weather_pull(curr_date)
 
     # predict next ten days and commit
     # use pull_db_instance and weather_model.predict for this
