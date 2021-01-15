@@ -30,8 +30,14 @@
         <span class="font-weight-bold blue-text mr-2 mt-1">{{ backdate }}</span>
         <form class="range-field w-75">
           <!--<input class="day-slider border-0" type="range" min="-2" max="10" value="0" />-->
-          <input id="ex1" class="day-slider border-0" data-slider-id='ex1Slider' type="range" data-slider-min="-2" data-slider-max="10" data-slider-step="1" data-slider-value="0"/>
+          <!--<input id="ex1" class="day-slider border-0" data-slider-id='ex1Slider' type="range" data-slider-min="-2" data-slider-max="10" data-slider-step="1" data-slider-value="0"/>-->
+          <div class="slidecontainer">
+            <input id="r0" type="range" min="0" max="12" value="2"><br>
+          <input id="d0" type="date"  value="{{ backdate }}"   min="{{ backdate }}" max="{{ frontdate }}" >
+            </div>
+
         </form>
+        <p>Value: <span id="demo"></span></p>
         <span class="font-weight-bold blue-text ml-2 mt-1">{{ frontdate }}</span>
       </div>
     </div>

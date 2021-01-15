@@ -98,6 +98,7 @@ def browse(day):
     # get front and backdate for slider
     backdate = (datetime.now() - timedelta(days=2)).strftime("%Y-%m-%d")
     frontdate = (datetime.now() + timedelta(days=10)).strftime("%Y-%m-%d")
+    currdate = (datetime.now()).strftime("%Y-%m-%d")
 
     # strip date string and convert to datetime object
     try:
@@ -139,6 +140,10 @@ def browse(day):
 def forecast_map():
     return render_template('forecastmap.html')
 
+# search page allows searching by location, gives tabulated data
+
+
+
 
 # browse templates for iframes
 @app.route('/browse/predicted/map/img', methods=['GET'])
@@ -159,6 +164,8 @@ def search():
     return redirect('/browse/USA/' + str(today))
 
 
+
+
 # location result given from location search, loc will likely be state number
 @app.route('/browse/<string:loc>/<string:day>', methods=['GET', 'POST'])
 def loc_result(loc, day):
@@ -170,6 +177,7 @@ def loc_result(loc, day):
         # set front and backdate
         backdate = (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d")
         frontdate = (datetime.now() + timedelta(days=10)).strftime("%Y-%m-%d")
+
 
         # parse location code and assign start coordinates
         if(loc != "USA"):
