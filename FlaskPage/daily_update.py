@@ -129,23 +129,10 @@ if __name__ == "__main__":
             db.session.add(new_predicted_row)
             # commit all rows to database
             db.session.commit()
-
-        # otherwise pull existing data
-        elif check_exists(target_date=query_date, predictive=True):
+        # add predictive data to database if there is no actual data
+        if not check_exists(target_date=query_date, predictive=False):
             unformatted_temp_data[array_index, :] = np.reshape(pull_db_instance(
                 target_date=query_date, predictive=True), newshape=(1, LONG_DIMS * LAT_DIMS))
+        # iterate array index and queried date
         query_date += datetime.timedelta(days=1)
         array_index += 1
-
-    # pull together data for predictions
-    formatted_xdata = np.empty(shape=(sample_ind, day_num, x_nodes * y_nodes))
-    # loop through all days minus day_num allocation
-    for ind in range(sample_ind):
-        # reshape "day_num" section to shape required for x output
-        sample = np.reshape(
-            rawdata[ind:ind + day_num, :], newshape=(1, day_num, long_nodes * lat_nodes))
-        # store x input values in formatted data
-        formatted_xdata[ind, :, :] = sample
-    # predict next ten days and commit
-
-    # use pull_db_instance and weather_model.predict for this
