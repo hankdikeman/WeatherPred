@@ -98,11 +98,14 @@ if __name__ == "__main__":
         if check_exists(target_date=query_date, predictive=False):
             unformatted_temp_data[array_index, :] = np.reshape(pull_db_instance(
                 target_date=query_date, predictive=False), newshape=(1, LONG_DIMS * LAT_DIMS))
+        # make new predictions if there is enough days to make new predictions
+        if array_index >= MODEL_DAY_NUM:
+            prediction_data = np.reshape(
+                unformatted_temp_data[array_index - MODEL_DAY_NUM:array_index, :], newshape=(1, MODEL_DAY_NUM, LONG_DIMS * LAT_DIMS))
         # otherwise pull existing data
         elif check_exists(target_date=query_date, predictive=True):
             unformatted_temp_data[array_index, :] = np.reshape(pull_db_instance(
                 target_date=query_date, predictive=True), newshape=(1, LONG_DIMS * LAT_DIMS))
-        if array_index >= MODEL_DAY_NUM:
         query_date += datetime.timedelta(days=1)
         array_index += 1
 
