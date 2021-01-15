@@ -32,7 +32,12 @@ body{
 }
 
 .navbar-text {
-  font-size:1.75rem;
+  color:white;
+  font-size:100%;
+}
+
+.navbar-brand {
+  font-size:175%;
 }
 
 
