@@ -4,16 +4,9 @@ import datetime
 from TOBS_US_weather_pull import *
 
 # set start and end date of weather pull
-# Started on 2002/01/01 format of date(year, month, day) no need for 09, just 9
-# start V3 on 2002, 11, 15 to 2004, 9, 16, V2 good from 2002, 1, 1 to 2002, 11, 14
-startDate = datetime.date(2000, 1, 1)
-# Start V4 on 2004, 9, 16 to 2005, 3, 16 to 2005, 4, 1. Start V5 on 2005, 4, 2 to 2005, 4, 16
-# Start V6 on 2005, 4, 17 to 2005, 5, 31. Start V7 on 2005, 6, 1 to 2005,11, 13
-# Start V8 on 2005, 11, 14 to 2005, 12, 28. Start V9 on 2005, 12, 29 to 2006, 6, 12
-# Start V10 on 2006, 6, 13 to 2006, 8, 8. Start V11 on 2006, 8, 9 to 2006, 9, 13
-# Start V11 on 2006, 9, 14 to 2006, 12, 5. Start V12 on 2006, 12, 5 to 2007, 2, 3.
-# Start V13 on 2007, 2, 4 to 2007, 3, 3. # Start V14 on 2007, 3, 4 to 2007, 4, 23
-# Start V15 on 2007, 4, 24 to 2007, 11, 21. #V16 to 2008, 1, 5.
+# Started on 2000/01/01 format of date(year, month, day) no need for 09, just 9
+# start V1 on 2000, 1, 1. Start V2 2000, 7, 30
+startDate = datetime.date(2000, 7, 30)
 
 day_jump = datetime.timedelta(days=1)
 n_days = 720
