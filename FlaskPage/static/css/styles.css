@@ -92,15 +92,8 @@ body{
 }
 
 .search {
-  padding-left: 0px;
-  padding-right: 0px;
   background-color: rgba(0,0,0,0.2);
-  transition: 0.3s;
-  height: 75px;
+  height: 80px;
   width: 100%;
-}
-
-.select {
-  height: 40px;
-  width: 200px;
+  vertical-align: middle;
 }

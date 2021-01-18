@@ -8,23 +8,22 @@
 {% block body %}
 <div class="container">
   <div class="row">
-    <div class="col-1">
-
+    <div class="col-sm-3">
     </div>
-    <div class="col-10">
+    <div class="col-sm-6">
       <div class="card mb-4 shadow-sm">
         <div class="search">
           <div class="card-body" style="text-align:center;">
             <form action="{{ request.path }}" method="POST">
               <div class="row">
-                <div class="select" style="text-align:center;padding-right:10px;padding-left:10px;">
+                <div class="select" style="text-align:center;padding-right:8px;padding-left:8px;height:40px;">
                   <input type="date" id="search-date" name="search-date"
                        value="{{ date }}"
                        min="{{ backdate }}" max="{{ frontdate }}"
-                       style="font-size:1.25em;text-align-last:center;width:100%;">
+                       style="font-size:1.25em;text-align-last:center;width:200px;height:40px;">
                 </div>
-                <div class="select" style="text-align:center;padding-right:20px;padding-left:10px;">
-                  <select id="search-loc" name="search-loc" style="font-size:1.25em;text-align-last:center;width:100%;">
+                <div class="select" style="text-align:center;padding-right:16px;padding-left:8px;height:40px;">
+                  <select id="search-loc" name="search-loc" style="font-size:1.25em;text-align-last:center;width:150px;height:40px;">
                     <option value="USA">Nationwide</option>
                   	<option value="AL">Alabama</option>
                   	<option value="AK">Alaska</option>
@@ -79,14 +78,14 @@
                   	<option value="WY">Wyoming</option>
                   </select>
                 </div>
-                <input type="submit" value="Search" style="font-size:1.5em;text-align:center;padding-right:10px;padding-left:10px;color:#d19704;width:200px;height:40px;">
+                <input type="submit" value="Search" style="font-size:1.5em;text-align:center;padding-right:8px;padding-left:8px;color:#d19704;width:90px;height:40px;">
               </div>
             </form>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-1">
+    <div class="col-sm-3">
     </div>
   </div>
 </div>
