@@ -7,7 +7,33 @@
 
 
 {% block body %}
-<br><br>
+<br>
+<div class="container">
+  <div class="row text-center">
+    <div class="col-2">
+    </div>
+    <div class="col-8">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-header my-0 font-weight-normal">How do I use this site?</h2>
+          <br>
+          <p>
+            <strong>
+            This site uses a state-of-the-art neural network to generate weather forecast predictions using weather data curated by NOAA.
+            To see a 10-day forecast, click the <a href="/forecast">"Forecast"</a> page. To see historical weather, click the <a href="/browse">"Browse"</a> page. To find out more about
+            the site or our model, click the <a href="/about">"About Page"</a> or visit our Github repo <a href="https://github.com/hankdikeman/WeatherPred">here</a>.
+            </strong>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-2">
+    </div>
+  </div>
+</div>
+
+<br>
+
 <div class="container">
   <div class="card-deck mb-3 text-center">
     <div class="card mb-4 shadow-sm">
@@ -46,16 +72,5 @@
   </div>
 </div>
 
-<div class="container">
-  <div class="row text-center">
-    <div class="col-2">
-    </div>
-    <div class="col-8">
-      <h2>How do I use this site?</h2>
-      <i>more detail about each part of the site and how to use it</i>
-    </div>
-    <div class="col-2">
-    </div>
-  </div>
-</div>
+
 {% endblock %}
