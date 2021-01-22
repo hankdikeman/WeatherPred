@@ -3,73 +3,76 @@
 <title>MAPLE: About the Site</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 {% endblock %}
-
-
 {% block body %}
-
-
 <hr>
 </hr>
-
 <main role="main">
-<div  style="background:powderblue !important" class="jumbotron">
-  <div class="col-sm-8 mx-auto">
-    <h1>Neural Network Model</h1>
-    <p>
-      A Long Short Term Memeory (LSTM) Neural Network was used to predict the weather.
-      This is a type of recurrent NN, for unlike standard feed forward NN, LSTM has feedback connections.
-      After being trained with multiple years worth of data, a model with ___ % accuracy was created.
-    </p>
+   <div  style="background:powderblue !important" class="jumbotron">
+      <div class="col-sm-8 mx-auto">
+         <h1>Neural Network Model</h1>
+         <p>
+            A Long Short Term Memeory (LSTM) Neural Network was used to predict the weather.
+            This is a type of recurrent NN, which are good for making predictions based on time series data.
+            We chose LSTM over other types of neural networks because of it's feedback connection abilities.
+            This will provide our model with greater accuracy and efficiency. After being trained with multiple
+            years worth of data, a model within five degrees was created.
+         </p>
+         <p>
+            <a href= "/navigate" class="btn btn-primary btn-lg" role="button">Go to page</a>
+         </p>
+         <br></br>
+         <p>
+            All of our code is open source. Python and Flask were used to code the LSTM and the website. The actual weather data
+            is collected from NOAA and predicted data are stored in SQLite Database. Our code is published on Github.
+         </p>
+         <a href= "https://github.com/hankdikeman/WeatherPred" class="btn btn-primary btn-lg" role="button">Go to Github</a>
+         <p>
+      </div>
+      <!--</div>-->
+      <!--</main>-->
+      <br></br>
+      <!--<div style="background:powderblue !important" class="jumbotron">-->
+      <h1>Authors</h1>
+      <div class="slideshow-container">
 
-    <p>
-      <a href= "/navigate" class="btn btn-primary btn-lg" role="button">Go to page</a>
-      </p>
+  <div class="mySlides">
+    <div class="numbertext">1 / 3</div>
+    <img src={{ url_for('static', filename='Gallery/Giratina.jpg') }} style="width:100%">
+    <div class="text"><i>Shrinivas Venkatasubramani </i> is a sophomore chemical engineering and computer
+    science student at the University of Minnesota. He is interested in a wide range of sciences
+    and is currently looking to discover what he is most passionate about.</div>
+  </div>
+
+  <div class="mySlides">
+    <div class="numbertext">2 / 3</div>
+    <img src={{ url_for('static', filename='Gallery/Giratina.jpg') }} style="width:100%">
+    <div class="text"><i>Henry Dikeman </i>is a senior chemical engineering student at the University of
+    Minnesota. His passion is the development of renewable feedstocks and biochemical processes in
+    the field of energy production.</div>
+  </div>
+
+  <div class="mySlides">
+    <div class="numbertext">3 / 3</div>
+    <img src={{ url_for('static', filename='Gallery/Giratina.jpg') }} style="width:100%">
+    <div class="text"><i>Patrick Gibbons-Peterson </i>is a senior chemical engineering student at the University
+    of Minnesota. He is interested in the intersection between chemical engineering and computer
+    science and finds purpose in taking on sustainability oriented engineering projects.</div>
+  </div>
+
+  <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+  <a class="next" onclick="plusSlides(1)">&#10095;</a>
+
+  </div>
+  <br>
+
+  <div style="text-align:center">
+    <span class="dot" onclick="currentSlide(1)"></span>
+    <span class="dot" onclick="currentSlide(2)"></span>
+    <span class="dot" onclick="currentSlide(3)"></span>
+  </div>
+  <script>
+  showSlides(slideIndex);
+</script>
+      {% endblock %}
    </div>
-</div>
 </main>
-<br></br>
-
-<div style="background:powderblue !important" class="jumbotron">
-   <h2>Authors</h2>
-   <div class="row">
-      <div class="col-md-4">
-         <img src={{ url_for('static', filename='Gallery/Planet.jpg') }} alt="" data-toggle="collapse" data-target="#collapseBio1" aria-expanded="false" aria-controls="collapseExample" style="width:100%;height:100%">
-         <div class="row">
-            <div class="collapse position-absolute" id="collapseBio1">
-               <div class="card card-body">
-                  <i>Shrinivas Venkatasubramani </i> is a sophomore chemical engineering and computer
-                  science student at the University of Minnesota. He is currently exploring different fields to
-                  discover his interests.
-               </div>
-            </div>
-         </div>
-      </div>
-      <div class="col-md-4">
-         <img src={{ url_for('static', filename='Gallery/Giratina.jpg') }} alt="" data-toggle="collapse" data-target="#collapseBio2" aria-expanded="false" aria-controls="collapseExample" style="width:100%;height:100%">
-         <div class="row">
-            <div class="collapse position-absolute" id="collapseBio2">
-               <div class="card card-body">
-                  <i>Henry Dikeman </i>is an incoming senior chemical engineering student at the University of
-                  Minnesota. His passion is the development of renewable feedstocks and biochemical processes in
-                  the field of energy production.
-               </div>
-            </div>
-         </div>
-      </div>
-      <div class="col-md-4">
-         <img src={{ url_for('static', filename='Gallery/Yveltal.jpg') }} alt="" data-toggle="collapse" data-target="#collapseBio3" aria-expanded="false" aria-controls="collapseExample" style="width:100%;height:100%">
-         <div class="row">
-            <div class="collapse position-absolute" id="collapseBio3">
-               <div class="card card-body">
-                  <i>Patrick Gibbons-Peterson </i>is an incoming senior chemical engineering student at the University
-                  of Minnesota. He is interested in the intersection between chemical engineering and computer
-                  science and finds purpose in taking on sustainability oriented engineering projects.
-               </div>
-            </div>
-         </div>
-      </div>
-   </div>
-
-
-{% endblock %}
-</div>
