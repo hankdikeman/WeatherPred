@@ -10,11 +10,11 @@ import os
 # start V2 on 2000, 7, 30 Start V3 2001, 2, 25
 # start V3 on 2001, 2, 25 Start V4 2001, 9, 18
 # start V4 on 2001, 9, 18 Start V5 2002, 4, 15
-startDate = datetime.date(2002, 12, 9)
+startDate = datetime.date(2003, 12, 28)
 
 day_jump = datetime.timedelta(days=1)
 n_days = 720
-csvname = os.path.join(os.getcwd(), 'TrainData12092002')
+csvname = os.path.join(os.getcwd(), 'TrainData12282003')
 
 for timejump in range(n_days):
     print("start day: " + str(timejump))
