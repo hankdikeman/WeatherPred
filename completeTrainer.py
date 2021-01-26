@@ -13,7 +13,7 @@ plt.style.use('seaborn-white')
 ###
 print('preprocessing data')
 # constants for data processing
-filename = "sevenyearsdata.csv"
+filename = "TrainDataCompiled_Mk2.csv"
 x_nodes, y_nodes = (100, 175)
 day_num = 7
 days_prior = 1
