@@ -91,9 +91,25 @@ body{
   opacity: 0.9;
 }
 
-.search {
+#banner {
   background-color: rgba(0,0,0,0.2);
-  height: 80px;
+  height: 55px;
   width: 100%;
-  vertical-align: middle;
+  vertical-align: middle
+
+}
+
+input[type="submit"] {
+    background: green;
+    cursor: pointer;
+    display: inline-block;
+    font-size:1.5em;
+    text-align:center;
+    color:#d19704;
+    padding: 6px;
+    /* width:90px;
+    height:40px; */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
