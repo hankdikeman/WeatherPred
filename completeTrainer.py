@@ -2,8 +2,9 @@
 from tensorflow.keras import models
 import numpy as np
 from trainerModelSupport import trainerModelSelect
-from NNDataFormat import LSTM_Format2
+from NNDataFormat import LSTM_Format2, nondimensionalize_input, redimensionalize_output
 import matplotlib.pyplot as plt
+from scipy.ndimage import gaussian_filter
 print('importing packages')
 
 plt.style.use('seaborn-white')
@@ -40,8 +41,8 @@ if load_or_train == "retrain":
     ##
     #   Training/Visualization
     ##
-    batch_size = 64
-    epochs = 20
+    batch_size = 365
+    epochs = 50
     print('fitting model')
     # run model on training data
     history = LSTM_model.fit(xdata, ydata, epochs=epochs,
@@ -74,9 +75,14 @@ if calc_errors == "y":
         actual = np.reshape(ydata[ind_vis, :], newshape=(x_nodes, y_nodes))
         predicted = np.reshape(LSTM_model.predict(
             inputs)[0, :], newshape=(x_nodes, y_nodes))
+        # gaussian filter
+        actual = gaussian_filter(actual, sigma=2)
+        predicted = gaussian_filter(predicted, sigma=2)
         # redimensionalize
-        actual = ((actual + 1) / 2 * 205) - 60
-        predicted = ((predicted + 1) / 2 * 205) - 60
+        actual = redimensionalize_output(actual)
+        # ((actual + 1) / 2 * 205) - 60
+        predicted = redimensionalize_output(predicted)
+        # ((predicted + 1) / 2 * 205) - 60
         mseerrors[ind_vis] = int(
             np.power(np.sum(np.square(actual - predicted)) / (x_nodes * y_nodes), 0.5))
         avgtemps[ind_vis] = np.mean(actual)
@@ -85,7 +91,7 @@ if calc_errors == "y":
     print(str(np.amax(mseerrors)) + ' ' + str(np.amin(mseerrors)))
     print(str(np.mean(mseerrors)))
     plt.hist(mseerrors, bins=25, range=(0, 25))
-    plt.title('Distribution of fit errors: LSTM model #' + str(model_num))
+    plt.title('Distribution of (filtered) fit errors: LSTM model #' + str(model_num))
     plt.show()
 
     plt.plot(mseerrors, 'bo', zorder=50)
@@ -98,43 +104,59 @@ while True:
     ind_vis = int(input("index of selection"))
     inputs = xdata[ind_vis:ind_vis + 1, :, :]
     actual = np.reshape(ydata[ind_vis, :], newshape=(x_nodes, y_nodes))
+    actual = gaussian_filter(actual, sigma=2)
     predicted = np.reshape(LSTM_model.predict(
         inputs)[0, :], newshape=(x_nodes, y_nodes))
+    predicted = gaussian_filter(predicted, sigma=2)
     # reshape inputs
     inputs = np.reshape(inputs, newshape=(day_num, x_nodes, y_nodes))
-
+    for i in range(day_num):
+        inputs[i, :, :] = gaussian_filter(inputs[i, :, :], sigma=2)
     # redimensionalize values
-    inputs = ((inputs + 1) / 2 * 205) - 60
-    actual = ((actual + 1) / 2 * 205) - 60
-    predicted = ((predicted + 1) / 2 * 205) - 60
+    inputs = redimensionalize_output(inputs)
+    # ((inputs + 1) / 2 * 205) - 60
+    actual = redimensionalize_output(actual)
+    # ((actual + 1) / 2 * 205) - 60
+    predicted = redimensionalize_output(predicted)
+    # ((predicted + 1) / 2 * 205) - 60
     avg_mse = int(np.sum(np.square(actual - predicted)) / (x_nodes * y_nodes))
     msevals = np.power(np.square(actual - predicted) /
                        (x_nodes * y_nodes), 0.5)
     # declare graph
-    fig, axs = plt.subplots(2, 3)
+    fig, axs = plt.subplots(3, 3)
     max_t = 130
     min_t = -20
     # plot inputs
-    axs[0, 0].imshow(np.transpose(inputs[-4, :, :]),
+    axs[0, 0].imshow(np.transpose(inputs[-7, :, :]),
                      cmap='gist_ncar', vmax=max_t, vmin=min_t)
-    axs[0, 0].set_title('4 days prior')
-    axs[0, 1].imshow(np.transpose(inputs[-3, :, :]),
+    axs[0, 0].set_title('7 days prior')
+    axs[0, 1].imshow(np.transpose(inputs[-6, :, :]),
                      cmap='gist_ncar', vmax=max_t, vmin=min_t)
-    axs[0, 1].set_title('3 days prior')
-    axs[0, 2].imshow(np.transpose(inputs[-2, :, :]),
+    axs[0, 1].set_title('6 days prior')
+    axs[0, 2].imshow(np.transpose(inputs[-5, :, :]),
                      cmap='gist_ncar', vmax=max_t, vmin=min_t)
-    axs[0, 2].set_title('2 days prior')
-    axs[1, 0].imshow(np.transpose(inputs[-1, :, :]),
+    axs[0, 2].set_title('5 days prior')
+    #
+    axs[1, 0].imshow(np.transpose(inputs[-4, :, :]),
                      cmap='gist_ncar', vmax=max_t, vmin=min_t)
-    axs[1, 0].set_title('1 days prior')
+    axs[1, 0].set_title('4 days prior')
+    axs[1, 1].imshow(np.transpose(inputs[-3, :, :]),
+                     cmap='gist_ncar', vmax=max_t, vmin=min_t)
+    axs[1, 1].set_title('3 days prior')
+    axs[1, 2].imshow(np.transpose(inputs[-2, :, :]),
+                     cmap='gist_ncar', vmax=max_t, vmin=min_t)
+    axs[1, 2].set_title('2 days prior')
+    axs[2, 0].imshow(np.transpose(inputs[-1, :, :]),
+                     cmap='gist_ncar', vmax=max_t, vmin=min_t)
+    axs[2, 0].set_title('1 days prior')
     # plot actual
-    axs[1, 1].imshow(np.transpose(actual), cmap='gist_ncar',
+    axs[2, 1].imshow(np.transpose(actual), cmap='gist_ncar',
                      vmax=max_t, vmin=min_t)
-    axs[1, 1].set_title('actual temps')
+    axs[2, 1].set_title('actual temps')
     # plot predicted
-    axs[1, 2].imshow(np.transpose(predicted),
+    axs[2, 2].imshow(np.transpose(predicted),
                      cmap='gist_ncar', vmax=max_t, vmin=min_t)
-    axs[1, 2].set_title('predicted temps, mse = ' + str(avg_mse))
+    axs[2, 2].set_title('predicted temps, mse = ' + str(avg_mse))
 
     print("\007")
     plt.show(block=False)

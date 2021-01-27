@@ -13,12 +13,12 @@ MODEL_DAY_NUM = 7
 
 
 # redimensionalize output of model
-def redimensionalize_output(output_array):
+def nondimensionalize_input(output_array):
     return np.interp(output_array, (MIN_TEMP, MAX_TEMP), (-1, +1))
 
 
 # nondimensionalize input of model
-def nondimensionalize_input(input_array):
+def redimensionalize_output(input_array):
     return np.interp(input_array, (-1, +1), (MIN_TEMP, MAX_TEMP))
 
 

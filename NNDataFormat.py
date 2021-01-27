@@ -1,5 +1,18 @@
 import numpy as np
 
+MAX_TEMP = 140
+MIN_TEMP = -60
+
+
+# redimensionalize output of model
+def nondimensionalize_input(output_array):
+    return np.interp(output_array, (MIN_TEMP, MAX_TEMP), (-1, +1))
+
+
+# nondimensionalize input of model
+def redimensionalize_output(input_array):
+    return np.interp(input_array, (-1, +1), (MIN_TEMP, MAX_TEMP))
+
 
 def Convo_Format(filename, x_nodes, y_nodes, day_num):
     # import temp data from csv
@@ -80,7 +93,9 @@ def LSTM_Format2(filename, x_nodes, y_nodes, day_num, day_prior):
         # store x input values in formatted data
         formatted_xdata[ind, :, :] = sample
     # take y data from raw data array
-    formatted_xdata = ((formatted_xdata + 60) / 205) * 2 - 1
-    formatted_ydata = (
-        (rawdata[day_num + day_prior - 1:, :] + 60) / 205) * 2 - 1
+    formatted_xdata = nondimensionalize_input(formatted_xdata)
+    # ((formatted_xdata + 60) / 205) * 2 - 1
+    formatted_ydata = nondimensionalize_input(
+        rawdata[day_num + day_prior - 1:, :])
+    # ((rawdata[day_num + day_prior - 1:, :] + 60) / 205) * 2 - 1
     return formatted_xdata, formatted_ydata

@@ -60,9 +60,13 @@ def gen_folium_map(longitude, latitude, data_line, zoomstart=4, startcords=(39.8
         location=startcords,
         zoom_start=zoomstart,
         height=mapheight,
-        tiles='CartoDB positron',
-        scrollWheelZoom=False
+        tiles='https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png',
+        scrollWheelZoom=False,
+        attr='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     )
+    # var Esri_WorldTopoMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+    # attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'
+    # });
     # generate temperature mesh to match latitude and longitude meshes
     temp_mesh = np.reshape(data_line, newshape=(VERT_DIMS, HORZ_DIMS))
     # gaussian filter to smooth out data
