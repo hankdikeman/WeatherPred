@@ -31,6 +31,15 @@ def delete_day(target_date, predictive):
     db.session.commit()
 
 
+# delete days before a given day
+def delete_day_range(target_date, predictive):
+    WeatherDay.query.filter(
+        WeatherDay.date < target_date,
+        WeatherDay.predictive == predictive
+    ).delete()
+    db.session.commit()
+
+
 # function to load and return neural network for weather prediction
 def load_weather_model(filename):
     # load weather model from file
@@ -75,8 +84,8 @@ if __name__ == "__main__":
         del_date = del_date + datetime.timedelta(days=1)
 
     # delete oldest actual data day and commit
-    delete_day(target_date=back_limit, predictive=False)
-    delete_day(target_date=back_limit, predictive=True)
+    delete_day_range(target_date=back_limit, predictive=False)
+    delete_day_range(target_date=back_limit, predictive=True)
 
     # pull new day of data and commit, use existing function
     pull_date = curr_date - datetime.timedelta(days=30)
