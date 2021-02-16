@@ -67,7 +67,7 @@ class NumpyEncoder(json.JSONEncoder):
 ##
 if __name__ == "__main__":
     # load and store model
-    filename = "models/placeholder"
+    filename = "../TrainedModels/2"
     weather_model = load_weather_model(filename=filename)
     # store current date and date limits
     curr_date = datetime.now()
