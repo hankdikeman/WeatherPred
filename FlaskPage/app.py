@@ -1,3 +1,9 @@
+"""
+This file is the core application file to construct the site. This file is currently written so that it executes in 'debug' mode. Contains paths and functionality for core site pages, such as browse and forecast mode. This page also contains the error message functions. Most of the front-end elements are contained in corresponding HTML template files (which are indicated in each page function)
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 # import packages
 from flask import Flask, render_template, request, redirect, abort
 from flask_sqlalchemy import SQLAlchemy

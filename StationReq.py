@@ -1,3 +1,9 @@
+"""
+This file uses the requests library to get data from a given weather station. It takes in a URL, location id, datatype ID, and an NOAA token and returns data from a station object.
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 def get_station_info(locationid, datasetid, mytoken, base_url):
     import requests
     import pandas as pd

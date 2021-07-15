@@ -1,3 +1,9 @@
+"""
+This function finds the index of a point in the mesh grid from its latitude and longitude coordinates. This was part of the IDW optimization
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 import pandas as pd
 import numpy as np
 from StationObject import Station

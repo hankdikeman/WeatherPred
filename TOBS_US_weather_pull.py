@@ -1,4 +1,9 @@
-# IMPORTS
+"""
+This file pulls weather data from the entire continental use, interpolates over a grid using IDW, and returns the day of data to the parent function for storage
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 import pandas as pd
 import numpy as np
 from WeatherReq import get_weather

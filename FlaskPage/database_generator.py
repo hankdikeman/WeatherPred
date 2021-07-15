@@ -1,3 +1,9 @@
+"""
+This program constructs a new SQLAlchemy database for the Flask site from weather data stored as csv data. 
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 import json
 import numpy as np
 from datetime import datetime

@@ -1,3 +1,9 @@
+"""
+This file collects points over the mesh grid that are uncaptured by NOAA data pull and generates a binary mask that can be used to filter out the displayed weather. Performed by determining where in the weather data values of 0 are reported consistently
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 import matplotlib.pyplot as plt
 import numpy as np
 

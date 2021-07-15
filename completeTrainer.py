@@ -1,3 +1,9 @@
+"""
+Neural network training function for neural nets of various architectures. Can also be configured with terminal input to visualize loaded networks
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 # import packages and subfunctions
 from tensorflow.keras import models
 import numpy as np

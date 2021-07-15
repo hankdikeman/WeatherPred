@@ -1,4 +1,9 @@
-# IMPORTS
+"""
+This program pulls weather from the state of MN and returns. Receives date range of pull as parameter
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 import pandas as pd
 import numpy as np
 from WeatherReq import get_weather

@@ -1,3 +1,9 @@
+"""
+Converts pandas formatted data to station objects which are used during interpolation into mesh grid.
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 import pandas as pd
 import numpy as np
 from StationObject import Station

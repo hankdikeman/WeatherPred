@@ -1,3 +1,9 @@
+"""
+Finds the closest distance between a given location and the node locations found within data
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 import math
 def closest_distance(point, data):
     min_dist = 1000

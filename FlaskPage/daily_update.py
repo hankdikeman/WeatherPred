@@ -1,3 +1,9 @@
+"""
+This file contains the scheduled database updates that are used to keep the weather data database current for the Flask site. Only recent sets of data will be retained and the rest discarded
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 import json
 import numpy as np
 from datetime import datetime

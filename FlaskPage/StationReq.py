@@ -1,3 +1,9 @@
+"""
+This file is identical to the file contained in the root repo file, however this version is used for the Flask page data processing and is intended to be used in a scheduled fashion to update weather database
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 def get_station_info(locationid, datasetid, mytoken, base_url):
     import requests
     import pandas as pd

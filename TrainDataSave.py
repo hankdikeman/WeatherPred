@@ -1,3 +1,9 @@
+"""
+This file sequentially pulls data from many days in the NOAA database and writes it to a csv dataset in flattened form
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 import numpy as np
 import pandas as pd
 import datetime

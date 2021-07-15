@@ -1,3 +1,9 @@
+"""
+Identical to station format file in root directory of repo. Compiles weather data stored in pandas dataframe and converts it to a numpy list of Station objects. Used during database updates for Flask sites.
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 import pandas as pd
 import numpy as np
 from StationObject import Station

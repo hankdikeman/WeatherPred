@@ -1,9 +1,12 @@
+"""
+This file generates and returns LSTM models of different architectures and sizes in order to predict future weather states
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 import tensorflow as tf
 from tensorflow.keras import layers, models
 import numpy as np
-
-# first LSTM model
-
 
 def Gen_LSTM_Basic(long_nodes, lat_nodes, day_num):
     LSTM_model = models.Sequential()

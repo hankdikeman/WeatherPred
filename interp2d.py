@@ -1,3 +1,9 @@
+"""
+This file contains the interpolation function to construct the dense mesh grid from isolated station data. This interpolated data is then returned
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 from StationObject import Station
 import numpy as np
 

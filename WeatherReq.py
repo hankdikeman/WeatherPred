@@ -1,3 +1,9 @@
+"""
+This file uses requests to pull a day of weather over a particular range, with a given limit on number of pulled instances of data. Stores in a pandas dataframe and returns results. If pull failed for whatever reason, continue to attempt to pull data until success.
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 # WEATHER DATA FETCHING FUNCTION
 def get_weather(locationid, datasetid, datatype, begin_date, end_date, mytoken, base_url):
     import requests

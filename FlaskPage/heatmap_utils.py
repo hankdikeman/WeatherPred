@@ -1,3 +1,9 @@
+"""
+This file constructs a heatmap using Folium to be displayed on the Flask site. The weather data is shown as a heatmap, with hardcoded color values.
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 import branca
 from scipy.ndimage import gaussian_filter
 import geojsoncontour

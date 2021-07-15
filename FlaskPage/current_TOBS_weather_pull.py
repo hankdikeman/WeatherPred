@@ -1,3 +1,9 @@
+"""
+This file is a copy of the other weather pull file in the root directory of the repo. This program is intended to be used in a scheduled fashion on the published site for routine database updates
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 # IMPORTS
 import pandas as pd
 import numpy as np

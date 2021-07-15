@@ -1,3 +1,9 @@
+"""
+This file compiles a latitude and longitude list of state names for viewing on website page. Wraps into a numpy list and pickles it for later use
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 import numpy as np
 
 state_coord_str = """Alabama	32.806671	-86.791130

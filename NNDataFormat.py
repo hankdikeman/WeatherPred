@@ -1,3 +1,9 @@
+"""
+This file loads and formats data in the proper format for each neural net architecture used. Receives a filename, dimensions of data, and number of days in advance needed for each training iteration
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 import numpy as np
 
 MAX_TEMP = 140

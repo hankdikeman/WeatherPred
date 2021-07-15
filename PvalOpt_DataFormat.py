@@ -1,3 +1,9 @@
+"""
+This file is part of an investigation into the optimal interpolation weighting for inverse distance interpolation
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 import pandas as pd
 import numpy as np
 from WeatherReq import get_weather

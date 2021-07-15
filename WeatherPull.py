@@ -1,3 +1,9 @@
+"""
+Made as a utility to debug data pull requests quickly, can be configured multiple ways to look at variety of aspects of pull
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 
 # Made as a utility to debug data pull requests quickly, can be configured multiple ways to look at variety of aspects of pull
 

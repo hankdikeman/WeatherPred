@@ -1,3 +1,9 @@
+"""
+This file is a copy of interpolation code from the root directory of the repo. This file is used for the regular database updates, since data is stored in a lossy manner using meshgrid data rather than raw station data (to save data processing time and dataspace later).
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 from StationObject import Station
 import numpy as np
 

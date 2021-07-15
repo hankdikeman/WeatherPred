@@ -1,5 +1,9 @@
-# Driver for Pval Opt
-
+"""
+Driver for minimum distance weighting optimization. This was used to determine optimum distance weighting for IDW
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 import pandas as pd
 import numpy as np
 from PvalOpt_DataFormat import PvalOpt_DataFormat

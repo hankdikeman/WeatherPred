@@ -1,4 +1,9 @@
-# Function to calculate days in between start and finish
+"""
+Function to calculate days in between start and finish
+Author:     Henry Dikeman
+Email:      dikem003@umn.edu
+Date:       07/15/21
+"""
 import datetime
 def day_num(start_date, end_date):
     delta = datetime.timedelta(days=1)
